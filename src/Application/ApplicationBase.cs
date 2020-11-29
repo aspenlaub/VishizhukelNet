@@ -2,12 +2,14 @@
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
-    public abstract class ApplicationBase {
+    public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
+        where TModel : IApplicationModel
+        where TGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
         protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
-        protected readonly IGuiAndApplicationSynchronizer GuiAndApplicationSynchronizer;
-        protected readonly IApplicationModel Model;
+        protected readonly TGuiAndApplicationSynchronizer GuiAndApplicationSynchronizer;
+        protected readonly TModel Model;
 
-        protected ApplicationBase(IButtonNameToCommandMapper buttonNameToCommandMapper, IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model) {
+        protected ApplicationBase(IButtonNameToCommandMapper buttonNameToCommandMapper, TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model) {
             ButtonNameToCommandMapper = buttonNameToCommandMapper;
             GuiAndApplicationSynchronizer = guiAndApplicationSynchronizer;
             Model = model;

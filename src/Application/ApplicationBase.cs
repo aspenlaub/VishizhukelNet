@@ -18,7 +18,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
         protected abstract Task EnableOrDisableButtonsAsync();
         public abstract void RegisterTypes();
 
-        public async Task OnLoadedAsync() {
+        public virtual async Task OnLoadedAsync() {
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
 

@@ -5,11 +5,11 @@ using System.Windows.Controls.Primitives;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
-    public abstract class GuiToApplicationGateBase {
+    public abstract class GuiToApplicationGateBase<TApplication> where TApplication : IGuiAndAppHandler {
         protected readonly IBusy Busy;
-        protected readonly IGuiAndAppHandler Application;
+        protected readonly TApplication Application;
 
-        protected GuiToApplicationGateBase(IBusy busy, IGuiAndAppHandler application) {
+        protected GuiToApplicationGateBase(IBusy busy, TApplication application) {
             Busy = busy;
             Application = application;
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
@@ -27,8 +28,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
             GuiAndApplicationSynchronizer.OnModelDataChanged();
         }
 
-        public void IndicateBusy(bool force) {
-            GuiAndApplicationSynchronizer.IndicateBusy(force);
+        public void IndicateBusy(bool force, Action onCursorChanged) {
+            GuiAndApplicationSynchronizer.IndicateBusy(force, onCursorChanged);
         }
     }
 }

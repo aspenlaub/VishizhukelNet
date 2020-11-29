@@ -38,15 +38,4 @@
   <ItemGroup>
     <PackageReference Include="VishizhukelCore" Version="2.0.479.1066" />
   </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="MSHTML.dll">
-      <Guid>3050f1c5-98b5-11cf-bb82-00aa00bdce0b</Guid>
-      <VersionMajor>4</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>false</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
 </Project>

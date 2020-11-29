@@ -5,7 +5,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
     public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
         where TModel : IApplicationModel
-        where TGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
+        where TGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer<TModel> {
         protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
         protected readonly TGuiAndApplicationSynchronizer GuiAndApplicationSynchronizer;
         protected readonly TModel Model;

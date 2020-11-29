@@ -17,7 +17,7 @@ using WindowsWebBrowser = System.Windows.Controls.WebBrowser;
 using WindowsSelector = System.Windows.Controls.Primitives.Selector;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
-    public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow> where TApplicationModel : IGuiAndApplicationSynchronizer, IApplicationModel {
+    public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow> where TApplicationModel : IApplicationModel {
         protected readonly TWindow Window;
         protected readonly Dictionary<PropertyInfo, FieldInfo> ModelToWindowPropertyMapping, ModelToWindowLabelPropertyMapping;
 

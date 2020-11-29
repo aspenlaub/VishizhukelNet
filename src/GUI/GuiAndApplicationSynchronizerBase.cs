@@ -43,16 +43,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             }
         }
 
-        public void IndicateBusy(bool force, Action onCursorChanged) {
+        public void IndicateBusy(bool force) {
             var newCursor = Model.IsBusy ? Cursors.Wait : null;
             if (!force && Mouse.OverrideCursor == newCursor) { return; }
 
-            onCursorChanged();
+            OnCursorChanged();
             Mouse.OverrideCursor = newCursor;
         }
 
-        public void OnModelDataChanged(Action onCursorChanged) {
-            IndicateBusy(false, onCursorChanged);
+        public abstract void OnCursorChanged();
+
+        public void OnModelDataChanged() {
+            IndicateBusy(false);
 
             foreach (var modelToWindowPropertyMapping in ModelToWindowPropertyMapping) {
                 var modelProperty = modelToWindowPropertyMapping.Key;

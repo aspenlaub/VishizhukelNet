@@ -34,5 +34,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         public void RegisterAsyncSelectorCallback(Selector selector, Func<int, Task> action) {
             selector.SelectionChanged += async (s, e) => await CallbackAsync(() => action(selector.SelectedIndex));
         }
+
+        public void WireButtonAndCommand(Button button, ICommand command, IButtonNameToCommandMapper buttonNameToCommandMapper) {
+            buttonNameToCommandMapper.Register(button.Name, command);
+            RegisterAsyncButtonCallback(button, command.ExecuteAsync);
+        }
     }
 }

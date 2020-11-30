@@ -11,8 +11,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         public IDemoHandlers Handlers { get; private set; }
         public IDemoCommands Commands { get; private set; }
 
-        public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, DemoApplicationModel model) : base(buttonNameToCommandMapper, guiAndApplicationSynchronizer, model) { } protected override async Task EnableOrDisableButtonsAsync() {
-            await Task.Delay(10);
+        public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, DemoApplicationModel model) : base(
+            buttonNameToCommandMapper, guiAndApplicationSynchronizer, model) {
+
+        }
+
+        protected override async Task EnableOrDisableButtonsAsync() {
+            Model.Gamma.Enabled = await Commands.GammaCommand.ShouldBeEnabledAsync();
         }
 
         public override void RegisterTypes() {

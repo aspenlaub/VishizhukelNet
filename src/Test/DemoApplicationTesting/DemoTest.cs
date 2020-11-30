@@ -43,7 +43,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
 
         [TestMethod]
         public async Task BetaOffersChoicesDependingOnAlpha() {
-            foreach(var alpha in new[] { 24, 7, 1970, 1 }) {
+            foreach (var alpha in new[] { 24, 7, 1970, 1 }) {
                 // Alpha, Alpha + 7, Alpha + 24, Alpha * 7 and Alpha * 24
                 await vApplication.AlphaTextChangedAsync(alpha.ToString());
                 var expectedResult = new List<int> {
@@ -60,6 +60,34 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
             for (var i = 0; i < 4; i++) {
                 await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(i);
                 Assert.AreEqual(i, vModel.Beta.SelectedIndex);
+            }
+        }
+
+        [TestMethod]
+        public async Task GammaIsEnabledIfAndOnlyIfAlphaIsValidAndBetaHasBeenSelected() {
+            foreach (var alphaValid in new[] { false, true }) {
+                foreach (var betaSelectionMade in new[] { false, true }) {
+                    if (alphaValid) {
+                        await vApplication.AlphaTextChangedAsync("24");
+                    } else {
+                        await vApplication.AlphaTextChangedAsync("-24");
+                    }
+                    Assert.AreEqual(alphaValid ? StatusType.Success : StatusType.Error, vModel.Alpha.Type);
+
+                    if (betaSelectionMade) {
+                        await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(1);
+                    } else {
+                        await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(-1);
+                    }
+                    Assert.AreEqual(betaSelectionMade, vModel.Beta.SelectionMade);
+
+                    var commandEnabled = alphaValid && betaSelectionMade;
+                    var hint = "when Alpha is " + (alphaValid ? "valid" : "invalid") + " and Beta selection " + (betaSelectionMade ? "was made" : "was not made");
+                    var errorMessage = commandEnabled
+                        ? $"Gamma expected to be enabled {hint} but it is not"
+                        : $"Gamma expected to be disabled {hint} but it is enabled";
+                    Assert.AreEqual(commandEnabled, vModel.Gamma.Enabled, errorMessage);
+                }
             }
         }
     }

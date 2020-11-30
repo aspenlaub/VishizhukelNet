@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
@@ -19,7 +20,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Comman
         }
 
         public async Task<bool> ShouldBeEnabledAsync() {
-             return await Task.FromResult(false);
+            var enabled = vModel.Alpha.Type == StatusType.Success && vModel.Beta.SelectionMade;
+             return await Task.FromResult(enabled);
         }
     }
 }

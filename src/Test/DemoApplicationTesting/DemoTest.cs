@@ -17,7 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
         public void Initialize() {
             var container = new ContainerBuilder()
                 .UseVishizhukelNetAndPegh(new DummyCsArgumentPrompter())
-                .UseDemoApplication(true)
+                .UseDemoApplication(null)
                 .Build();
             vApplication = container.Resolve<VishizhukelDemoApplication>();
             Assert.IsNotNull(vApplication);

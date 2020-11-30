@@ -17,7 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
         public DemoWindow() {
             InitializeComponent();
 
-            var builder = new ContainerBuilder().UseDemoApplication(false);
+            var builder = new ContainerBuilder().UseDemoApplication(this);
             Container = builder.Build();
 
         }

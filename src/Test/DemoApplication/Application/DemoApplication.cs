@@ -7,7 +7,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application {
-    public class DemoApplication : ApplicationBase<IDemoGuiAndApplicationSynchronizer, DemoApplicationModel> {
+    public class DemoApplication : ApplicationBase<IDemoGuiAndApplicationSynchronizer, DemoApplicationModel>, IDeltaTextChanged {
         public IDemoHandlers Handlers { get; private set; }
         public IDemoCommands Commands { get; private set; }
 
@@ -26,7 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
                 BetaSelectorHandler = betaSelectorHandler
             };
             Commands = new DemoCommands {
-                GammaCommand = new GammaCommand(Model)
+                GammaCommand = new GammaCommand(Model, this)
             };
         }
 
@@ -39,8 +39,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             if (Model.Alpha.Text == text) { return; }
 
             Model.Alpha.Text = text;
-            Model.Alpha.Type = uint.TryParse(text, out _) ? StatusType.Success : StatusType.Error;
+            Model.Alpha.Type = uint.TryParse(text, out _) ? StatusType.None : StatusType.Error;
             await Handlers.BetaSelectorHandler.UpdateSelectableBetaValuesAsync();
+            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+        }
+
+        public async Task DeltaTextChangedAsync(string text) {
+            if (Model.Delta.Text == text) { return; }
+
+            Model.Delta.Text = text;
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }

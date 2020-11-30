@@ -32,7 +32,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
         public async Task AlphaMustContainPositiveInteger() {
             await vApplication.AlphaTextChangedAsync("24");
             Assert.AreEqual("24", vModel.Alpha.Text);
-            Assert.AreEqual(StatusType.Success, vModel.Alpha.Type);
+            Assert.AreEqual(StatusType.None, vModel.Alpha.Type);
 
             foreach (var text in new[] { "-24", "24abc", "" }) {
                 await vApplication.AlphaTextChangedAsync(text);
@@ -44,7 +44,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
         [TestMethod]
         public async Task BetaOffersChoicesDependingOnAlpha() {
             foreach (var alpha in new[] { 24, 7, 1970, 1 }) {
-                // Alpha, Alpha + 7, Alpha + 24, Alpha * 7 and Alpha * 24
                 await vApplication.AlphaTextChangedAsync(alpha.ToString());
                 var expectedResult = new List<int> {
                     alpha, alpha + 7, alpha + 24, alpha * 7, alpha * 24
@@ -72,7 +71,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
                     } else {
                         await vApplication.AlphaTextChangedAsync("-24");
                     }
-                    Assert.AreEqual(alphaValid ? StatusType.Success : StatusType.Error, vModel.Alpha.Type);
+                    Assert.AreEqual(alphaValid ? StatusType.None : StatusType.Error, vModel.Alpha.Type);
 
                     if (betaSelectionMade) {
                         await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(1);
@@ -87,6 +86,20 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
                         ? $"Gamma expected to be enabled {hint} but it is not"
                         : $"Gamma expected to be disabled {hint} but it is enabled";
                     Assert.AreEqual(commandEnabled, vModel.Gamma.Enabled, errorMessage);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task DeltaIsCalculatedAsSumOfAlphaAndBetaWhenGammaWasPressed() {
+            foreach (var alpha in new[] { 24, 7, 1970, 1 }) {
+                await vApplication.AlphaTextChangedAsync(alpha.ToString());
+                for (var i = 0; i < 4; i++) {
+                    await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(i);
+                    Assert.IsTrue(vModel.Gamma.Enabled);
+                    await vApplication.Commands.GammaCommand.ExecuteAsync();
+                    var expectedResult = alpha + uint.Parse(vModel.Beta.SelectedItem.Name);
+                    Assert.AreEqual(expectedResult.ToString(), vModel.Delta.Text);
                 }
             }
         }

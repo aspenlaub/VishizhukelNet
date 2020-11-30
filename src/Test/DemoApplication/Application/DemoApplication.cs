@@ -16,7 +16,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         }
 
         public override void RegisterTypes() {
-            var betaSelectorHandler = new BetaSelectorHandler(Model);
+            var betaSelectorHandler = new BetaSelectorHandler(Model, this);
             Handlers = new DemoHandlers {
                 BetaSelectorHandler = betaSelectorHandler
             };
@@ -35,6 +35,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
 
             Model.Alpha.Text = text;
             Model.Alpha.Type = uint.TryParse(text, out _) ? StatusType.Success : StatusType.Error;
+            await Handlers.BetaSelectorHandler.UpdateSelectableBetaValuesAsync();
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }

@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="VishizhukelNet Demo Window" Height="180" Width="400" Icon="demo.ico">
+        Title="VishizhukelNet Demo Window" Height="180" Width="400" Icon="demo.ico"
+        Loaded="OnLoadedAsync">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200*" MinWidth="200" />

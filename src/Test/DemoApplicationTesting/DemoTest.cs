@@ -10,7 +10,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
         public void CanResolveDemoApplication() {
             var container = new ContainerBuilder()
                 .UseVishizhukelNetAndPegh(new DummyCsArgumentPrompter())
-                .UseDummyApplication(true)
+                .UseDemoApplication(true)
                 .Build();
             var application = container.Resolve<DemoApplication.Application.DemoApplication>();
             Assert.IsNotNull(application);

@@ -10,7 +10,7 @@ using System.Windows.Media;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities.Button;
+using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.Button;
 using WindowsTextBox = System.Windows.Controls.TextBox;
 using WindowsButton = System.Windows.Controls.Button;
 using WindowsWebBrowser = System.Windows.Controls.WebBrowser;

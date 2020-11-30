@@ -53,7 +53,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             Mouse.OverrideCursor = newCursor;
         }
 
-        public abstract void OnCursorChanged();
+        public virtual void OnCursorChanged() {
+        }
 
         public void OnModelDataChanged() {
             IndicateBusy(false);

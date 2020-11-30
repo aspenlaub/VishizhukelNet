@@ -26,6 +26,7 @@
     <Compile Remove="Test\**" />
     <EmbeddedResource Remove="Test\**" />
     <None Remove="Test\**" />
+    <Page Remove="Test\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="packageicon.ico" />

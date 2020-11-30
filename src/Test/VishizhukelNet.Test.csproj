@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
     <IsPackable>false</IsPackable>
     <AssemblyName>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyName>
     <RootNamespace>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</RootNamespace>
@@ -11,9 +12,27 @@
     <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyTitle>
     <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyProduct>
     <OutputType>WinExe</OutputType>
+    <ApplicationIcon>DemoApplication\GUI\demo.ico</ApplicationIcon>
+    <StartupObject>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.DemoApp</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+  <ItemGroup>
+    <None Remove="DemoApplication\demo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="DemoApplication\DemoApp.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="DemoApplication\DemoApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DemoApplication\GUI\demo.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.2" />

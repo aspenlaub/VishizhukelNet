@@ -1,0 +1,27 @@
+﻿<Window x:Class="Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI.DemoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="VishizhukelNet Demo Window" Height="180" Width="400" Icon="demo.ico">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200*" MinWidth="200" />
+            <ColumnDefinition Width="200*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Name="LabelA" Grid.Row="0" Grid.Column="0" Margin="3">Number 1</Label>
+        <Label Name="LabelB" Grid.Row="1" Grid.Column="0" Margin="3">Number 2</Label>
+        <Label Name="LabelD" Grid.Row="2" Grid.Column="0" Margin="3">Result</Label>
+        <TextBox Name="TextBoxA" Grid.Row="0" Grid.Column="1" Margin="5"></TextBox>
+        <ComboBox Name="TextBoxB" Grid.Row="1" Grid.Column="1" Margin="5"></ComboBox>
+        <TextBox Name="TextBoxD" Grid.Row="2" Grid.Column="1" IsReadOnly="True" Background="LightGray" Margin="5"></TextBox>
+        <Button Name="ButtonC" Grid.Row="3" Grid.Column="0" Margin="5">_Calculate</Button>
+    </Grid>
+</Window>

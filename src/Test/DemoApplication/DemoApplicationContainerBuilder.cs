@@ -11,7 +11,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication {
         public static ContainerBuilder UseDemoApplication(this ContainerBuilder builder, bool forApplicationTest) {
             builder.UseVishizhukelNetAndPegh(new DummyCsArgumentPrompter());
             builder.RegisterType<Application.DemoApplication>().As<Application.DemoApplication>().SingleInstance();
-            builder.RegisterType<DemoApplicationModel>().As<DemoApplicationModel>().As<IBusy>().SingleInstance();
+            builder.RegisterType<DemoApplicationModel>().As<DemoApplicationModel>().As<IDemoApplicationModel>().As<IBusy>().SingleInstance();
             if (forApplicationTest) {
                 builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IDemoGuiAndApplicationSynchronizer>().SingleInstance();
             } else {

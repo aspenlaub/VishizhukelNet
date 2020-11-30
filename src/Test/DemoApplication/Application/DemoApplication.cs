@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
@@ -33,6 +34,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             if (Model.Alpha.Text == text) { return; }
 
             Model.Alpha.Text = text;
+            Model.Alpha.Type = uint.TryParse(text, out _) ? StatusType.Success : StatusType.Error;
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }

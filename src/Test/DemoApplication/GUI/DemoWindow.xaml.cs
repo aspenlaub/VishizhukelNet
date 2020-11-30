@@ -37,11 +37,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
             var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
 
             var commands = vDemoApp.Commands;
-            guiToAppGate.WireButtonAndCommand(ButtonGamma, commands.GammaCommand, buttonNameToCommandMapper);
+            guiToAppGate.WireButtonAndCommand(Gamma, commands.GammaCommand, buttonNameToCommandMapper);
 
             var handlers = vDemoApp.Handlers;
-            guiToAppGate.RegisterAsyncTextBoxCallback(TextBoxAlpha, t => vDemoApp.AlphaTextChangedAsync(t));
-            guiToAppGate.RegisterAsyncSelectorCallback(ComboBoxBeta, i => handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(i));
+            guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => vDemoApp.AlphaTextChangedAsync(t));
+            guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(i));
         }
     }
 }

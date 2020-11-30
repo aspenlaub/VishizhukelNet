@@ -6,9 +6,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
     public class DemoApplicationModel : IApplicationModel, IDemoApplicationModel {
         public bool IsBusy { get; set ; }
 
-        public ITextBox A { get; } = new TextBox();
-        public ISelector B { get; } = new ComboBox();
-        public Button C { get; } = new Button();
-        public ITextBox D { get; } = new TextBox();
+        public ITextBox Alpha { get; } = new TextBox();
+        public ISelector Beta { get; } = new ComboBox();
+        public Button Gamma { get; } = new Button();
+        public ITextBox Delta { get; } = new TextBox();
     }
 }

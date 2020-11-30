@@ -13,10 +13,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helper
         }
 
         public void OnModelDataChanged() {
-            LastModelKnownToMe.A.Text = Model.A.Text;
-            LastModelKnownToMe.B.UpdateSelectables(Model.B.Selectables);
-            LastModelKnownToMe.B.SelectedIndex = Model.B.SelectedIndex;
-            LastModelKnownToMe.D.Text = Model.D.Text;
+            LastModelKnownToMe.Alpha.Text = Model.Alpha.Text;
+            LastModelKnownToMe.Beta.UpdateSelectables(Model.Beta.Selectables);
+            LastModelKnownToMe.Beta.SelectedIndex = Model.Beta.SelectedIndex;
+            LastModelKnownToMe.Delta.Text = Model.Delta.Text;
         }
 
         public void IndicateBusy(bool force) {

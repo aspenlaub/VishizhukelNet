@@ -30,12 +30,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
 
         [TestMethod]
         public async Task AlphaMustContainPositiveInteger() {
-            await vApplication.AlphaTextChangedAsync("24");
+            await vApplication.Handlers.AlphaTextHandler.TextChangedAsync("24");
             Assert.AreEqual("24", vModel.Alpha.Text);
             Assert.AreEqual(StatusType.None, vModel.Alpha.Type);
 
             foreach (var text in new[] { "-24", "24abc", "" }) {
-                await vApplication.AlphaTextChangedAsync(text);
+                await vApplication.Handlers.AlphaTextHandler.TextChangedAsync(text);
                 Assert.AreEqual(text, vModel.Alpha.Text);
                 Assert.AreEqual(StatusType.Error, vModel.Alpha.Type);
             }
@@ -44,7 +44,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
         [TestMethod]
         public async Task BetaOffersChoicesDependingOnAlpha() {
             foreach (var alpha in new[] { 24, 7, 1970, 1 }) {
-                await vApplication.AlphaTextChangedAsync(alpha.ToString());
+                await vApplication.Handlers.AlphaTextHandler.TextChangedAsync(alpha.ToString());
                 var expectedResult = new List<int> {
                     alpha, alpha + 7, alpha + 24, alpha * 7, alpha * 24
                 };
@@ -67,9 +67,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
             foreach (var alphaValid in new[] { false, true }) {
                 foreach (var betaSelectionMade in new[] { false, true }) {
                     if (alphaValid) {
-                        await vApplication.AlphaTextChangedAsync("24");
+                        await vApplication.Handlers.AlphaTextHandler.TextChangedAsync("24");
                     } else {
-                        await vApplication.AlphaTextChangedAsync("-24");
+                        await vApplication.Handlers.AlphaTextHandler.TextChangedAsync("-24");
                     }
                     Assert.AreEqual(alphaValid ? StatusType.None : StatusType.Error, vModel.Alpha.Type);
 
@@ -93,7 +93,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
         [TestMethod]
         public async Task DeltaIsCalculatedAsSumOfAlphaAndBetaWhenGammaWasPressed() {
             foreach (var alpha in new[] { 24, 7, 1970, 1 }) {
-                await vApplication.AlphaTextChangedAsync(alpha.ToString());
+                await vApplication.Handlers.AlphaTextHandler.TextChangedAsync(alpha.ToString());
                 for (var i = 0; i < 4; i++) {
                     await vApplication.Handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i);
                     Assert.IsTrue(vModel.Gamma.Enabled);

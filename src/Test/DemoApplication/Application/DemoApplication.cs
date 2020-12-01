@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application {
-    public class DemoApplication : ApplicationBase<IDemoGuiAndApplicationSynchronizer, DemoApplicationModel>, IDeltaTextChanged {
+    public class DemoApplication : ApplicationBase<IDemoGuiAndApplicationSynchronizer, DemoApplicationModel> {
         public IDemoHandlers Handlers { get; private set; }
         public IDemoCommands Commands { get; private set; }
 
@@ -21,33 +20,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
 
         public override void RegisterTypes() {
             var betaSelectorHandler = new BetaSelectorHandler(Model, this);
+            var alphaTextHandler = new AlphaTextHandler(Model, this, betaSelectorHandler);
+            var deltaTextHandler = new DeltaTextHandler(Model, this);
             Handlers = new DemoHandlers {
-                BetaSelectorHandler = betaSelectorHandler
+                AlphaTextHandler = alphaTextHandler,
+                BetaSelectorHandler = betaSelectorHandler,
+                DeltaTextHandler = deltaTextHandler
             };
             Commands = new DemoCommands {
-                GammaCommand = new GammaCommand(Model, this)
+                GammaCommand = new GammaCommand(Model, deltaTextHandler)
             };
         }
 
         public override async Task OnLoadedAsync() {
             await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
             await base.OnLoadedAsync();
-        }
-
-        public async Task AlphaTextChangedAsync(string text) {
-            if (Model.Alpha.Text == text) { return; }
-
-            Model.Alpha.Text = text;
-            Model.Alpha.Type = uint.TryParse(text, out _) ? StatusType.None : StatusType.Error;
-            await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
-            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
-        }
-
-        public async Task DeltaTextChangedAsync(string text) {
-            if (Model.Delta.Text == text) { return; }
-
-            Model.Delta.Text = text;
-            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }
 }

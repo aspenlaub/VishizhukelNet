@@ -6,11 +6,11 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands {
     public class GammaCommand : ICommand {
         private readonly IDemoApplicationModel vModel;
-        private readonly IDeltaTextChanged vDeltaTextChanged;
+        private readonly ISimpleTextHandler vDeltaTextHandler;
 
-        public GammaCommand(IDemoApplicationModel model, IDeltaTextChanged deltaTextChanged) {
+        public GammaCommand(IDemoApplicationModel model, ISimpleTextHandler deltaTextHandler) {
             vModel = model;
-            vDeltaTextChanged = deltaTextChanged;
+            vDeltaTextHandler = deltaTextHandler;
         }
 
         public async Task ExecuteAsync() {
@@ -18,7 +18,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Comman
                 return;
             }
 
-            await vDeltaTextChanged.DeltaTextChangedAsync((uint.Parse(vModel.Alpha.Text) + uint.Parse(vModel.Beta.SelectedItem.Name)).ToString());
+            await vDeltaTextHandler.TextChangedAsync((uint.Parse(vModel.Alpha.Text) + uint.Parse(vModel.Beta.SelectedItem.Name)).ToString());
         }
 
         public async Task<bool> ShouldBeEnabledAsync() {

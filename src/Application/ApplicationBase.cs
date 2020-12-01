@@ -16,6 +16,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
         }
 
         protected abstract Task EnableOrDisableButtonsAsync();
+        // ReSharper disable once UnusedMemberInSuper.Global
         public abstract void RegisterTypes();
 
         public virtual async Task OnLoadedAsync() {

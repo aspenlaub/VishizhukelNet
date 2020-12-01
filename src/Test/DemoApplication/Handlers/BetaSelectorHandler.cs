@@ -6,7 +6,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
-    public class BetaSelectorHandler : IBetaSelectorHandler {
+    public class BetaSelectorHandler : ISimpleSelectorHandler {
         private readonly IDemoApplicationModel vModel;
         private readonly IGuiAndAppHandler vGuiAndAppHandler;
 
@@ -15,7 +15,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
             vGuiAndAppHandler = guiAndAppHandler;
         }
 
-        public async Task UpdateSelectableBetaValuesAsync() {
+        public async Task UpdateSelectableValuesAsync() {
             var choices = new List<uint>();
             if (uint.TryParse(vModel.Alpha.Text, out var alpha)) {
                 choices.Add(alpha);
@@ -32,10 +32,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
             await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
 
-        public async Task SelectedBetaIndexChangedAsync(int selectedBetaIndex) {
-            if (vModel.Beta.SelectedIndex == selectedBetaIndex) { return; }
+        public async Task SelectedIndexChangedAsync(int selectedIndex) {
+            if (vModel.Beta.SelectedIndex == selectedIndex) { return; }
 
-            vModel.Beta.SelectedIndex = selectedBetaIndex;
+            vModel.Beta.SelectedIndex = selectedIndex;
             await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }

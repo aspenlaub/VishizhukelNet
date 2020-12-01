@@ -57,7 +57,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
             }
 
             for (var i = 0; i < 4; i++) {
-                await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(i);
+                await vApplication.Handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i);
                 Assert.AreEqual(i, vModel.Beta.SelectedIndex);
             }
         }
@@ -74,9 +74,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
                     Assert.AreEqual(alphaValid ? StatusType.None : StatusType.Error, vModel.Alpha.Type);
 
                     if (betaSelectionMade) {
-                        await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(1);
+                        await vApplication.Handlers.BetaSelectorHandler.SelectedIndexChangedAsync(1);
                     } else {
-                        await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(-1);
+                        await vApplication.Handlers.BetaSelectorHandler.SelectedIndexChangedAsync(-1);
                     }
                     Assert.AreEqual(betaSelectionMade, vModel.Beta.SelectionMade);
 
@@ -95,7 +95,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
             foreach (var alpha in new[] { 24, 7, 1970, 1 }) {
                 await vApplication.AlphaTextChangedAsync(alpha.ToString());
                 for (var i = 0; i < 4; i++) {
-                    await vApplication.Handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(i);
+                    await vApplication.Handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i);
                     Assert.IsTrue(vModel.Gamma.Enabled);
                     await vApplication.Commands.GammaCommand.ExecuteAsync();
                     var expectedResult = alpha + uint.Parse(vModel.Beta.SelectedItem.Name);

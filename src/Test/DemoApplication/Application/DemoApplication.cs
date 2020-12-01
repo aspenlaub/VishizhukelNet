@@ -13,7 +13,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
 
         public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, DemoApplicationModel model) : base(
             buttonNameToCommandMapper, guiAndApplicationSynchronizer, model) {
-
         }
 
         protected override async Task EnableOrDisableButtonsAsync() {
@@ -31,7 +30,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         }
 
         public override async Task OnLoadedAsync() {
-            await Handlers.BetaSelectorHandler.UpdateSelectableBetaValuesAsync();
+            await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
             await base.OnLoadedAsync();
         }
 
@@ -40,7 +39,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
 
             Model.Alpha.Text = text;
             Model.Alpha.Type = uint.TryParse(text, out _) ? StatusType.None : StatusType.Error;
-            await Handlers.BetaSelectorHandler.UpdateSelectableBetaValuesAsync();
+            await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
 

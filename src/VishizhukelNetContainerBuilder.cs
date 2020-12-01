@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet {
     public static class VishizhukelNetContainerBuilder {
+        // ReSharper disable once UnusedMember.Global
         public static IServiceCollection UseVishizhukelNetAndPegh(this IServiceCollection services, ICsArgumentPrompter csArgumentPrompter) {
             services.UseVishizhukelAndPegh(csArgumentPrompter);
             services.AddTransient<IButtonNameToCommandMapper, ButtonNameToCommandMapper>();

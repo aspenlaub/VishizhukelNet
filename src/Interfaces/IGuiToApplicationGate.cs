@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
     public interface IGuiToApplicationGate {

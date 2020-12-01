@@ -41,7 +41,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
             var handlers = vDemoApp.Handlers;
             guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => vDemoApp.AlphaTextChangedAsync(t));
-            guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedBetaIndexChangedAsync(i));
+            guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i));
         }
     }
 }

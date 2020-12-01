@@ -1,5 +1,7 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces {
+﻿using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces {
     public interface IDemoHandlers {
-        IBetaSelectorHandler BetaSelectorHandler { get; set; }
+        ISimpleSelectorHandler BetaSelectorHandler { get; set; }
     }
 }

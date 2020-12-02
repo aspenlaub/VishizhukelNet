@@ -1,6 +1,6 @@
 ﻿using System.IO;
-using System.Windows.Media.Imaging;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
@@ -13,15 +13,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         public Button Gamma { get; } = new Button();
         public ITextBox Delta { get; } = new TextBox();
         public IImage Epsilon { get; } = new Image {
-            BitmapImage = ImageFromStream(new MemoryStream(Properties.Resources.Calculator))
+            BitmapImage = new MemoryStream(Properties.Resources.Calculator).ToBitmapImage()
         };
-
-        public static BitmapImage ImageFromStream(Stream stream) {
-            var image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = stream;
-            image.EndInit();
-            return image;
-        }
     }
 }

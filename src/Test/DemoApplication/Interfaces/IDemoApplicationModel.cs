@@ -7,5 +7,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interf
         ISelector Beta { get; }
         Button Gamma { get; }
         ITextBox Delta { get; }
+        // ReSharper disable once UnusedMember.Global
+        IImage Epsilon { get; }
     }
 }

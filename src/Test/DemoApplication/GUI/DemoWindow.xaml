@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="VishizhukelNet Demo Window" Height="180" Width="400" Icon="demo.ico"
+        Title="VishizhukelNet Demo Window" Height="265" Width="400" Icon="demo.ico"
         Loaded="OnLoadedAsync">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -16,6 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Name="LabelA" Grid.Row="0" Grid.Column="0" Margin="3">Number 1</Label>
         <Label Name="LabelB" Grid.Row="1" Grid.Column="0" Margin="3">Number 2</Label>
@@ -23,6 +24,7 @@
         <TextBox Name="Alpha" Grid.Row="0" Grid.Column="1" Margin="5" Padding="3,0,3,0"></TextBox>
         <ComboBox Name="Beta" Grid.Row="1" Grid.Column="1" Margin="5"></ComboBox>
         <TextBox Name="Delta" Grid.Row="2" Grid.Column="1" IsReadOnly="True" Background="LightGray" Margin="5" Padding="3,0,3,0"></TextBox>
-        <Button Name="Gamma" Grid.Row="3" Grid.Column="0" Margin="5">_Calculate</Button>
+        <Button Name="Gamma" Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Top">_Calculate</Button>
+        <Image Name="Epsilon" Grid.Row="3" Grid.RowSpan="2" Grid.Column="1" Margin="5"></Image>
     </Grid>
 </Window>

@@ -7,14 +7,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.Button;
 using WindowsTextBox = System.Windows.Controls.TextBox;
 using WindowsButton = System.Windows.Controls.Button;
 using WindowsWebBrowser = System.Windows.Controls.WebBrowser;
 using WindowsSelector = System.Windows.Controls.Primitives.Selector;
+using WindowsImage = System.Windows.Controls.Image;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
     public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow>
@@ -78,6 +81,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     case "WebBrowser":
                         UpdateWebBrowserIfNecessary((IWebBrowser)modelProperty.GetValue(Model), (WindowsWebBrowser)windowField.GetValue(Window));
                         break;
+                    case "Image":
+                        UpdateImageIfNecessary((IImage) modelProperty.GetValue(Model), (WindowsImage) windowField.GetValue(Window));
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -99,6 +105,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     throw new NotImplementedException();
                 }
             }
+        }
+
+        private void UpdateImageIfNecessary(IImage modelImage, Image image) {
+            var imageSource = image.Source as BitmapImage;
+
+            if (imageSource.IsEqualTo(modelImage.BitmapImage)) { return; }
+
+            image.Source = modelImage.BitmapImage;
         }
 
         private void UpdateLabelIfNecessary(ITextBox modelTextBox, ContentControl label) {

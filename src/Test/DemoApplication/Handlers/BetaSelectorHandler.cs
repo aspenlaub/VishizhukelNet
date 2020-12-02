@@ -9,10 +9,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
     public class BetaSelectorHandler : ISimpleSelectorHandler {
         private readonly IDemoApplicationModel vModel;
         private readonly IGuiAndAppHandler vGuiAndAppHandler;
+        private readonly DeltaTextHandler vDeltaTextHandler;
 
-        public BetaSelectorHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+        public BetaSelectorHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler, DeltaTextHandler deltaTextHandler) {
             vModel = model;
             vGuiAndAppHandler = guiAndAppHandler;
+            vDeltaTextHandler = deltaTextHandler;
         }
 
         public async Task UpdateSelectableValuesAsync() {
@@ -36,6 +38,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
             if (vModel.Beta.SelectedIndex == selectedIndex) { return; }
 
             vModel.Beta.SelectedIndex = selectedIndex;
+            await vDeltaTextHandler.TextChangedAsync("");
             await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }

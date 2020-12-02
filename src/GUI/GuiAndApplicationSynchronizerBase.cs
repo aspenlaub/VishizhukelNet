@@ -13,11 +13,13 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.Button;
+using ToggleButton = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.ToggleButton;
 using WindowsTextBox = System.Windows.Controls.TextBox;
 using WindowsButton = System.Windows.Controls.Button;
 using WindowsWebBrowser = System.Windows.Controls.WebBrowser;
 using WindowsSelector = System.Windows.Controls.Primitives.Selector;
 using WindowsImage = System.Windows.Controls.Image;
+using WindowsToggleButton = System.Windows.Controls.Primitives.ToggleButton;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
     public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow>
@@ -84,6 +86,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     case "Image":
                         UpdateImageIfNecessary((IImage) modelProperty.GetValue(Model), (WindowsImage) windowField.GetValue(Window));
                         break;
+                    case "RadioButton":
+                        UpdateToggleButtonIfNecessary((ToggleButton)modelProperty.GetValue(Model), (WindowsToggleButton)windowField.GetValue(Window));
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -107,7 +112,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             }
         }
 
-        private void UpdateImageIfNecessary(IImage modelImage, Image image) {
+        private void UpdateImageIfNecessary(IImage modelImage, WindowsImage image) {
             var imageSource = image.Source as BitmapImage;
 
             if (imageSource.IsEqualTo(modelImage.BitmapImage)) { return; }
@@ -198,6 +203,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             }
 
             return false;
+        }
+
+        private void UpdateToggleButtonIfNecessary(ToggleButton modelButton, WindowsToggleButton windowsToggleButton) {
+            var shouldButtonBeEnabled = modelButton.Enabled && !Model.IsBusy;
+            if (windowsToggleButton.IsEnabled == shouldButtonBeEnabled && windowsToggleButton.IsChecked == modelButton.IsChecked) { return; }
+
+            windowsToggleButton.IsEnabled = shouldButtonBeEnabled;
+            windowsToggleButton.IsChecked = modelButton.IsChecked;
         }
     }
 }

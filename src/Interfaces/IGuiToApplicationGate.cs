@@ -10,6 +10,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
         void RegisterAsyncButtonCallback(Button button, Func<Task> action);
         void RegisterAsyncTextBoxCallback(TextBox textBox, Func<string, Task> action);
         void RegisterAsyncSelectorCallback(Selector selector, Func<int, Task> action);
+        void RegisterAsyncToggleButtonCallback(ToggleButton toggleButton, Func<bool, Task> action); // TODO: improve this
         void WireButtonAndCommand(Button button, ICommand command, IButtonNameToCommandMapper buttonNameToCommandMapper);
     }
 }

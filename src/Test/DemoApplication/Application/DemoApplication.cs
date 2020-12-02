@@ -19,13 +19,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         }
 
         public override void RegisterTypes() {
-            var betaSelectorHandler = new BetaSelectorHandler(Model, this);
-            var alphaTextHandler = new AlphaTextHandler(Model, this, betaSelectorHandler);
             var deltaTextHandler = new DeltaTextHandler(Model, this);
+            var betaSelectorHandler = new BetaSelectorHandler(Model, this, deltaTextHandler);
+            var alphaTextHandler = new AlphaTextHandler(Model, this, betaSelectorHandler, deltaTextHandler);
             Handlers = new DemoHandlers {
                 AlphaTextHandler = alphaTextHandler,
                 BetaSelectorHandler = betaSelectorHandler,
-                DeltaTextHandler = deltaTextHandler
+                DeltaTextHandler = deltaTextHandler,
+                MethodAddHandler = new MethodAddHandler(Model, deltaTextHandler),
+                MethodMultiplyHandler = new MethodMultiplyHandler(Model, deltaTextHandler)
             };
             Commands = new DemoCommands {
                 GammaCommand = new GammaCommand(Model, deltaTextHandler)

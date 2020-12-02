@@ -14,6 +14,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
     public class DemoTest {
         private VishizhukelDemoApplication vApplication;
         private IDemoApplicationModel vModel;
+        private readonly List<int> vAlphaTestValues = new List<int> { 24, 7, 1970, 1 };
 
         [TestInitialize]
         public void Initialize() {
@@ -43,7 +44,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
 
         [TestMethod]
         public async Task BetaOffersChoicesDependingOnAlpha() {
-            foreach (var alpha in new[] { 24, 7, 1970, 1 }) {
+            foreach (var alpha in vAlphaTestValues) {
                 await vApplication.Handlers.AlphaTextHandler.TextChangedAsync(alpha.ToString());
                 var expectedResult = new List<int> {
                     alpha, alpha + 7, alpha + 24, alpha * 7, alpha * 24
@@ -92,16 +93,62 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
 
         [TestMethod]
         public async Task DeltaIsCalculatedAsSumOfAlphaAndBetaWhenGammaWasPressed() {
-            foreach (var alpha in new[] { 24, 7, 1970, 1 }) {
+            foreach (var alpha in vAlphaTestValues) {
                 await vApplication.Handlers.AlphaTextHandler.TextChangedAsync(alpha.ToString());
                 for (var i = 0; i < 4; i++) {
-                    await vApplication.Handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i);
-                    Assert.IsTrue(vModel.Gamma.Enabled);
-                    await vApplication.Commands.GammaCommand.ExecuteAsync();
-                    var expectedResult = alpha + uint.Parse(vModel.Beta.SelectedItem.Name);
-                    Assert.AreEqual(expectedResult.ToString(), vModel.Delta.Text);
+                    await ChangeSelectedBetaIndexAndVerifyResult(i, alpha);
                 }
             }
+        }
+
+        private async Task ChangeSelectedBetaIndexAndVerifyResult(int i, int alpha) {
+            await vApplication.Handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i);
+            Assert.IsTrue(vModel.Gamma.Enabled);
+            await vApplication.Commands.GammaCommand.ExecuteAsync();
+            var beta = uint.Parse(vModel.Beta.SelectedItem.Name);
+            var expectedResult = vModel.MethodAdd.IsChecked ? alpha + beta : alpha * beta;
+            Assert.AreEqual(expectedResult.ToString(), vModel.Delta.Text);
+        }
+
+        [TestMethod]
+        public async Task DeltaIsClearedWhenAlphaIsChangedAfterRecalculation() {
+            var alpha = vAlphaTestValues[0];
+            await vApplication.Handlers.AlphaTextHandler.TextChangedAsync(alpha.ToString());
+            await ChangeSelectedBetaIndexAndVerifyResult(0, alpha);
+            await vApplication.Handlers.AlphaTextHandler.TextChangedAsync("4711");
+            Assert.IsTrue(vModel.Delta.Text == "");
+        }
+
+        [TestMethod]
+        public async Task DeltaIsClearedWhenBetaIsChangedAfterRecalculation() {
+            var alpha = vAlphaTestValues[0];
+            await vApplication.Handlers.AlphaTextHandler.TextChangedAsync(alpha.ToString());
+            await ChangeSelectedBetaIndexAndVerifyResult(0, alpha);
+            await vApplication.Handlers.BetaSelectorHandler.SelectedIndexChangedAsync(1);
+            Assert.IsTrue(vModel.Delta.Text == "");
+        }
+
+        [TestMethod]
+        public async Task DeltaIsClearedWhenMethodIsChangedAfterRecalculation() {
+            var alpha = vAlphaTestValues[0];
+            await vApplication.Handlers.AlphaTextHandler.TextChangedAsync(alpha.ToString());
+            await ChangeSelectedBetaIndexAndVerifyResult(0, alpha);
+            await vApplication.Handlers.MethodMultiplyHandler.ToggledAsync(true);
+            Assert.IsTrue(vModel.Delta.Text == "");
+            await ChangeSelectedBetaIndexAndVerifyResult(0, alpha);
+            await vApplication.Handlers.MethodAddHandler.ToggledAsync(true);
+            Assert.IsTrue(vModel.Delta.Text == "");
+        }
+
+        [TestMethod]
+        public async Task MethodAddIsDeselectedWhenMethodMultiplyIsSelectedAndViceVersa() {
+            Assert.IsTrue(vModel.MethodAdd.IsChecked);
+            await vApplication.Handlers.MethodMultiplyHandler.ToggledAsync(true);
+            Assert.IsTrue(vModel.MethodMultiply.IsChecked);
+            Assert.IsFalse(vModel.MethodAdd.IsChecked);
+            await vApplication.Handlers.MethodAddHandler.ToggledAsync(true);
+            Assert.IsTrue(vModel.MethodAdd.IsChecked);
+            Assert.IsFalse(vModel.MethodMultiply.IsChecked);
         }
     }
 }

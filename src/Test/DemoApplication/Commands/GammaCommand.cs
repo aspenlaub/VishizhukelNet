@@ -18,7 +18,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Comman
                 return;
             }
 
-            await vDeltaTextHandler.TextChangedAsync((uint.Parse(vModel.Alpha.Text) + uint.Parse(vModel.Beta.SelectedItem.Name)).ToString());
+            var alphaValue = uint.Parse(vModel.Alpha.Text);
+            var betaValue = uint.Parse(vModel.Beta.SelectedItem.Name);
+            var result = vModel.MethodAdd.IsChecked ? alphaValue + betaValue : alphaValue * betaValue;
+            await vDeltaTextHandler.TextChangedAsync(result.ToString());
         }
 
         public async Task<bool> ShouldBeEnabledAsync() {

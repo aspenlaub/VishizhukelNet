@@ -14,7 +14,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions {
 
             foreach (var property in ToggleButtonProperties(model.GetType())) {
                 var otherToggleButton = property.GetValue(model) as ToggleButton;
-                if (otherToggleButton == null || otherToggleButton == toggleButton) { continue; }
+                if (otherToggleButton == null || otherToggleButton == toggleButton || otherToggleButton.GroupName != groupName) { continue; }
 
                 result.Add(otherToggleButton);
             }

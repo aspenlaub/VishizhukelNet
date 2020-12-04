@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Windows;
+﻿using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.DemoApplication;
@@ -22,15 +21,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
         }
 
-        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        private void RegisterTypes() {
-            vDemoApp = Container.Resolve<VishizhukelDemoApplication>();
-            vDemoApp.RegisterTypes();
-        }
-
         private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
-            RegisterTypes();
-
+            vDemoApp = Container.Resolve<VishizhukelDemoApplication>();
             await vDemoApp.OnLoadedAsync();
 
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();

@@ -17,7 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
         private readonly List<int> vAlphaTestValues = new List<int> { 24, 7, 1970, 1 };
 
         [TestInitialize]
-        public void Initialize() {
+        public async Task Initialize() {
             var container = new ContainerBuilder()
                 .UseVishizhukelNetAndPegh(new DummyCsArgumentPrompter())
                 .UseDemoApplication(null)
@@ -26,7 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
             Assert.IsNotNull(vApplication);
             vModel = container.Resolve<IDemoApplicationModel>();
             Assert.IsNotNull(vModel);
-            vApplication.RegisterTypes();
+            await vApplication.OnLoadedAsync();
         }
 
         [TestMethod]

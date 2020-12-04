@@ -18,7 +18,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             Model.Gamma.Enabled = await Commands.GammaCommand.ShouldBeEnabledAsync();
         }
 
-        public override void RegisterTypes() {
+        protected override void CreateCommandsAndHandlers() {
             var deltaTextHandler = new DeltaTextHandler(Model, this);
             var betaSelectorHandler = new BetaSelectorHandler(Model, this, deltaTextHandler);
             var alphaTextHandler = new AlphaTextHandler(Model, this, betaSelectorHandler, deltaTextHandler);
@@ -35,8 +35,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         }
 
         public override async Task OnLoadedAsync() {
-            await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
             await base.OnLoadedAsync();
+            await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
         }
     }
 }

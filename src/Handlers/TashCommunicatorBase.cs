@@ -16,7 +16,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             ApplicationLogger = applicationLogger;
         }
 
-        public async Task CommunicateAndShowCompletedOrFailedAsync(ITashTaskHandlingStatus<TModel> status, bool setText, string text) {
+        public virtual async Task CommunicateAndShowCompletedOrFailedAsync(ITashTaskHandlingStatus<TModel> status, bool setText, string text) {
             ApplicationLogger.LogMessage("Communicating 'Completed' to remote controlling process");
             await ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.Completed, setText, text, "");
         }
@@ -46,7 +46,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             return await TashAccessor.ConfirmAliveAsync(status.ProcessId, time, cpStatus);
         }
 
-        public async Task ShowStatusAsync(ITashTaskHandlingStatus<TModel> status) {
+        public virtual async Task ShowStatusAsync(ITashTaskHandlingStatus<TModel> status) {
             await Task.Run(() => { });
         }
     }

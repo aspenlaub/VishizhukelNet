@@ -45,7 +45,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet {
                 builder.UseVishizhukelAndPegh(csArgumentPrompter);
             }
             builder.RegisterType<ButtonNameToCommandMapper>().As<IButtonNameToCommandMapper>().SingleInstance();
-            builder.RegisterType<TashAccessor>().As<ITashAccessor>().SingleInstance();
+            builder.RegisterType<TashAccessor>().As<ITashAccessor>();
             return builder;
         }
     }

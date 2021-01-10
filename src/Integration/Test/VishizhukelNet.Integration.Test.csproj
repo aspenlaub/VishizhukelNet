@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test</AssemblyName>
+    <GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Deterministic>false</Deterministic>
+    <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test</AssemblyTitle>
+    <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test</AssemblyProduct>
+    <RootNamespace>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.1.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+    <PackageReference Include="coverlet.collector" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Test\VishizhukelNet.Test.csproj" />
+    <ProjectReference Include="..\..\VishizhukelNet.csproj" />
+  </ItemGroup>
+</Project>

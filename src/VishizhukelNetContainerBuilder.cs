@@ -1,4 +1,6 @@
 ﻿using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.TashClient.Components;
+using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelCore;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
@@ -24,6 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet {
                 services.UseVishizhukelAndPegh(csArgumentPrompter);
             }
             services.AddTransient<IButtonNameToCommandMapper, ButtonNameToCommandMapper>();
+            services.AddTransient<ITashAccessor, TashAccessor>();
             return services;
         }
 
@@ -42,6 +45,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet {
                 builder.UseVishizhukelAndPegh(csArgumentPrompter);
             }
             builder.RegisterType<ButtonNameToCommandMapper>().As<IButtonNameToCommandMapper>().SingleInstance();
+            builder.RegisterType<TashAccessor>().As<ITashAccessor>().SingleInstance();
             return builder;
         }
     }

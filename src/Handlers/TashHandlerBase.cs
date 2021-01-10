@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
     public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : IApplicationModel {
@@ -74,9 +77,38 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
         }
 
         protected virtual async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-            const string unknownTaskTypeErrorMessage = "Unknown task type";
-            ApplicationLogger.LogMessage($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}");
-            await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", unknownTaskTypeErrorMessage);
+            ApplicationLogger.LogMessage($"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandlerBase<TModel>)}");
+
+            switch (status.TaskBeingProcessed.Type) {
+                case ControllableProcessTaskType.ProcessTaskList:
+                    var taskListTask = status.TaskBeingProcessed;
+                    var tasks = JsonConvert.DeserializeObject<List<ControllableProcessTask>>(status.TaskBeingProcessed.Text);
+                    ApplicationLogger.LogMessage($"Processing a list of {tasks.Count} tasks in {nameof(TashHandlerBase<TModel>)}");
+                    foreach (var task in tasks) {
+                        status.TaskBeingProcessed = task;
+                        ApplicationLogger.LogMessage($"Request processing a task of type {task.Type}");
+                        await ProcessSingleTaskAsync(status);
+                        status.TaskBeingProcessed = taskListTask;
+                        if (task.Status == ControllableProcessTaskStatus.Completed) {
+                            continue;
+                        }
+
+                        ApplicationLogger.LogMessage($"Processing of {tasks.Count} tasks ended incomplete");
+                        taskListTask.Status = task.Status;
+                        taskListTask.ErrorMessage = task.ErrorMessage;
+                        await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, task.Status, false, "", task.ErrorMessage);
+                        return;
+                    }
+
+                    ApplicationLogger.LogMessage($"List of {tasks.Count} tasks processed successfully");
+                    await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
+                    break;
+                default:
+                    var unknownTaskTypeErrorMessage = $"Unknown task type {status.TaskBeingProcessed.Type}";
+                    ApplicationLogger.LogMessage($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}");
+                    await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", unknownTaskTypeErrorMessage);
+                    break;
+            }
         }
 
         protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {

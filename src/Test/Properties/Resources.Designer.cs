@@ -69,5 +69,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VishizhukelNet Demo Window.
+        /// </summary>
+        internal static string DemoWindowTitle {
+            get {
+                return ResourceManager.GetString("DemoWindowTitle", resourceCulture);
+            }
+        }
     }
 }

@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VishizhukelNet", "VishizhukelNet.csproj", "{CDA85354-2B4D-485D-BB47-C7DA7EDAA16C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VishizhukelNet.Test", "Test\VishizhukelNet.Test.csproj", "{2FE71BD1-5556-4052-BBEC-749320F98B82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VishizhukelNet.Test", "Test\VishizhukelNet.Test.csproj", "{2FE71BD1-5556-4052-BBEC-749320F98B82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VishizhukelNet.Integration.Test", "Integration\Test\VishizhukelNet.Integration.Test.csproj", "{6ADAFC2D-1EAC-478A-B0CA-D64074659588}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2FE71BD1-5556-4052-BBEC-749320F98B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FE71BD1-5556-4052-BBEC-749320F98B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FE71BD1-5556-4052-BBEC-749320F98B82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ADAFC2D-1EAC-478A-B0CA-D64074659588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ADAFC2D-1EAC-478A-B0CA-D64074659588}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ADAFC2D-1EAC-478A-B0CA-D64074659588}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADAFC2D-1EAC-478A-B0CA-D64074659588}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

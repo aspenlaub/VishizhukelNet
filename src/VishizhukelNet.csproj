@@ -23,9 +23,13 @@
     <NuspecFile>VishizhukelNet.nuspec</NuspecFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Integration\**" />
     <Compile Remove="Test\**" />
+    <EmbeddedResource Remove="Integration\**" />
     <EmbeddedResource Remove="Test\**" />
+    <None Remove="Integration\**" />
     <None Remove="Test\**" />
+    <Page Remove="Integration\**" />
     <Page Remove="Test\**" />
   </ItemGroup>
   <ItemGroup>

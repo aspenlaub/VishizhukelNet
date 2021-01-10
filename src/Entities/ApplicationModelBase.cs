@@ -4,5 +4,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities {
     // ReSharper disable once UnusedMember.Global
     public class ApplicationModelBase : IApplicationModel {
         public bool IsBusy { get; set; }
+
+        public virtual bool IsModelErroneous(out string errorMessage) {
+            errorMessage = "";
+            return false;
+        }
     }
 }

@@ -42,7 +42,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
                 status.TaskBeingProcessed.Text = text;
             }
 
-            await TashAccessor.ConfirmStatusAsync(status.TaskBeingProcessed.Id, status.TaskBeingProcessed.Status, status.TaskBeingProcessed.Text, status.TaskBeingProcessed.ErrorMessage);
+            // TODO: reduce to one attempt
+            var attempts = 10;
+            HttpStatusCode statusCode;
+            do {
+                statusCode = await TashAccessor.ConfirmStatusAsync(status.TaskBeingProcessed.Id, status.TaskBeingProcessed.Status,
+                    status.TaskBeingProcessed.Text, status.TaskBeingProcessed.ErrorMessage);
+            } while (statusCode == HttpStatusCode.NotFound && --attempts >= 0);
+
             await ConfirmAliveAsync(status, ControllableProcessStatus.Idle, DateTime.Now);
             await ShowStatusAsync(status);
         }

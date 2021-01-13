@@ -30,20 +30,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet {
             return services;
         }
 
-        public static ContainerBuilder UseVishizhukelNetAndPegh(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter) {
-            return UseVishizhukelNetAndPeghOptionallyDvin(builder, csArgumentPrompter, false);
+        public static ContainerBuilder UseVishizhukelNetAndPegh(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, ILogConfiguration logConfiguration) {
+            return UseVishizhukelNetAndPeghOptionallyDvin(builder, csArgumentPrompter, false, logConfiguration);
         }
 
-        public static ContainerBuilder UseVishizhukelNetDvinAndPegh(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter) {
-            return UseVishizhukelNetAndPeghOptionallyDvin(builder, csArgumentPrompter, true);
+        public static ContainerBuilder UseVishizhukelNetDvinAndPegh(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, ILogConfiguration logConfiguration) {
+            return UseVishizhukelNetAndPeghOptionallyDvin(builder, csArgumentPrompter, true, logConfiguration);
         }
 
-        private static ContainerBuilder UseVishizhukelNetAndPeghOptionallyDvin(ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, bool useDvin) {
+        private static ContainerBuilder UseVishizhukelNetAndPeghOptionallyDvin(ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, bool useDvin, ILogConfiguration logConfiguration) {
             if (useDvin) {
                 builder.UseVishizhukelDvinAndPegh(csArgumentPrompter);
             } else {
                 builder.UseVishizhukelAndPegh(csArgumentPrompter);
             }
+
+            builder.RegisterInstance(logConfiguration);
             builder.RegisterType<ButtonNameToCommandMapper>().As<IButtonNameToCommandMapper>().SingleInstance();
             builder.RegisterType<TashAccessor>().As<ITashAccessor>();
             return builder;

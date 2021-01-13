@@ -7,8 +7,9 @@ using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
     public static class DemoIntegrationTestContainerBuilder {
-        public static ContainerBuilder RegisterForDemoIntegrationTest(this ContainerBuilder builder) {
+        public static ContainerBuilder RegisterForDemoIntegrationTest(this ContainerBuilder builder, ILogConfiguration logConfiguration) {
             builder.UseDvinAndPegh(new DummyCsArgumentPrompter());
+            builder.RegisterInstance(logConfiguration);
             builder.RegisterType<DemoStarterAndStopper>().As<IStarterAndStopper>();
             builder.RegisterType<DemoWindowUnderTest>();
             builder.RegisterType<TashAccessor>().As<ITashAccessor>();

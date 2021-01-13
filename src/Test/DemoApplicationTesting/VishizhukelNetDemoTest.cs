@@ -1,26 +1,31 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
+using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.DemoApplication;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting {
     [TestClass]
-    public class DemoTest {
+    public class VishizhukelNetDemoTest {
         private VishizhukelDemoApplication vApplication;
         private IDemoApplicationModel vModel;
         private readonly List<int> vAlphaTestValues = new List<int> { 24, 7, 1970, 1 };
 
         [TestInitialize]
         public async Task Initialize() {
+            var logConfigurationMock = new Mock<ILogConfiguration>();
+            logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoTest));
+            logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
             var container = new ContainerBuilder()
-                .UseVishizhukelNetAndPegh(new DummyCsArgumentPrompter())
-                .UseDemoApplication(null)
+                .UseDemoApplication(null, logConfigurationMock.Object)
                 .Build();
             vApplication = container.Resolve<VishizhukelDemoApplication>();
             Assert.IsNotNull(vApplication);

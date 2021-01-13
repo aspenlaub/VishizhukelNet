@@ -1,29 +1,34 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Autofac;
+using Moq;
 using IContainer = Autofac.IContainer;
 using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.DemoApplication;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
     /// <summary>
-    /// Interaction logic for DemoWindow.xaml
+    /// Interaction logic for VishizhukelNetDemoWindow.xaml
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public partial class DemoWindow : IDisposable {
+    public partial class VishizhukelNetDemoWindow : IDisposable {
         private static IContainer Container { get; set; }
 
         private VishizhukelDemoApplication vDemoApp;
         private ITashTimer<IDemoApplicationModel> vTashTimer;
 
-        public DemoWindow() {
+        public VishizhukelNetDemoWindow() {
             InitializeComponent();
 
-            var builder = new ContainerBuilder().UseDemoApplication(this);
+            var logConfigurationMock = new Mock<ILogConfiguration>();
+            logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoWindow));
+            logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
+            var builder = new ContainerBuilder().UseDemoApplication(this, logConfigurationMock.Object);
             Container = builder.Build();
 
         }

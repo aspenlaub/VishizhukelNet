@@ -1,4 +1,5 @@
 ﻿using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
+using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
@@ -10,12 +11,12 @@ using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication {
     public static class DemoApplicationContainerBuilder {
-        public static ContainerBuilder UseDemoApplication(this ContainerBuilder builder, DemoWindow demoWindow) {
-            builder.UseVishizhukelNetDvinAndPegh(new DummyCsArgumentPrompter());
-            if (demoWindow == null) {
+        public static ContainerBuilder UseDemoApplication(this ContainerBuilder builder, VishizhukelNetDemoWindow vishizhukelNetDemoWindow, ILogConfiguration logConfiguration) {
+            builder.UseVishizhukelNetDvinAndPegh(new DummyCsArgumentPrompter(), logConfiguration);
+            if (vishizhukelNetDemoWindow == null) {
                 builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IDemoGuiAndApplicationSynchronizer>().SingleInstance();
             } else {
-                builder.RegisterInstance(demoWindow);
+                builder.RegisterInstance(vishizhukelNetDemoWindow);
                 builder.RegisterType<DemoGuiAndApplicationSynchronizer>().As<IDemoGuiAndApplicationSynchronizer>().SingleInstance();
             }
 

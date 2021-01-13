@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
@@ -18,15 +17,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
 
         public ITashHandler<IDemoApplicationModel> TashHandler { get; private set; }
         private readonly ITashAccessor vTashAccessor;
-        private readonly IApplicationLogger vApplicationLogger;
         private readonly ISimpleLogger vSimpleLogger;
         private readonly ILogConfiguration vLogConfiguration;
 
         public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, DemoApplicationModel model,
-                ITashAccessor tashAccessor, IApplicationLogger applicationLogger, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration)
+                ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration)
                 : base(buttonNameToCommandMapper, guiAndApplicationSynchronizer, model) {
             vTashAccessor = tashAccessor;
-            vApplicationLogger = applicationLogger;
             vSimpleLogger = simpleLogger;
             vLogConfiguration = logConfiguration;
         }
@@ -49,8 +46,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             Commands = new DemoCommands {
                 GammaCommand = new GammaCommand(Model, deltaTextHandler)
             };
-            var communicator = new TashCommunicatorBase<IDemoApplicationModel>(vTashAccessor, vApplicationLogger, vSimpleLogger, vLogConfiguration);
-            TashHandler = new TashHandler(vTashAccessor, vApplicationLogger, ButtonNameToCommandMapper, null, null, communicator);
+            var communicator = new TashCommunicatorBase<IDemoApplicationModel>(vTashAccessor, vSimpleLogger, vLogConfiguration);
+            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, null, null, communicator);
         }
 
         public override async Task OnLoadedAsync() {

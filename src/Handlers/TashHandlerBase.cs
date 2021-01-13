@@ -3,27 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
     public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : IApplicationModel {
         protected readonly ITashAccessor TashAccessor;
-        protected readonly IApplicationLogger ApplicationLogger;
+        protected readonly ISimpleLogger SimpleLogger;
+        protected readonly ILogConfiguration LogConfiguration;
+        protected readonly string LogId;
         protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
         protected readonly ITashVerifyAndSetHandler<TModel> TashVerifyAndSetHandler;
         protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
         protected readonly ITashCommunicator<TModel> TashCommunicator;
 
-        public TashHandlerBase(ITashAccessor tashAccessor, IApplicationLogger applicationLogger,
+        public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
                 IButtonNameToCommandMapper buttonNameToCommandMapper,
                 ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
             TashAccessor = tashAccessor;
-            ApplicationLogger = applicationLogger;
+            SimpleLogger = simpleLogger;
+            LogConfiguration = logConfiguration;
+            SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
+            LogId = logConfiguration.LogId;
             ButtonNameToCommandMapper = buttonNameToCommandMapper;
             TashVerifyAndSetHandler = tashVerifyAndSetHandler;
             TashSelectorHandler = tashSelectorHandler;
@@ -54,74 +61,82 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
         }
 
         public async Task ProcessTashAsync(ITashTaskHandlingStatus<TModel> status) {
-            status.TaskBeingProcessed = status.ControllableProcessTasks.FirstOrDefault(t => t.Status == ControllableProcessTaskStatus.Requested);
-            if (status.TaskBeingProcessed == null) {
-                return;
+            using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
+                status.TaskBeingProcessed = status.ControllableProcessTasks.FirstOrDefault(t => t.Status == ControllableProcessTaskStatus.Requested);
+                if (status.TaskBeingProcessed == null) {
+                    return;
+                }
+
+                var statusCode = await TashAccessor.ConfirmStatusAsync(status.TaskBeingProcessed.Id, ControllableProcessTaskStatus.Processing);
+                if (statusCode != HttpStatusCode.NoContent) {
+                    return;
+                }
+
+                await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.Processing);
+                OnStatusChangedToProcessingCommunicated(status);
+
+                await TashCommunicator.ShowStatusAsync(status);
+
+                SimpleLogger.LogInformation($"{status.TaskBeingProcessed.Type} requested via remote control");
+                await ProcessSingleTaskAsync(status);
+
+                status.TaskBeingProcessed = null;
             }
-
-            var statusCode = await TashAccessor.ConfirmStatusAsync(status.TaskBeingProcessed.Id, ControllableProcessTaskStatus.Processing);
-            if (statusCode != HttpStatusCode.NoContent) { return; }
-
-            await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.Processing);
-            OnStatusChangedToProcessingCommunicated(status);
-
-            await TashCommunicator.ShowStatusAsync(status);
-
-            ApplicationLogger.LogMessage($"{status.TaskBeingProcessed.Type} requested via remote control");
-            await ProcessSingleTaskAsync(status);
-
-            status.TaskBeingProcessed = null;
         }
 
         protected virtual void OnStatusChangedToProcessingCommunicated(ITashTaskHandlingStatus<TModel> status) {
         }
 
         protected virtual async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-            ApplicationLogger.LogMessage($"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandlerBase<TModel>)}");
+            using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
+                SimpleLogger.LogInformation($"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandlerBase<TModel>)}");
 
-            switch (status.TaskBeingProcessed.Type) {
-                case ControllableProcessTaskType.ProcessTaskList:
-                    var taskListTask = status.TaskBeingProcessed;
-                    var tasks = JsonConvert.DeserializeObject<List<ControllableProcessTask>>(status.TaskBeingProcessed.Text);
-                    ApplicationLogger.LogMessage($"Processing a list of {tasks.Count} tasks in {nameof(TashHandlerBase<TModel>)}");
-                    foreach (var task in tasks) {
-                        status.TaskBeingProcessed = task;
-                        ApplicationLogger.LogMessage($"Request processing a task of type {task.Type}");
-                        await ProcessSingleTaskAsync(status);
-                        status.TaskBeingProcessed = taskListTask;
-                        if (task.Status == ControllableProcessTaskStatus.Completed) {
-                            continue;
+                switch (status.TaskBeingProcessed.Type) {
+                    case ControllableProcessTaskType.ProcessTaskList:
+                        var taskListTask = status.TaskBeingProcessed;
+                        var tasks = JsonConvert.DeserializeObject<List<ControllableProcessTask>>(status.TaskBeingProcessed.Text);
+                        SimpleLogger.LogInformation($"Processing a list of {tasks.Count} tasks in {nameof(TashHandlerBase<TModel>)}");
+                        foreach (var task in tasks) {
+                            status.TaskBeingProcessed = task;
+                            SimpleLogger.LogInformation($"Request processing a task of type {task.Type}");
+                            await ProcessSingleTaskAsync(status);
+                            status.TaskBeingProcessed = taskListTask;
+                            if (task.Status == ControllableProcessTaskStatus.Completed) {
+                                continue;
+                            }
+
+                            SimpleLogger.LogError($"Processing of {tasks.Count} tasks ended incomplete");
+                            taskListTask.Status = task.Status;
+                            taskListTask.ErrorMessage = task.ErrorMessage;
+                            await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, task.Status, false, "", task.ErrorMessage);
+                            return;
                         }
 
-                        ApplicationLogger.LogMessage($"Processing of {tasks.Count} tasks ended incomplete");
-                        taskListTask.Status = task.Status;
-                        taskListTask.ErrorMessage = task.ErrorMessage;
-                        await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, task.Status, false, "", task.ErrorMessage);
-                        return;
-                    }
-
-                    ApplicationLogger.LogMessage($"List of {tasks.Count} tasks processed successfully");
-                    await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
-                    break;
-                default:
-                    var unknownTaskTypeErrorMessage = $"Unknown task type {status.TaskBeingProcessed.Type}";
-                    ApplicationLogger.LogMessage($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}");
-                    await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", unknownTaskTypeErrorMessage);
-                    break;
+                        SimpleLogger.LogInformation($"List of {tasks.Count} tasks processed successfully");
+                        await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
+                        break;
+                    default:
+                        var unknownTaskTypeErrorMessage = $"Unknown task type {status.TaskBeingProcessed.Type}";
+                        SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}");
+                        await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", unknownTaskTypeErrorMessage);
+                        break;
+                }
             }
         }
 
         protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-            var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);
-            if (command == null) {
-                var errorMessage = $"Unknown control/button {status.TaskBeingProcessed.ControlName}";
-                ApplicationLogger.LogMessage($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
-                await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
-                return;
-            }
+            using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
+                var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);
+                if (command == null) {
+                    var errorMessage = $"Unknown control/button {status.TaskBeingProcessed.ControlName}";
+                    SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
+                    await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
+                    return;
+                }
 
-            await command.ExecuteAsync();
-            await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
+                await command.ExecuteAsync();
+                await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
+            }
         }
     }
 }

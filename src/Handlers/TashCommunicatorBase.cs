@@ -50,25 +50,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
                     status.TaskBeingProcessed.Text = text;
                 }
 
-                var attempts = 2; // TODO: get rid of these multiple attempts
-                bool again;
-                do {
-                    again = false;
-                    if (attempts == 0) {
-                        SimpleLogger.LogInformation($"Confirm new status of task with id={status.TaskBeingProcessed.Id}, no safety net");
-                        await ConfirmStatusOfTaskBeingProcessedAsync(status);
-                    } else {
-                        try {
-                            SimpleLogger.LogInformation($"Confirm new status of task with id={status.TaskBeingProcessed.Id}, with safety net");
-                            await ConfirmStatusOfTaskBeingProcessedAsync(status);
-                        } catch {
-                            SimpleLogger.LogInformation($"Failed to confirm new status of task with id={status.TaskBeingProcessed.Id}");
-                            await Task.Delay(TimeSpan.FromSeconds(1));
-                            again = true;
-                        }
-                    }
-                } while (again && 0 <= --attempts);
-
+                SimpleLogger.LogInformation($"Confirm new status of task with id={status.TaskBeingProcessed.Id}");
+                await ConfirmStatusOfTaskBeingProcessedAsync(status);
                 SimpleLogger.LogInformation($"Confirm that process with id={status.ProcessId} is alive");
                 await ConfirmAliveAsync(status, ControllableProcessStatus.Idle, DateTime.Now);
                 SimpleLogger.LogInformation($"Show status");

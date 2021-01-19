@@ -24,7 +24,7 @@ using WindowsToggleButton = System.Windows.Controls.Primitives.ToggleButton;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
     public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow>
             : IGuiAndApplicationSynchronizer<TApplicationModel>
-            where TApplicationModel : IApplicationModel {
+            where TApplicationModel : class, IApplicationModel {
         protected readonly TWindow Window;
         protected readonly Dictionary<PropertyInfo, FieldInfo> ModelPropertyToWindowFieldMapping, ModelPropertyToWindowLabelMapping;
         protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;

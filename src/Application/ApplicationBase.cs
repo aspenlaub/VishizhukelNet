@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
     public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel> : IGuiAndAppHandler
-        where TModel : IApplicationModel
+        where TModel : class, IApplicationModel
         where TGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer<TModel> {
         protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
         protected readonly TGuiAndApplicationSynchronizer GuiAndApplicationSynchronizer;
@@ -30,6 +31,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
 
         public void IndicateBusy(bool force) {
             GuiAndApplicationSynchronizer.IndicateBusy(force);
+        }
+
+        public void OnWindowStateChanged(WindowState windowState) {
+            Model.WindowState = windowState;
         }
     }
 }

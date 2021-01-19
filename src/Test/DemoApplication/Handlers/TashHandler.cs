@@ -10,9 +10,9 @@ using ControllableProcessTaskType = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.E
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class TashHandler : TashHandlerBase<IDemoApplicationModel> {
         public TashHandler(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
-            IButtonNameToCommandMapper buttonNameToCommandMapper,
+            IButtonNameToCommandMapper buttonNameToCommandMapper, IGuiAndAppHandler guiAndAppHandler,
             ITashVerifyAndSetHandler<IDemoApplicationModel> tashVerifyAndSetHandler, ITashSelectorHandler<IDemoApplicationModel> tashSelectorHandler, ITashCommunicator<IDemoApplicationModel> tashCommunicator)
-            : base(tashAccessor, simpleLogger, logConfiguration, buttonNameToCommandMapper, tashVerifyAndSetHandler, tashSelectorHandler, tashCommunicator) {
+            : base(tashAccessor, simpleLogger, logConfiguration, buttonNameToCommandMapper, guiAndAppHandler, tashVerifyAndSetHandler, tashSelectorHandler, tashCommunicator) {
         }
 
         protected override async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<IDemoApplicationModel> status) {

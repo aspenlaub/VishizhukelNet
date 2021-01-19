@@ -64,5 +64,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
         private void OnClosing(object sender, CancelEventArgs e) {
             vTashTimer?.StopTimerAndConfirmDead(false);
         }
+
+        private void OnStateChanged(object sender, EventArgs e) {
+            vDemoApp.OnWindowStateChanged(WindowState);
+        }
     }
 }

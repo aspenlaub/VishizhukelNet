@@ -54,7 +54,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
                 await ConfirmStatusOfTaskBeingProcessedAsync(status);
                 SimpleLogger.LogInformation($"Confirm that process with id={status.ProcessId} is alive");
                 await ConfirmAliveAsync(status, ControllableProcessStatus.Idle, DateTime.Now);
-                SimpleLogger.LogInformation($"Show status");
+                SimpleLogger.LogInformation("Show status");
                 await ShowStatusAsync(status);
             }
         }

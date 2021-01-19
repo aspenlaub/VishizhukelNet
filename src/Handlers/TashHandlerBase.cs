@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
@@ -13,18 +14,19 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
-    public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : IApplicationModel {
+    public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class, IApplicationModel {
         protected readonly ITashAccessor TashAccessor;
         protected readonly ISimpleLogger SimpleLogger;
         protected readonly ILogConfiguration LogConfiguration;
         protected readonly string LogId;
         protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
+        protected readonly IGuiAndAppHandler GuiAndAppHandler;
         protected readonly ITashVerifyAndSetHandler<TModel> TashVerifyAndSetHandler;
         protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
         protected readonly ITashCommunicator<TModel> TashCommunicator;
 
         public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
-                IButtonNameToCommandMapper buttonNameToCommandMapper,
+                IButtonNameToCommandMapper buttonNameToCommandMapper, IGuiAndAppHandler guiAndAppHandler,
                 ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
             TashAccessor = tashAccessor;
             SimpleLogger = simpleLogger;
@@ -32,6 +34,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
             LogId = logConfiguration.LogId;
             ButtonNameToCommandMapper = buttonNameToCommandMapper;
+            GuiAndAppHandler = guiAndAppHandler;
             TashVerifyAndSetHandler = tashVerifyAndSetHandler;
             TashSelectorHandler = tashSelectorHandler;
             TashCommunicator = tashCommunicator;
@@ -115,6 +118,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
                         SimpleLogger.LogInformation($"List of {tasks.Count} tasks processed successfully");
                         await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
                         break;
+                    case ControllableProcessTaskType.Maximize:
+                        status.Model.WindowState = WindowState.Maximized;
+                        await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+                        await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
+                        break;
                     default:
                         var unknownTaskTypeErrorMessage = $"Unknown task type {status.TaskBeingProcessed.Type}";
                         SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}");
@@ -124,6 +132,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             }
         }
 
+        // ReSharper disable once UnusedMember.Global
         protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
             using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
                 var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);

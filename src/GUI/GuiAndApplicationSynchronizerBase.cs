@@ -26,27 +26,35 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             : IGuiAndApplicationSynchronizer<TApplicationModel>
             where TApplicationModel : IApplicationModel {
         protected readonly TWindow Window;
-        protected readonly Dictionary<PropertyInfo, FieldInfo> ModelToWindowPropertyMapping, ModelToWindowLabelPropertyMapping;
+        protected readonly Dictionary<PropertyInfo, FieldInfo> ModelPropertyToWindowFieldMapping, ModelPropertyToWindowLabelMapping;
+        protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
 
         public TApplicationModel Model { get; }
 
         protected GuiAndApplicationSynchronizerBase(TApplicationModel model, TWindow window) {
             Model = model;
             Window = window;
-            ModelToWindowPropertyMapping = new Dictionary<PropertyInfo, FieldInfo>();
-            ModelToWindowLabelPropertyMapping = new Dictionary<PropertyInfo, FieldInfo>();
+            ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
+            ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
+            ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();
             var modelProperties = typeof(TApplicationModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var windowFields = typeof(TWindow).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            var windowProperties = typeof(TWindow).GetProperties(BindingFlags.Public | BindingFlags.Instance ).Where(p => p.CanRead && p.CanWrite).ToList();
             foreach (var modelProperty in modelProperties) {
                 var windowField = windowFields.FirstOrDefault(p => p.Name == modelProperty.Name);
                 if (windowField != null) {
-                    ModelToWindowPropertyMapping[modelProperty] = windowField;
+                    ModelPropertyToWindowFieldMapping[modelProperty] = windowField;
                 }
 
                 var labelField = windowFields.FirstOrDefault(p => p.Name == modelProperty.Name + "Label");
-                if (labelField == null) { continue; }
+                if (labelField != null) {
+                    ModelPropertyToWindowLabelMapping[modelProperty] = labelField;
+                }
 
-                ModelToWindowLabelPropertyMapping[modelProperty] = labelField;
+                var windowProperty = windowProperties.FirstOrDefault(p => p.Name == modelProperty.Name);
+                if (windowProperty != null) {
+                    ModelPropertyToWindowPropertyMapping[modelProperty] = windowProperty;
+                }
             }
         }
 
@@ -64,9 +72,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         public void OnModelDataChanged() {
             IndicateBusy(false);
 
-            foreach (var modelToWindowPropertyMapping in ModelToWindowPropertyMapping) {
-                var modelProperty = modelToWindowPropertyMapping.Key;
-                var windowField = modelToWindowPropertyMapping.Value;
+            foreach (var modelPropertyToWindowFieldMapping in ModelPropertyToWindowFieldMapping) {
+                var modelProperty = modelPropertyToWindowFieldMapping.Key;
+                var windowField = modelPropertyToWindowFieldMapping.Value;
                 switch (windowField.FieldType.Name) {
                     case "ComboBox":
                         UpdateSelectorIfNecessary((ISelector)modelProperty.GetValue(Model), (WindowsSelector)windowField.GetValue(Window));
@@ -94,9 +102,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 }
             }
 
-            foreach (var modelToWindowLabelPropertyMapping in ModelToWindowLabelPropertyMapping) {
-                var modelProperty = modelToWindowLabelPropertyMapping.Key;
-                var labelField = modelToWindowLabelPropertyMapping.Value;
+            foreach (var modelPropertyToWindowLabelMapping in ModelPropertyToWindowLabelMapping) {
+                var modelProperty = modelPropertyToWindowLabelMapping.Key;
+                var labelField = modelPropertyToWindowLabelMapping.Value;
 
                 if (labelField.FieldType.Name == "Label") {
                     if (modelProperty.GetValue(Model) is ISelector) {
@@ -110,9 +118,25 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     throw new NotImplementedException();
                 }
             }
+
+            foreach (var modelPropertyToWindowPropertyMapping in ModelPropertyToWindowPropertyMapping) {
+                var modelProperty = modelPropertyToWindowPropertyMapping.Key;
+                var windowProperty = modelPropertyToWindowPropertyMapping.Value;
+                switch (windowProperty.PropertyType.Name) {
+                    case "WindowState":
+                        UpdateWindowStateIfNecessary((WindowState) modelProperty.GetValue(Model), Window as Window);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
         }
 
         private void UpdateImageIfNecessary(IImage modelImage, WindowsImage image) {
+            if (modelImage == null) {
+                throw new ArgumentNullException(nameof(modelImage));
+            }
+
             var imageSource = image.Source as BitmapImage;
 
             if (imageSource.IsEqualTo(modelImage.BitmapImage)) { return; }
@@ -121,18 +145,30 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         }
 
         private void UpdateLabelIfNecessary(ITextBox modelTextBox, ContentControl label) {
+            if (modelTextBox == null) {
+                throw new ArgumentNullException(nameof(modelTextBox));
+            }
+
             if (string.IsNullOrWhiteSpace(modelTextBox.LabelText) || label.Content.ToString() == modelTextBox.LabelText) { return; }
 
             label.Content = modelTextBox.LabelText;
         }
 
         private void UpdateLabelIfNecessary(ISelector modelSelector, ContentControl label) {
+            if (modelSelector == null) {
+                throw new ArgumentNullException(nameof(modelSelector));
+            }
+
             if (string.IsNullOrWhiteSpace(modelSelector.LabelText) || label.Content.ToString() == modelSelector.LabelText) { return; }
 
             label.Content = modelSelector.LabelText;
         }
 
         private void UpdateWebBrowserIfNecessary(IWebBrowser modelWebBrowser, WindowsWebBrowser webBrowser) {
+            if (modelWebBrowser == null) {
+                throw new ArgumentNullException(nameof(modelWebBrowser));
+            }
+
             if (modelWebBrowser.Url == modelWebBrowser.AskedForNavigationToUrl) { return; }
 
             if (string.IsNullOrWhiteSpace(modelWebBrowser.Url)) {
@@ -145,6 +181,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         }
 
         private void UpdateButtonIfNecessary(Button modelButton, UIElement windowsButton) {
+            if (modelButton == null) {
+                throw new ArgumentNullException(nameof(modelButton));
+            }
+
             var shouldButtonBeEnabled = modelButton.Enabled && !Model.IsBusy;
             if (windowsButton.IsEnabled == shouldButtonBeEnabled) { return; }
 
@@ -152,6 +192,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         }
 
         private void UpdateTextBoxIfNecessary(ITextBox modelTextBox, WindowsTextBox windowsTextBox) {
+            if (modelTextBox == null) {
+                throw new ArgumentNullException(nameof(modelTextBox));
+            }
+
             Brush brush;
             switch (modelTextBox.Type) {
                 case StatusType.Success: brush = Brushes.Green; break;
@@ -167,6 +211,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         }
 
         private void UpdateSelectorIfNecessary(ISelector modelSelector, WindowsSelector windowsSelector) {
+            if (modelSelector == null) {
+                throw new ArgumentNullException(nameof(modelSelector));
+            }
+
             var items = windowsSelector.Items;
             var selectablesChanged = false;
             // ReSharper disable once ConvertIfStatementToSwitchStatement
@@ -211,6 +259,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
 
             windowsToggleButton.IsEnabled = shouldButtonBeEnabled;
             windowsToggleButton.IsChecked = modelButton.IsChecked;
+        }
+
+        private void UpdateWindowStateIfNecessary(WindowState modelWindowState, Window window) {
+            if (modelWindowState == window.WindowState) { return; }
+
+            window.WindowState = modelWindowState;
         }
     }
 }

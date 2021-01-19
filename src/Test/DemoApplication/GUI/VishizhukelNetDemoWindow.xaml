@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="VishizhukelNet Demo Window" Height="295" Width="400" Icon="demo.ico"
-        Loaded="OnLoadedAsync" Closing="OnClosing">
+        Loaded="OnLoadedAsync" Closing="OnClosing" StateChanged="OnStateChanged">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200*" MinWidth="200" />

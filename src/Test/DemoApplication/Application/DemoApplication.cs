@@ -47,7 +47,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
                 GammaCommand = new GammaCommand(Model, deltaTextHandler)
             };
             var communicator = new TashCommunicatorBase<IDemoApplicationModel>(vTashAccessor, vSimpleLogger, vLogConfiguration);
-            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, null, null, communicator);
+            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, this, null, null, communicator);
         }
 
         public override async Task OnLoadedAsync() {

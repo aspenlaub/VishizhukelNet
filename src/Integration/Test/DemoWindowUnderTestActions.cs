@@ -85,5 +85,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
                 return result.ErrorMessage;
             }
         }
+
+        public ControllableProcessTask CreateMaximizeTask(ControllableProcess process) {
+            return CreateControllableProcessTask(process, ControllableProcessTaskType.Maximize, "", "");
+        }
     }
 }

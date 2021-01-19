@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+// ReSharper disable UnusedMember.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
     public interface ITashVerifyAndSetHandler<in TModel> where TModel : IApplicationModel {

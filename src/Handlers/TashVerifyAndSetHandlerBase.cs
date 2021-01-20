@@ -74,21 +74,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
                 }
 
                 var textHandlers = TextBoxNamesToTextHandlerDictionary(status);
-                if (!textHandlers.ContainsKey(status.TaskBeingProcessed.ControlName)) {
-                    var errorMessage = $"No handler is defined for text or selector control {status.TaskBeingProcessed.ControlName}";
-                    SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
-                    await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
-                    return;
-                }
+                var textHandler = textHandlers.ContainsKey(status.TaskBeingProcessed.ControlName) ? textHandlers[status.TaskBeingProcessed.ControlName] : null;
 
-                actualValue = await GetOrSetTextBoxValueAsync(textBoxes[status.TaskBeingProcessed.ControlName], textHandlers[status.TaskBeingProcessed.ControlName], label, set, status.TaskBeingProcessed.Text);
+                actualValue = await GetOrSetTextBoxValueAsync(textBoxes[status.TaskBeingProcessed.ControlName], textHandler, label, set, status.TaskBeingProcessed.Text);
             }
             OnValueTaskProcessed(status, verify, set, actualValue);
             await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, true, actualValue);
         }
 
         protected async Task<string> GetOrSetTextBoxValueAsync(ITextBox textBox, ISimpleTextHandler textHandler, bool label, bool set, string text) {
-            if (set) {
+            if (!set) {
+                return label ? textBox.LabelText : textBox.Text;
+            }
+
+            if (textHandler == null) {
+                textBox.Text = text;
+            } else {
                 await textHandler.TextChangedAsync(text);
             }
             return label ? textBox.LabelText : textBox.Text;

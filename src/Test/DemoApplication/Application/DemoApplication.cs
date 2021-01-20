@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
@@ -47,7 +48,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
                 GammaCommand = new GammaCommand(Model, deltaTextHandler)
             };
             var communicator = new TashCommunicatorBase<IDemoApplicationModel>(vTashAccessor, vSimpleLogger, vLogConfiguration);
-            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, this, null, null, communicator);
+            var selectors = new Dictionary<string, ISelector> {
+                { nameof(IDemoApplicationModel.Beta), Model.Beta }
+            };
+            var selectorHandler = new TashSelectorHandler(Handlers, vSimpleLogger, communicator, selectors);
+            var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, vSimpleLogger, null, communicator, selectors);
+            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, this, verifyAndSetHandler, selectorHandler, communicator);
         }
 
         public override async Task OnLoadedAsync() {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using ControllableProcessTaskType = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities.ControllableProcessTaskType;
@@ -88,6 +89,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
 
         public ControllableProcessTask CreateMaximizeTask(ControllableProcess process) {
             return CreateControllableProcessTask(process, ControllableProcessTaskType.Maximize, "", "");
+        }
+
+        public ControllableProcessTask CreateSetValueTask(ControllableProcess process, string controlName, string value) {
+            return CreateControllableProcessTask(process, ControllableProcessTaskType.SetValue, controlName, value);
+        }
+
+        public ControllableProcessTask CreateSelectBetaTask(ControllableProcess process, string beta) {
+            return CreateControllableProcessTask(process, ControllableProcessTaskType.SelectComboItem, nameof(IDemoApplicationModel.Beta), beta);
+        }
+
+        public ControllableProcessTask CreateVerifyWhetherEnabledTask(ControllableProcess process, string controlName, bool enabled) {
+            return CreateControllableProcessTask(process, ControllableProcessTaskType.VerifyWhetherEnabled, controlName, enabled ? "true" : "false");
+        }
+
+        public ControllableProcessTask CreateVerifyNumberOfItemsTask(ControllableProcess process, string controlName, int expectedNumberOfItems) {
+            return CreateControllableProcessTask(process, ControllableProcessTaskType.VerifyNumberOfItems, controlName, expectedNumberOfItems.ToString());
         }
     }
 }

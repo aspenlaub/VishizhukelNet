@@ -12,6 +12,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+// ReSharper disable UnusedMember.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
     public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class, IApplicationModel {
@@ -26,8 +27,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
         protected readonly ITashCommunicator<TModel> TashCommunicator;
 
         public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
-                IButtonNameToCommandMapper buttonNameToCommandMapper, IGuiAndAppHandler guiAndAppHandler,
-                ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
+            IButtonNameToCommandMapper buttonNameToCommandMapper, IGuiAndAppHandler guiAndAppHandler,
+            ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
             TashAccessor = tashAccessor;
             SimpleLogger = simpleLogger;
             LogConfiguration = logConfiguration;
@@ -87,8 +88,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             }
         }
 
-        protected virtual void OnStatusChangedToProcessingCommunicated(ITashTaskHandlingStatus<TModel> status) {
-        }
+        protected virtual void OnStatusChangedToProcessingCommunicated(ITashTaskHandlingStatus<TModel> status) { }
 
         protected virtual async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<TModel> status) {
             using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
@@ -123,6 +123,30 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
                         await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
                         await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
                         break;
+                    case ControllableProcessTaskType.SetValue:
+                        await TashVerifyAndSetHandler.ProcessVerifyGetOrSetValueOrLabelTaskAsync(status, true, true, false, false);
+                        break;
+                    case ControllableProcessTaskType.VerifyValue:
+                        await TashVerifyAndSetHandler.ProcessVerifyGetOrSetValueOrLabelTaskAsync(status, true, false, false, false);
+                        break;
+                    case ControllableProcessTaskType.VerifyLabel:
+                        await TashVerifyAndSetHandler.ProcessVerifyGetOrSetValueOrLabelTaskAsync(status, true, false, true, false);
+                        break;
+                    case ControllableProcessTaskType.GetValue:
+                        await TashVerifyAndSetHandler.ProcessVerifyGetOrSetValueOrLabelTaskAsync(status, false, false, false, false);
+                        break;
+                    case ControllableProcessTaskType.VerifyItems:
+                        await TashVerifyAndSetHandler.ProcessVerifyGetOrSetValueOrLabelTaskAsync(status, true, false, false, true);
+                        break;
+                    case ControllableProcessTaskType.SelectComboItem:
+                        await TashSelectorHandler.ProcessSelectComboOrResetTaskAsync(status);
+                        break;
+                    case ControllableProcessTaskType.VerifyWhetherEnabled:
+                        await TashVerifyAndSetHandler.ProcessVerifyWhetherEnabledTaskAsync(status);
+                        break;
+                    case ControllableProcessTaskType.VerifyNumberOfItems:
+                        await TashVerifyAndSetHandler.ProcessVerifyNumberOfItemsTaskAsync(status);
+                        break;
                     default:
                         var unknownTaskTypeErrorMessage = $"Unknown task type {status.TaskBeingProcessed.Type}";
                         SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}");
@@ -132,7 +156,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             }
         }
 
-        // ReSharper disable once UnusedMember.Global
         protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
             using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
                 var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);

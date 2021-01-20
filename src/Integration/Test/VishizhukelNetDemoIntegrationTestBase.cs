@@ -23,8 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
             await sut.InitializeAsync();
             var process = await sut.FindIdleProcessAsync();
             var tasks = new List<ControllableProcessTask> {
-                sut.CreateResetTask(process),
-                sut.CreateMaximizeTask(process)
+                sut.CreateResetTask(process)
             };
             await sut.RemotelyProcessTaskListAsync(process, tasks);
             return sut;

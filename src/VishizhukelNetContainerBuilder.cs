@@ -47,6 +47,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet {
 
             builder.RegisterInstance(logConfiguration);
             builder.RegisterType<ButtonNameToCommandMapper>().As<IButtonNameToCommandMapper>().SingleInstance();
+            builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();
             builder.RegisterType<TashAccessor>().As<ITashAccessor>();
             return builder;
         }

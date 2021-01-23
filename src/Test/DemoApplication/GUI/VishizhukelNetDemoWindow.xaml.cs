@@ -55,6 +55,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
             }
 
             vTashTimer.CreateAndStartTimer(vDemoApp.CreateTashTaskHandlingStatus());
+
+            AdjustZetaAndItsCanvas();
         }
 
         public void Dispose() {
@@ -67,6 +69,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
         private void OnStateChanged(object sender, EventArgs e) {
             vDemoApp.OnWindowStateChanged(WindowState);
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+            AdjustZetaAndItsCanvas();
+        }
+
+        private void AdjustZetaAndItsCanvas() {
+            var adjuster = Container.Resolve<ICanvasAndImageSizeAdjuster>();
+            adjuster.AdjustCanvasAndImage(ZetaCanvasContainer, ZetaCanvas, Zeta);
         }
     }
 }

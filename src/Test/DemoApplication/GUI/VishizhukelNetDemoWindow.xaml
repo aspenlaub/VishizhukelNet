@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="VishizhukelNet Demo Window" Height="295" MinHeight="295" Width="400" MinWidth="400" Icon="demo.ico"
-        Loaded="OnLoadedAsync" Closing="OnClosing" StateChanged="OnStateChanged">
+        Loaded="OnLoadedAsync" Closing="OnClosing" StateChanged="OnStateChanged" SizeChanged="OnSizeChanged">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200*" MinWidth="200" />
@@ -32,6 +32,10 @@
         <TextBox Name="Delta" Grid.Row="3" Grid.Column="1" IsReadOnly="True" Background="LightGray" Margin="5" Padding="3,0,3,0"></TextBox>
         <Button Name="Gamma" Grid.Row="4" Grid.Column="0" Margin="5" VerticalAlignment="Top">_Calculate</Button>
         <Image Name="Epsilon" Grid.Row="4" Grid.RowSpan="2" Grid.Column="1" Margin="5" VerticalAlignment="Top"></Image>
-        <Image Name="Zeta" Grid.Row="5" Grid.Column="0" Margin="5" VerticalAlignment="Top"></Image>
+        <StackPanel Name="ZetaCanvasContainer" Grid.Row="5" Grid.Column="0" Margin="5" >
+            <Canvas Name="ZetaCanvas">
+                <Image Name="Zeta" VerticalAlignment="Top"></Image>
+            </Canvas>
+        </StackPanel>
     </Grid>
 </Window>

@@ -132,6 +132,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             }
         }
 
+        public virtual void OnImageChanged(IImage image) {
+        }
+
         private void UpdateImageIfNecessary(IImage modelImage, WindowsImage image) {
             if (modelImage == null) {
                 throw new ArgumentNullException(nameof(modelImage));
@@ -142,6 +145,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             if (imageSource.IsEqualTo(modelImage.BitmapImage)) { return; }
 
             image.Source = modelImage.BitmapImage;
+
+            OnImageChanged(modelImage);
         }
 
         private void UpdateLabelIfNecessary(ITextBox modelTextBox, ContentControl label) {

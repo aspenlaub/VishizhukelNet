@@ -11,6 +11,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interf
         IImage Epsilon { get; }
         ToggleButton MethodAdd { get; }
         ToggleButton MethodMultiply { get; }
+        IImage Zeta { get; }
 
         string ErrorMessage { get; set; }
     }

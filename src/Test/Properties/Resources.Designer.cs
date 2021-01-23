@@ -78,5 +78,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Properties {
                 return ResourceManager.GetString("DemoWindowTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] PressToCalculate {
+            get {
+                object obj = ResourceManager.GetObject("PressToCalculate", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

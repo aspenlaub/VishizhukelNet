@@ -124,4 +124,7 @@
   <data name="DemoWindowTitle" xml:space="preserve">
     <value>VishizhukelNet Demo Window</value>
   </data>
+  <data name="PressToCalculate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>press_to_calculate.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

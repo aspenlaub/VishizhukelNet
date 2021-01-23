@@ -14,6 +14,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         public IImage Epsilon { get; } = new Image {
             BitmapImage = new MemoryStream(Properties.Resources.Calculator).ToBitmapImage()
         };
+        public IImage Zeta { get; } = new Image {
+            BitmapImage = new MemoryStream(Properties.Resources.PressToCalculate).ToBitmapImage()
+        };
         public ToggleButton MethodAdd { get; } = new ToggleButton("Method") { IsChecked = true };
         public ToggleButton MethodMultiply { get; } = new ToggleButton("Method");
 

@@ -17,6 +17,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label Name="LabelA" Grid.Row="0" Grid.Column="0" Margin="3">Number 1</Label>
         <TextBox Name="Alpha" Grid.Row="0" Grid.Column="1" Margin="5" Padding="3,0,3,0"></TextBox>
@@ -30,6 +31,7 @@
         <Label Name="LabelD" Grid.Row="3" Grid.Column="0" Margin="3">Result</Label>
         <TextBox Name="Delta" Grid.Row="3" Grid.Column="1" IsReadOnly="True" Background="LightGray" Margin="5" Padding="3,0,3,0"></TextBox>
         <Button Name="Gamma" Grid.Row="4" Grid.Column="0" Margin="5" VerticalAlignment="Top">_Calculate</Button>
-        <Image Name="Epsilon" Grid.Row="4" Grid.Column="1" Margin="5"></Image>
+        <Image Name="Epsilon" Grid.Row="4" Grid.RowSpan="2" Grid.Column="1" Margin="5" VerticalAlignment="Top"></Image>
+        <Image Name="Zeta" Grid.Row="5" Grid.Column="0" Margin="5" VerticalAlignment="Top"></Image>
     </Grid>
 </Window>

@@ -2,7 +2,7 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
     public interface IApplicationModel : IBusy {
-        bool IsModelErroneous(out string errorMessage);
+        ITextBox Status { get; }
 
         WindowState WindowState { get; set; }
     }

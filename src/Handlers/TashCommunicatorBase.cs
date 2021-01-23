@@ -5,6 +5,7 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +24,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
 
         public virtual async Task CommunicateAndShowCompletedOrFailedAsync(ITashTaskHandlingStatus<TModel> status, bool setText, string text) {
             using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
-                if (status.Model.IsModelErroneous(out var errorMessage)) {
+                if (status.Model.Status.Type == StatusType.Error) {
+                    var errorMessage = status.Model.Status.Text;
                     SimpleLogger.LogInformation($"Communicating 'Failed' with text {errorMessage} to remote controlling process");
                     await ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.Failed, false, "", errorMessage);
                 } else {

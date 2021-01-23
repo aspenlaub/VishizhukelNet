@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
@@ -34,13 +35,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
                     return;
             }
 
-            status.Model.ErrorMessage = "";
+            status.Model.Status.Type = StatusType.Success;
             if (status.TaskBeingProcessed.Text == "true") {
                 if (!actualEnabled) {
-                    status.Model.ErrorMessage = $"Expected {status.TaskBeingProcessed.ControlName} to be enabled";
+                    status.Model.Status.Type = StatusType.Error;
+                    status.Model.Status.Text = $"Expected {status.TaskBeingProcessed.ControlName} to be enabled";
                 }
             } else if (actualEnabled) {
-                status.Model.ErrorMessage = $"Expected {status.TaskBeingProcessed.ControlName} to be disabled";
+                status.Model.Status.Type = StatusType.Error;
+                status.Model.Status.Text = $"Expected {status.TaskBeingProcessed.ControlName} to be disabled";
             }
 
             await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
@@ -61,9 +64,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
                 return;
             }
             var actualNumberOfItems = Selectors[status.TaskBeingProcessed.ControlName].Selectables.Count;
-            status.Model.ErrorMessage = actualNumberOfItems.ToString() == status.TaskBeingProcessed.Text
+            status.Model.Status.Text = actualNumberOfItems.ToString() == status.TaskBeingProcessed.Text
                 ? ""
                 : $"Expected {status.TaskBeingProcessed.Text} item/-s on {status.TaskBeingProcessed.ControlName}, got {actualNumberOfItems}";
+            status.Model.Status.Type = string.IsNullOrEmpty(status.Model.Status.Text) ? StatusType.Success : StatusType.Error;
             await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
         }
 
@@ -81,11 +85,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
 
         protected override void OnValueTaskProcessed(ITashTaskHandlingStatus<IDemoApplicationModel> status, bool verify, bool set, string actualValue) {
             if (!verify || actualValue == status.TaskBeingProcessed.Text) {
-                status.Model.ErrorMessage = "";
+                status.Model.Status.Type = StatusType.Success;
             } else {
-                status.Model.ErrorMessage = set
+                status.Model.Status.Text = set
                     ? $"Could not set {status.TaskBeingProcessed.ControlName} to \"{status.TaskBeingProcessed.Text}\", it is \"{actualValue}\""
                     : $"Expected {status.TaskBeingProcessed.ControlName} to be \"{status.TaskBeingProcessed.Text}\", got \"{actualValue}\"";
+                status.Model.Status.Type = string.IsNullOrEmpty(status.Model.Status.Text) ? StatusType.Success : StatusType.Error;
             }
         }
 

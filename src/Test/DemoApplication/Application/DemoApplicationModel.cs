@@ -19,12 +19,5 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         };
         public ToggleButton MethodAdd { get; } = new ToggleButton("Method") { IsChecked = true };
         public ToggleButton MethodMultiply { get; } = new ToggleButton("Method");
-
-        public string ErrorMessage { get; set; } = "";
-
-        public override bool IsModelErroneous(out string errorMessage) {
-            errorMessage = ErrorMessage;
-            return !string.IsNullOrWhiteSpace(errorMessage);
-        }
     }
 }

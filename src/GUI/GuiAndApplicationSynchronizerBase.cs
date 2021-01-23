@@ -132,7 +132,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             }
         }
 
-        public virtual void OnImageChanged(IImage image) {
+        public virtual void OnImageChanged(WindowsImage image) {
         }
 
         private void UpdateImageIfNecessary(IImage modelImage, WindowsImage image) {
@@ -146,7 +146,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
 
             image.Source = modelImage.BitmapImage;
 
-            OnImageChanged(modelImage);
+            OnImageChanged(image);
         }
 
         private void UpdateLabelIfNecessary(ITextBox modelTextBox, ContentControl label) {

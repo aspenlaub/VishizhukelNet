@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
@@ -20,6 +21,7 @@ using WindowsWebBrowser = System.Windows.Controls.WebBrowser;
 using WindowsSelector = System.Windows.Controls.Primitives.Selector;
 using WindowsImage = System.Windows.Controls.Image;
 using WindowsToggleButton = System.Windows.Controls.Primitives.ToggleButton;
+using WindowsRectangle = System.Windows.Shapes.Rectangle;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
     public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow>
@@ -97,6 +99,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     case "RadioButton":
                         UpdateToggleButtonIfNecessary((ToggleButton)modelProperty.GetValue(Model), (WindowsToggleButton)windowField.GetValue(Window));
                         break;
+                    case "Rectangle":
+                        UpdateRectangleIfNecessary((IRectangle)modelProperty.GetValue(Model), (WindowsRectangle)windowField.GetValue(Window));
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -130,6 +135,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                         throw new NotImplementedException();
                 }
             }
+        }
+
+        private void UpdateRectangleIfNecessary(IRectangle modelRectangle, Shape rectangle) {
+            if ((int)modelRectangle.Left == (int)Canvas.GetLeft(rectangle)
+                && (int)modelRectangle.Top == (int)Canvas.GetTop(rectangle)
+                && (int)modelRectangle.Width == (int)rectangle.Width
+                && (int)modelRectangle.Height == (int)rectangle.Height
+                && (int)modelRectangle.StrokeThickness == (int)rectangle.StrokeThickness
+                && modelRectangle.Stroke.Equals(rectangle.Stroke)) { return; }
+
+            Canvas.SetLeft(rectangle, modelRectangle.Left);
+            Canvas.SetTop(rectangle, modelRectangle.Top);
+            rectangle.Width = modelRectangle.Width;
+            rectangle.Height = modelRectangle.Height;
+            rectangle.Stroke = modelRectangle.Stroke;
+            rectangle.StrokeThickness = modelRectangle.StrokeThickness;
         }
 
         public virtual void OnImageChanged(WindowsImage image) {

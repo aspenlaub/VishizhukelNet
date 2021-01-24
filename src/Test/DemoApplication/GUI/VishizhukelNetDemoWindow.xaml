@@ -35,6 +35,7 @@
         <StackPanel Name="ZetaCanvasContainer" Grid.Row="5" Grid.Column="0" Margin="5" >
             <Canvas Name="ZetaCanvas">
                 <Image Name="Zeta" VerticalAlignment="Top"></Image>
+                <Rectangle Name="Eta"></Rectangle>
             </Canvas>
         </StackPanel>
     </Grid>

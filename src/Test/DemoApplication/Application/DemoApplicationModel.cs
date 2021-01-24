@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows.Media;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
@@ -16,6 +17,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         };
         public IImage Zeta { get; } = new Image {
             BitmapImage = new MemoryStream(Properties.Resources.PressToCalculate).ToBitmapImage()
+        };
+        public IRectangle Eta { get; } = new Rectangle {
+            Left = 40, Top = 13, Width = 10, Height = 10, Stroke = new SolidColorBrush(Colors.LimeGreen) { Opacity = 0.5 }, StrokeThickness = 2
         };
         public ToggleButton MethodAdd { get; } = new ToggleButton("Method") { IsChecked = true };
         public ToggleButton MethodMultiply { get; } = new ToggleButton("Method");

@@ -32,11 +32,11 @@
         <TextBox Name="Delta" Grid.Row="3" Grid.Column="1" IsReadOnly="True" Background="LightGray" Margin="5" Padding="3,0,3,0"></TextBox>
         <Button Name="Gamma" Grid.Row="4" Grid.Column="0" Margin="5" VerticalAlignment="Top">_Calculate</Button>
         <Image Name="Epsilon" Grid.Row="4" Grid.RowSpan="2" Grid.Column="1" Margin="5" VerticalAlignment="Top"></Image>
-        <StackPanel Name="ZetaCanvasContainer" Grid.Row="5" Grid.Column="0" Margin="5" >
+        <DockPanel Name="ZetaCanvasContainer" Grid.Row="5" Grid.Column="0" Margin="5" >
             <Canvas Name="ZetaCanvas">
                 <Image Name="Zeta" VerticalAlignment="Top"></Image>
                 <Rectangle Name="Eta"></Rectangle>
             </Canvas>
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>

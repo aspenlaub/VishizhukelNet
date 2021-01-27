@@ -7,11 +7,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
         where TModel : class, IApplicationModel
         where TGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer<TModel> {
         protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
+        protected readonly IToggleButtonNameToHandlerMapper ToggleButtonNameToHandlerMapper;
         protected readonly TGuiAndApplicationSynchronizer GuiAndApplicationSynchronizer;
         protected readonly TModel Model;
 
-        protected ApplicationBase(IButtonNameToCommandMapper buttonNameToCommandMapper, TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model) {
+        protected ApplicationBase(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
+                TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model) {
             ButtonNameToCommandMapper = buttonNameToCommandMapper;
+            ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
             GuiAndApplicationSynchronizer = guiAndApplicationSynchronizer;
             Model = model;
         }

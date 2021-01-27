@@ -26,6 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet {
                 services.UseVishizhukelAndPegh(csArgumentPrompter);
             }
             services.AddTransient<IButtonNameToCommandMapper, ButtonNameToCommandMapper>();
+            services.AddTransient<IToggleButtonNameToHandlerMapper, ToggleButtonNameToHandlerMapper>();
             services.AddTransient<ITashAccessor, TashAccessor>();
             return services;
         }
@@ -47,6 +48,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet {
 
             builder.RegisterInstance(logConfiguration);
             builder.RegisterType<ButtonNameToCommandMapper>().As<IButtonNameToCommandMapper>().SingleInstance();
+            builder.RegisterType<ToggleButtonNameToHandlerMapper>().As<IToggleButtonNameToHandlerMapper>().SingleInstance();
             builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();
             builder.RegisterType<TashAccessor>().As<ITashAccessor>();
             return builder;

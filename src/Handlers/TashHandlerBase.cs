@@ -21,13 +21,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
         protected readonly ILogConfiguration LogConfiguration;
         protected readonly string LogId;
         protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
+        protected readonly IToggleButtonNameToHandlerMapper ToggleButtonNameToHandlerMapper;
         protected readonly IGuiAndAppHandler GuiAndAppHandler;
         protected readonly ITashVerifyAndSetHandler<TModel> TashVerifyAndSetHandler;
         protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
         protected readonly ITashCommunicator<TModel> TashCommunicator;
 
         public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
-            IButtonNameToCommandMapper buttonNameToCommandMapper, IGuiAndAppHandler guiAndAppHandler,
+            IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler guiAndAppHandler,
             ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
             TashAccessor = tashAccessor;
             SimpleLogger = simpleLogger;
@@ -35,6 +36,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
             LogId = logConfiguration.LogId;
             ButtonNameToCommandMapper = buttonNameToCommandMapper;
+            ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
             GuiAndAppHandler = guiAndAppHandler;
             TashVerifyAndSetHandler = tashVerifyAndSetHandler;
             TashSelectorHandler = tashSelectorHandler;
@@ -162,15 +164,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
         protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
             using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
                 var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);
-                if (command == null) {
-                    var errorMessage = $"Unknown control/button {status.TaskBeingProcessed.ControlName}";
-                    SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
-                    await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
+                if (command != null) {
+                    await command.ExecuteAsync();
+                    await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
                     return;
                 }
 
-                await command.ExecuteAsync();
-                await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
+                var handler = ToggleButtonNameToHandlerMapper.HandlerForToggleButton(status.TaskBeingProcessed.ControlName);
+                if (handler != null) {
+                    await handler.ToggledAsync(!handler.IsChecked());
+                    await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
+                    return;
+                }
+
+                var errorMessage = $"Unknown control/button {status.TaskBeingProcessed.ControlName}";
+                SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
+                await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
             }
         }
     }

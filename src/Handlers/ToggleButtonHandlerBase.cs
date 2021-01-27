@@ -1,9 +1,10 @@
-﻿using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
+﻿using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
-    public abstract class ToggleButtonHandlerBase<TModel> where TModel : IApplicationModel {
+    public abstract class ToggleButtonHandlerBase<TModel> : IToggleButtonHandler where TModel : IApplicationModel {
         protected readonly TModel Model;
         protected readonly ToggleButton ToggleButton;
 
@@ -12,11 +13,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             ToggleButton = toggleButton;
         }
 
-        protected bool Unchanged(bool isChecked) {
+        public bool Unchanged(bool isChecked) {
             return ToggleButton.IsChecked == isChecked;
         }
 
-        protected void SetChecked(bool isChecked) {
+        public bool IsChecked() {
+            return ToggleButton.IsChecked;
+        }
+
+        public abstract Task ToggledAsync(bool isChecked);
+
+        public void SetChecked(bool isChecked) {
             ToggleButton.IsChecked = isChecked;
             Model.OtherToggleButtonsWithSameGroup(!isChecked, ToggleButton).ForEach(b => b.IsChecked = false);
         }

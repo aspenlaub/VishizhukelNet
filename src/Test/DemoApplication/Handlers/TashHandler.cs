@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class TashHandler : TashHandlerBase<IDemoApplicationModel> {
         public TashHandler(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
-            IButtonNameToCommandMapper buttonNameToCommandMapper, IGuiAndAppHandler guiAndAppHandler,
+            IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler guiAndAppHandler,
             ITashVerifyAndSetHandler<IDemoApplicationModel> tashVerifyAndSetHandler, ITashSelectorHandler<IDemoApplicationModel> tashSelectorHandler, ITashCommunicator<IDemoApplicationModel> tashCommunicator)
-            : base(tashAccessor, simpleLogger, logConfiguration, buttonNameToCommandMapper, guiAndAppHandler, tashVerifyAndSetHandler, tashSelectorHandler, tashCommunicator) {
+            : base(tashAccessor, simpleLogger, logConfiguration, buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndAppHandler, tashVerifyAndSetHandler, tashSelectorHandler, tashCommunicator) {
         }
 
         protected override async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<IDemoApplicationModel> status) {

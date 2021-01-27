@@ -39,6 +39,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
             var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
+            var toggleButtonNameToHandlerMapper = Container.Resolve<IToggleButtonNameToHandlerMapper>();
 
             var commands = vDemoApp.Commands;
             guiToAppGate.WireButtonAndCommand(Gamma, commands.GammaCommand, buttonNameToCommandMapper);
@@ -46,8 +47,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
             var handlers = vDemoApp.Handlers;
             guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => vDemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));
             guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i));
-            guiToAppGate.RegisterAsyncToggleButtonCallback(MethodAdd, b => vDemoApp.Handlers.MethodAddHandler.ToggledAsync(b));
-            guiToAppGate.RegisterAsyncToggleButtonCallback(MethodMultiply, b => vDemoApp.Handlers.MethodMultiplyHandler.ToggledAsync(b));
+
+            guiToAppGate.WireToggleButtonAndHandler(MethodAdd, vDemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
+            guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, vDemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
 
             vTashTimer = new TashTimer<IDemoApplicationModel>(Container.Resolve<ITashAccessor>(), vDemoApp.TashHandler, guiToAppGate);
             if (!await vTashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {

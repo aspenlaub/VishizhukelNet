@@ -21,9 +21,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         private readonly ISimpleLogger vSimpleLogger;
         private readonly ILogConfiguration vLogConfiguration;
 
-        public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, DemoApplicationModel model,
+        public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
+                IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, DemoApplicationModel model,
                 ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration)
-                : base(buttonNameToCommandMapper, guiAndApplicationSynchronizer, model) {
+                : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model) {
             vTashAccessor = tashAccessor;
             vSimpleLogger = simpleLogger;
             vLogConfiguration = logConfiguration;
@@ -53,7 +54,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             };
             var selectorHandler = new TashSelectorHandler(Handlers, vSimpleLogger, communicator, selectors);
             var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, vSimpleLogger, null, communicator, selectors);
-            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
         }
 
         public override async Task OnLoadedAsync() {

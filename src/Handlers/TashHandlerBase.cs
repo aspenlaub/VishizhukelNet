@@ -147,6 +147,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
                     case ControllableProcessTaskType.VerifyNumberOfItems:
                         await TashVerifyAndSetHandler.ProcessVerifyNumberOfItemsTaskAsync(status);
                         break;
+                    case ControllableProcessTaskType.PressButton:
+                        await ProcessPressButtonTaskAsync(status);
+                        break;
                     default:
                         var unknownTaskTypeErrorMessage = $"Unknown task type {status.TaskBeingProcessed.Type}";
                         SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}");

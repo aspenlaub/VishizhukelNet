@@ -15,6 +15,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
             var logConfigurationMock = new Mock<ILogConfiguration>();
             logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoIntegrationTestBase));
             logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
+            logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
             Container = new ContainerBuilder().RegisterForDemoIntegrationTest(logConfigurationMock.Object).Build();
         }
 

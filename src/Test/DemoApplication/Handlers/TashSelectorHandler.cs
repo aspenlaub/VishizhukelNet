@@ -33,18 +33,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
         }
 
         public override async Task ProcessSelectComboOrResetTaskAsync(ITashTaskHandlingStatus<IDemoApplicationModel> status) {
-            if (!Selectors.ContainsKey(status.TaskBeingProcessed.ControlName)) {
-                var errorMessage = $"Unknown selector control {status.TaskBeingProcessed.ControlName}";
+            var controlName = status.TaskBeingProcessed.ControlName;
+            if (!Selectors.ContainsKey(controlName)) {
+                var errorMessage = $"Unknown selector control {controlName}";
                 SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage})");
                 await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
                 return;
             }
 
-            SimpleLogger.LogInformation($"{status.TaskBeingProcessed.ControlName} is a valid selector");
-            var selector = Selectors[status.TaskBeingProcessed.ControlName];
+            SimpleLogger.LogInformation($"{controlName} is a valid selector");
+            var selector = Selectors[controlName];
 
-            var controlName = status.TaskBeingProcessed.ControlName;
-            await SelectedIndexChangedAsync(status, controlName, 0, false);
+            await SelectedIndexChangedAsync(status, controlName, -1, false);
             if (status.TaskBeingProcessed.Status == ControllableProcessTaskStatus.BadRequest) { return; }
 
             var itemToSelect = status.TaskBeingProcessed.Text;

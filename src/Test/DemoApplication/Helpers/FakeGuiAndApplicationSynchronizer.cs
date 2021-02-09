@@ -3,10 +3,10 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers {
     public class FakeGuiAndApplicationSynchronizer : IDemoGuiAndApplicationSynchronizer {
-        public DemoApplicationModel Model { get; }
+        public IDemoApplicationModel Model { get; }
         public DemoApplicationModel LastModelKnownToMe { get; }
 
-        public FakeGuiAndApplicationSynchronizer(DemoApplicationModel model) {
+        public FakeGuiAndApplicationSynchronizer(IDemoApplicationModel model) {
             Model = model;
             LastModelKnownToMe = new DemoApplicationModel();
             OnModelDataChanged();

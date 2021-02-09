@@ -12,7 +12,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application {
-    public class DemoApplication : ApplicationBase<IDemoGuiAndApplicationSynchronizer, DemoApplicationModel> {
+    public class DemoApplication : ApplicationBase<IDemoGuiAndApplicationSynchronizer, IDemoApplicationModel> {
         public IDemoHandlers Handlers { get; private set; }
         public IDemoCommands Commands { get; private set; }
 

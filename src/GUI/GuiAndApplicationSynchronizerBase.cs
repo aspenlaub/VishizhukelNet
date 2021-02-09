@@ -39,7 +39,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
             ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
             ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();
-            var modelProperties = typeof(TApplicationModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var modelProperties = typeof(TApplicationModel).GetPropertiesAndInterfaceProperties();
             var windowFields = typeof(TWindow).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
             var windowProperties = typeof(TWindow).GetProperties(BindingFlags.Public | BindingFlags.Instance ).Where(p => p.CanRead && p.CanWrite).ToList();
             foreach (var modelProperty in modelProperties) {

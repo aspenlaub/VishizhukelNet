@@ -26,5 +26,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions {
                 p.PropertyType == typeof(ToggleButton)
             ).ToList();
         }
+
+        public static IList<PropertyInfo> GetPropertiesAndInterfaceProperties(this Type type) {
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
+            return !type.IsInterface ? type.GetProperties(bindingFlags) : type.GetInterfaces().Union(new Type[] { type }).SelectMany(i => i.GetProperties(bindingFlags)).Distinct().ToList();
+        }
     }
 }

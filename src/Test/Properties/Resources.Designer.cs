@@ -61,6 +61,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The calculation was successful.
+        /// </summary>
+        internal static string CalculationSuccessful {
+            get {
+                return ResourceManager.GetString("CalculationSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] Calculator {

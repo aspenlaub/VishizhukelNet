@@ -22,11 +22,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Comman
             var betaValue = uint.Parse(vModel.Beta.SelectedItem.Name);
             var result = vModel.MethodAdd.IsChecked ? alphaValue + betaValue : alphaValue * betaValue;
             await vDeltaTextHandler.TextChangedAsync(result.ToString());
+            vModel.Status.Type = StatusType.Success;
+            vModel.Status.Text = Properties.Resources.CalculationSuccessful;
         }
 
         public async Task<bool> ShouldBeEnabledAsync() {
             var enabled = vModel.Alpha.Type == StatusType.None && vModel.Beta.SelectionMade;
-             return await Task.FromResult(enabled);
+            return await Task.FromResult(enabled);
         }
     }
 }

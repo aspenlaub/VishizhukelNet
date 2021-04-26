@@ -21,28 +21,28 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
         }
 
         private static EventHandler<UnobservedTaskExceptionEventArgs> SaveUnobservedTaskExceptionAndExit(System.Windows.Application application, IFolder folder) {
-            return (s, e) => {
-                SaveUnhandledExceptionAndExit(application, folder, e.Exception, "TaskScheduler.UnobservedTaskException");
+            return (_, e) => {
+                SaveUnhandledExceptionAndExitAsync(application, folder, e.Exception, "TaskScheduler.UnobservedTaskException").Wait();
             };
         }
 
         private static DispatcherUnhandledExceptionEventHandler SaveUnhandledDispatchedExceptionAndExit(System.Windows.Application application, IFolder folder) {
             return (s, e) => {
-                SaveUnhandledExceptionAndExit(application, folder, e.Exception, "Application.Current.DispatcherUnhandledException");
+                SaveUnhandledExceptionAndExitAsync(application, folder, e.Exception, "Application.Current.DispatcherUnhandledException").Wait();
             };
         }
 
         private static UnhandledExceptionEventHandler SaveUnhandledAppDomainExceptionAndExit(System.Windows.Application application, IFolder folder) {
             return (s, e) => {
-                SaveUnhandledExceptionAndExit(application, folder, (Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+                SaveUnhandledExceptionAndExitAsync(application, folder, (Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException").Wait();
             };
         }
 
-        private static void SaveUnhandledExceptionAndExit(System.Windows.Application application, IFolder folder, Exception e, string source) {
+        private static async Task SaveUnhandledExceptionAndExitAsync(System.Windows.Application application, IFolder folder, Exception e, string source) {
             AppDomain.CurrentDomain.UnhandledException -= SaveUnhandledAppDomainExceptionAndExit(application, folder);
             application.DispatcherUnhandledException -= SaveUnhandledDispatchedExceptionAndExit(application, folder);
             TaskScheduler.UnobservedTaskException -= SaveUnobservedTaskExceptionAndExit(application, folder);
-            ExceptionSaverAndSender.SaveUnhandledException(folder, e, source);
+            await ExceptionSaverAndSender.SaveUnhandledExceptionAsync(folder, e, source);
             TryAndExit();
         }
 

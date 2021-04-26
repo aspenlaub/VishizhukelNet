@@ -1,4 +1,5 @@
-﻿using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
+﻿using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Web;
 using Autofac;
@@ -9,9 +10,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Miscellaneous {
     [TestClass]
     public class ContainerBuilderTest {
         [TestMethod]
-        public void CanUseContainerBuilder() {
+        public async Task CanUseContainerBuilder() {
             var logConfigurationMock = new Mock<ILogConfiguration>();
-            var container = new ContainerBuilder().UseVishizhukelNetDvinAndPegh(new DummyCsArgumentPrompter(), logConfigurationMock.Object).Build();
+            var container = (await new ContainerBuilder().UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfigurationMock.Object)).Build();
             var httpGate = container.Resolve<ISecuredHttpGate>();
             Assert.IsNotNull(httpGate);
         }

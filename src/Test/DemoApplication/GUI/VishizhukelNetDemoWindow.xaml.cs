@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
@@ -24,17 +25,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
         public VishizhukelNetDemoWindow() {
             InitializeComponent();
+        }
+
+        private async Task BuildContainerIfNecessaryAsync() {
+            if (Container != null) { return; }
 
             var logConfigurationMock = new Mock<ILogConfiguration>();
             logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoWindow));
             logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
             logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
-            var builder = new ContainerBuilder().UseDemoApplication(this, logConfigurationMock.Object);
+            var builder = await new ContainerBuilder().UseDemoApplicationAsync(this, logConfigurationMock.Object);
             Container = builder.Build();
-
         }
 
         private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
+            await BuildContainerIfNecessaryAsync();
+
             vDemoApp = Container.Resolve<VishizhukelDemoApplication>();
             await vDemoApp.OnLoadedAsync();
 
@@ -79,8 +85,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
         }
 
         private void AdjustZetaAndItsCanvas() {
-            var adjuster = Container.Resolve<ICanvasAndImageSizeAdjuster>();
-            adjuster.AdjustCanvasAndImage(ZetaCanvasContainer, ZetaCanvas, Zeta);
+            var adjuster = Container?.Resolve<ICanvasAndImageSizeAdjuster>();
+            adjuster?.AdjustCanvasAndImage(ZetaCanvasContainer, ZetaCanvas, Zeta);
         }
     }
 }

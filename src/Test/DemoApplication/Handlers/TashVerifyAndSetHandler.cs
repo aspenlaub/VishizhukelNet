@@ -27,6 +27,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
             };
         }
 
+        protected override Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<IDemoApplicationModel> status) {
+            return new() {
+                { nameof(status.Model.Theta), status.Model.Theta }
+            };
+        }
+
+        protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<IDemoApplicationModel> status) {
+            return new() {
+                { nameof(status.Model.Theta), vDemoApplicationHandlers.ThetaHandler }
+            };
+        }
+
         protected override void OnValueTaskProcessed(ITashTaskHandlingStatus<IDemoApplicationModel> status, bool verify, bool set, string actualValue) {
             if (!verify || actualValue == status.TaskBeingProcessed.Text) {
                 status.Model.Status.Type = StatusType.Success;

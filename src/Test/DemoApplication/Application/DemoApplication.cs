@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
@@ -9,7 +8,6 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
@@ -63,12 +61,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         public override async Task OnLoadedAsync() {
             await base.OnLoadedAsync();
             await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
-            // TODO: remove
-            await Handlers.ThetaHandler.CollectionChangedAsync(new List<ICollectionViewSourceEntity> {
-                new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 30), Name = "Decreased", Balance = 2404.40 },
-                new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 29), Name = "Increased", Balance = 2707.70 },
-                new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 28), Name = "Unchanged", Balance = 2407.70 }
-            });
         }
 
         public ITashTaskHandlingStatus<IDemoApplicationModel> CreateTashTaskHandlingStatus() {

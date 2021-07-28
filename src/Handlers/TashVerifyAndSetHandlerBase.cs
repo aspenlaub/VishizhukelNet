@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
     public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHandler<TModel> where TModel : IApplicationModel {
@@ -27,6 +29,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
         protected abstract Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<TModel> status);
         protected abstract Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
 
+        protected abstract Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<TModel> status);
+        protected abstract Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
+
         protected virtual void OnValueTaskProcessed(ITashTaskHandlingStatus<TModel> status, bool verify, bool set, string actualValue) {
             if (!verify || actualValue == status.TaskBeingProcessed.Text) {
                 SimpleLogger.LogInformation($"{status.TaskBeingProcessed.ControlName} as set to {actualValue}");
@@ -40,47 +45,73 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
 
         public async Task ProcessVerifyGetOrSetValueOrLabelTaskAsync(ITashTaskHandlingStatus<TModel> status, bool verify, bool set, bool label, bool combined) {
             string actualValue;
-            if (Selectors.ContainsKey(status.TaskBeingProcessed.ControlName)) {
+            var controlName = status.TaskBeingProcessed.ControlName;
+            if (Selectors.ContainsKey(controlName)) {
                 if (set) {
                     if (combined) {
-                        var errorMessage = $"Cannot set items for {status.TaskBeingProcessed.ControlName}, that has not been implemented";
+                        var errorMessage = $"Cannot set items for {controlName}, that has not been implemented";
                         SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
                         await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
                         return;
                     }
-                    SimpleLogger.LogInformation($"Setting value for {status.TaskBeingProcessed.ControlName} via SelectComboOrResetTask");
+                    SimpleLogger.LogInformation($"Setting value for {controlName} via SelectComboOrResetTask");
                     await TashSelectorHandler.ProcessSelectComboOrResetTaskAsync(status);
                     if (status.TaskBeingProcessed.Status != ControllableProcessTaskStatus.Completed) {
                         return;
                     }
-                    SimpleLogger.LogInformation($"Value for {status.TaskBeingProcessed.ControlName} set (via SelectComboOrResetTask)");
+                    SimpleLogger.LogInformation($"Value for {controlName} set (via SelectComboOrResetTask)");
                 }
 
-                var selector = Selectors[status.TaskBeingProcessed.ControlName];
+                var selector = Selectors[controlName];
                 actualValue = combined
                 ? string.Join('^', selector.Selectables.Select(s => s.Name))
                 : label ? selector.LabelText : selector.SelectedItem.Name;
             } else if (combined) {
-                var errorMessage = $"{status.TaskBeingProcessed.ControlName} is not a selector control";
+                var errorMessage = $"{controlName} is not a selector control";
                 SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
                 await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
                 return;
             } else {
                 var textBoxes = TextBoxNamesToTextBoxDictionary(status);
-                if (!textBoxes.ContainsKey(status.TaskBeingProcessed.ControlName)) {
-                    var errorMessage = $"Unknown text or selector control {status.TaskBeingProcessed.ControlName}";
-                    SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
-                    await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
-                    return;
+                if (textBoxes.ContainsKey(controlName)) {
+                    var textHandlers = TextBoxNamesToTextHandlerDictionary(status);
+                    var textHandler = textHandlers.ContainsKey(controlName) ? textHandlers[controlName] : null;
+
+                    actualValue = await GetOrSetTextBoxValueAsync(textBoxes[controlName], textHandler, label, set, status.TaskBeingProcessed.Text);
+                } else {
+                    var collectionViewSources = CollectionViewSourceNamesToCollectionViewSourceDictionary(status);
+                    if (collectionViewSources.ContainsKey(controlName)) {
+                        var collectionViewSourceHandlers = CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(status);
+                        var collectionViewSourceHandler = collectionViewSourceHandlers.ContainsKey(controlName) ? collectionViewSourceHandlers[controlName] : null;
+
+                        actualValue = await GetOrSetCollectionViewSourceAsync(collectionViewSources[controlName], collectionViewSourceHandler, set, status.TaskBeingProcessed.Text);
+                    } else {
+                        var errorMessage = $"Unknown text or selector control {controlName}";
+                        SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
+                        await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
+                        return;
+                    }
                 }
 
-                var textHandlers = TextBoxNamesToTextHandlerDictionary(status);
-                var textHandler = textHandlers.ContainsKey(status.TaskBeingProcessed.ControlName) ? textHandlers[status.TaskBeingProcessed.ControlName] : null;
-
-                actualValue = await GetOrSetTextBoxValueAsync(textBoxes[status.TaskBeingProcessed.ControlName], textHandler, label, set, status.TaskBeingProcessed.Text);
             }
             OnValueTaskProcessed(status, verify, set, actualValue);
             await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, true, actualValue);
+        }
+
+        private async Task<string> GetOrSetCollectionViewSourceAsync(ICollectionViewSource collectionViewSource, ISimpleCollectionViewSourceHandler collectionViewSourceHandler, bool set, string text) {
+            if (!set) {
+                return JsonConvert.SerializeObject(collectionViewSource.Items);
+            }
+
+            if (collectionViewSourceHandler == null) {
+                throw new NotImplementedException();
+            }
+
+
+            var items = collectionViewSourceHandler.DeserializeJsonObject(text);
+            await collectionViewSourceHandler.CollectionChangedAsync(items);
+
+            return JsonConvert.SerializeObject(collectionViewSource.Items);
         }
 
         protected async Task<string> GetOrSetTextBoxValueAsync(ITextBox textBox, ISimpleTextHandler textHandler, bool label, bool set, string text) {

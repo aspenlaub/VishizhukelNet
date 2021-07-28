@@ -13,5 +13,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interf
         ToggleButton MethodMultiply { get; }
         IImage Zeta { get; }
         IRectangle Eta { get; }
+        ICollectionViewSource<IDemoCollectionViewSourceEntity> Theta { get; }
     }
 }

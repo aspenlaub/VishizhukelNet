@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -22,6 +23,7 @@ using WindowsSelector = System.Windows.Controls.Primitives.Selector;
 using WindowsImage = System.Windows.Controls.Image;
 using WindowsToggleButton = System.Windows.Controls.Primitives.ToggleButton;
 using WindowsRectangle = System.Windows.Shapes.Rectangle;
+using WindowsCollectionViewSource = System.Windows.Data.CollectionViewSource;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
     public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow>
@@ -30,6 +32,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         protected readonly TWindow Window;
         protected readonly Dictionary<PropertyInfo, FieldInfo> ModelPropertyToWindowFieldMapping, ModelPropertyToWindowLabelMapping;
         protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
+        protected readonly Dictionary<PropertyInfo, WindowsCollectionViewSource> ModelPropertyToCollectionViewSourceMapping;
 
         public TApplicationModel Model { get; }
 
@@ -39,6 +42,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
             ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
             ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();
+            ModelPropertyToCollectionViewSourceMapping = new Dictionary<PropertyInfo, WindowsCollectionViewSource>();
             var modelProperties = typeof(TApplicationModel).GetPropertiesAndInterfaceProperties();
             var windowFields = typeof(TWindow).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
             var windowProperties = typeof(TWindow).GetProperties(BindingFlags.Public | BindingFlags.Instance ).Where(p => p.CanRead && p.CanWrite).ToList();
@@ -46,17 +50,27 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 var windowField = windowFields.FirstOrDefault(p => p.Name == modelProperty.Name);
                 if (windowField != null) {
                     ModelPropertyToWindowFieldMapping[modelProperty] = windowField;
+                    continue;
                 }
 
                 var labelField = windowFields.FirstOrDefault(p => p.Name == modelProperty.Name + "Label");
                 if (labelField != null) {
                     ModelPropertyToWindowLabelMapping[modelProperty] = labelField;
+                    continue;
                 }
 
                 var windowProperty = windowProperties.FirstOrDefault(p => p.Name == modelProperty.Name);
                 if (windowProperty != null) {
                     ModelPropertyToWindowPropertyMapping[modelProperty] = windowProperty;
+                    continue;
                 }
+
+                if (window is not FrameworkElement frameWorkElement) { continue; }
+
+                var viewSource = frameWorkElement.TryFindResource(modelProperty.Name) as WindowsCollectionViewSource;
+                if (viewSource == null) { continue; }
+
+                ModelPropertyToCollectionViewSourceMapping[modelProperty] = viewSource;
             }
         }
 
@@ -102,6 +116,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     case "Rectangle":
                         UpdateRectangleIfNecessary((IRectangle)modelProperty.GetValue(Model), (WindowsRectangle)windowField.GetValue(Window));
                         break;
+                    case "DataGrid":
+                        continue;
                     default:
                         throw new NotImplementedException();
                 }
@@ -129,11 +145,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 var windowProperty = modelPropertyToWindowPropertyMapping.Value;
                 switch (windowProperty.PropertyType.Name) {
                     case "WindowState":
+                        // ReSharper disable once PossibleNullReferenceException
                         UpdateWindowStateIfNecessary((WindowState) modelProperty.GetValue(Model), Window as Window);
                         break;
                     default:
                         throw new NotImplementedException();
                 }
+            }
+
+            foreach (var modelPropertyToCollectionViewSourceMapping in ModelPropertyToCollectionViewSourceMapping) {
+                var modelProperty = modelPropertyToCollectionViewSourceMapping.Key;
+                var collectionViewSource = modelPropertyToCollectionViewSourceMapping.Value;
+                UpdateCollectionViewSourceIfNecessary((ICollectionViewSourceObject)modelProperty.GetValue(Model), collectionViewSource);
             }
         }
 
@@ -291,6 +314,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             if (modelWindowState == window.WindowState) { return; }
 
             window.WindowState = modelWindowState;
+        }
+
+        private void UpdateCollectionViewSourceIfNecessary(ICollectionViewSourceObject modelCollectionViewSource, WindowsCollectionViewSource windowCollectionViewSource) {
+            windowCollectionViewSource.Source = modelCollectionViewSource.ToObservableCollection();
+            windowCollectionViewSource.SortDescriptions.Clear();
+            windowCollectionViewSource.SortDescriptions.Add(new SortDescription(modelCollectionViewSource.SortProperty, modelCollectionViewSource.SortDirection));
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
@@ -25,7 +26,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
         private VishizhukelDemoApplication vDemoApp;
         private ITashTimer<IDemoApplicationModel> vTashTimer;
-        private ViewSources vViewSources;
 
         public VishizhukelNetDemoWindow() {
             InitializeComponent();
@@ -44,8 +44,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
         private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
             await BuildContainerIfNecessaryAsync();
-
-            vViewSources = new ViewSources(this);
 
             vDemoApp = Container.Resolve<VishizhukelDemoApplication>();
             await vDemoApp.OnLoadedAsync();
@@ -72,14 +70,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
             vTashTimer.CreateAndStartTimer(vDemoApp.CreateTashTaskHandlingStatus());
 
             AdjustZetaAndItsCanvas();
-
-            // TODO: Replace by proper synchronization with application
-            var collection = new ObservableCollection<IDemoDataGridEntity> {
-                new DemoDataGridEntity { Date = new DateTime(2021, 7, 28), Name = "Unchanged", Balance = 2407.70 },
-                new DemoDataGridEntity { Date = new DateTime(2021, 7, 29), Name = "Increased", Balance = 2707.70 },
-                new DemoDataGridEntity { Date = new DateTime(2021, 7, 30), Name = "Decreased", Balance = 2404.40 }
-            };
-            SetViewSource(vViewSources.DemoDataGridViewSource, collection, "Date", ListSortDirection.Ascending);
         }
 
         public void Dispose() {

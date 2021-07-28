@@ -55,8 +55,8 @@
             </Canvas>
         </DockPanel>
         <TextBox Name="Status" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Padding="3,0,3,0" BorderThickness="0"></TextBox>
-        <DataGrid Name="DemoDataGrid" AutoGenerateColumns="False" Grid.Row="0" Grid.Column="2" Grid.RowSpan="7" Margin="5"
-                  ItemsSource="{Binding Source={StaticResource Theta}}">
+        <DataGrid Name="Theta" AutoGenerateColumns="False" Grid.Row="0" Grid.Column="2" Grid.RowSpan="7" Margin="5"
+                  ItemsSource="{Binding Source={StaticResource Theta}}" EnableRowVirtualization="False">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Date" Width="20*">
                     <DataGridTemplateColumn.CellTemplate>

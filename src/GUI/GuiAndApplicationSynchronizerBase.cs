@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -47,7 +46,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             var modelProperties = typeof(TApplicationModel).GetPropertiesAndInterfaceProperties();
             var windowFields = typeof(TWindow).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
             var windowProperties = typeof(TWindow).GetProperties(BindingFlags.Public | BindingFlags.Instance ).Where(p => p.CanRead && p.CanWrite).ToList();
+            var windowAsFrameworkElement = window as FrameworkElement;
             foreach (var modelProperty in modelProperties) {
+                if (windowAsFrameworkElement?.TryFindResource(modelProperty.Name) is WindowsCollectionViewSource viewSource) {
+                    ModelPropertyToCollectionViewSourceMapping[modelProperty] = viewSource;
+                    continue;
+                }
+
                 var windowField = windowFields.FirstOrDefault(p => p.Name == modelProperty.Name);
                 if (windowField != null) {
                     ModelPropertyToWindowFieldMapping[modelProperty] = windowField;
@@ -61,17 +66,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 }
 
                 var windowProperty = windowProperties.FirstOrDefault(p => p.Name == modelProperty.Name);
-                if (windowProperty != null) {
-                    ModelPropertyToWindowPropertyMapping[modelProperty] = windowProperty;
+                if (windowProperty == null) {
                     continue;
                 }
 
-                if (window is not FrameworkElement frameWorkElement) { continue; }
-
-                var viewSource = frameWorkElement.TryFindResource(modelProperty.Name) as WindowsCollectionViewSource;
-                if (viewSource == null) { continue; }
-
-                ModelPropertyToCollectionViewSourceMapping[modelProperty] = viewSource;
+                ModelPropertyToWindowPropertyMapping[modelProperty] = windowProperty;
             }
         }
 
@@ -318,13 +317,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         }
 
         private void UpdateCollectionViewSourceIfNecessary(ICollectionViewSource modelCollectionViewSource, WindowsCollectionViewSource windowCollectionViewSource) {
-            var collection = new ObservableCollection<ICollectionViewSourceEntity>();
+            if (windowCollectionViewSource == null) { return; }
+
+            var sortedOldItems = windowCollectionViewSource.View?.SourceCollection.Cast<object>().Cast<ICollectionViewSourceEntity>().OrderBy(item => item.Guid).ToList();
+            sortedOldItems ??= new List<ICollectionViewSourceEntity>();
+            var newItems = new ObservableCollection<ICollectionViewSourceEntity>();
             foreach (var row in modelCollectionViewSource.Items.Where(row => row.GetType() == modelCollectionViewSource.EntityType)) {
-                collection.Add(row);
+                newItems.Add(row);
             }
-            windowCollectionViewSource.Source = collection;
-            windowCollectionViewSource.SortDescriptions.Clear();
-            windowCollectionViewSource.SortDescriptions.Add(new SortDescription(modelCollectionViewSource.SortProperty, modelCollectionViewSource.SortDirection));
+
+            var sortedNewItems = newItems.OrderBy(item => item.Guid).ToList();
+
+            if (Enumerable.SequenceEqual(sortedOldItems, sortedNewItems)) {
+                return;
+            }
+
+            windowCollectionViewSource.Source = newItems;
         }
     }
 }

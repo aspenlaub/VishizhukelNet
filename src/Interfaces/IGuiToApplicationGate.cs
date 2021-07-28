@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+using Button = System.Windows.Controls.Button;
+using Selector = System.Windows.Controls.Primitives.Selector;
+using TextBox = System.Windows.Controls.TextBox;
+using ToggleButton = System.Windows.Controls.Primitives.ToggleButton;
 // ReSharper disable UnusedMemberInSuper.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
@@ -12,5 +16,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
         void RegisterAsyncSelectorCallback(Selector selector, Func<int, Task> action);
         void WireToggleButtonAndHandler(ToggleButton toggleButton, IToggleButtonHandler handler, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper);
         void WireButtonAndCommand(Button button, ICommand command, IButtonNameToCommandMapper buttonNameToCommandMapper);
+        void RegisterAsyncDataGridCallback(DataGrid collectionViewSource, Func<IList<ICollectionViewSourceEntity>, Task> action);
     }
 }

@@ -58,6 +58,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
             guiToAppGate.WireToggleButtonAndHandler(MethodAdd, vDemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
             guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, vDemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
 
+            guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => vDemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
+
             vTashTimer = new TashTimer<IDemoApplicationModel>(Container.Resolve<ITashAccessor>(), vDemoApp.TashHandler, guiToAppGate);
             if (!await vTashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {
                 Close();

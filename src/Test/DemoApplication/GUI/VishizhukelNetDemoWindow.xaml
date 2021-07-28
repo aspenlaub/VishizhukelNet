@@ -3,13 +3,28 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:entities="clr-namespace:Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities"
         mc:Ignorable="d"
-        Title="VishizhukelNet Demo Window" Height="295" MinHeight="295" Width="400" MinWidth="400" Icon="demo.ico"
+        Title="VishizhukelNet Demo Window" Height="295" MinHeight="295" Width="800" MinWidth="800" Icon="demo.ico"
         Loaded="OnLoadedAsync" Closing="OnClosing" StateChanged="OnStateChanged" SizeChanged="OnSizeChanged">
+    <Window.Resources>
+        <CollectionViewSource x:Key="DemoDataGridViewSource" d:DesignSource="{d:DesignInstance {x:Type entities:DemoDataGridEntity}, CreateList=True}"/>
+        <Style x:Key="CellLeftAlign">
+            <Setter Property="Control.HorizontalAlignment" Value="Left" />
+            <Setter Property="Control.VerticalAlignment" Value="Center" />
+            <Setter Property="Control.Margin" Value="5,0,0,0" />
+        </Style>
+        <Style x:Key="CellRightAlign">
+            <Setter Property="Control.HorizontalAlignment" Value="Right" />
+            <Setter Property="Control.VerticalAlignment" Value="Center" />
+            <Setter Property="Control.Margin" Value="0,0,5,0" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200*" MinWidth="200" />
             <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="400*" MinWidth="400" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -40,5 +55,20 @@
             </Canvas>
         </DockPanel>
         <TextBox Name="Status" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Padding="3,0,3,0" BorderThickness="0"></TextBox>
+        <DataGrid Name="DemoDataGrid" AutoGenerateColumns="False" Grid.Row="0" Grid.Column="2" Grid.RowSpan="7" Margin="5"
+                  ItemsSource="{Binding Source={StaticResource DemoDataGridViewSource}}">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Date" Width="20*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                            <DatePicker SelectedDate="{Binding AsOfDate, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Name" Width="20*" Binding="{Binding Name}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                <DataGridTextColumn Header="Balance" Width="20*" Binding="{Binding Balance, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

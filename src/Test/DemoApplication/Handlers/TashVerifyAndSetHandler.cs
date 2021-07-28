@@ -16,13 +16,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
         }
 
         protected override Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<IDemoApplicationModel> status) {
-            return new Dictionary<string, ITextBox> {
+            return new() {
                 { nameof(status.Model.Alpha), status.Model.Alpha }
             };
         }
 
         protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<IDemoApplicationModel> status) {
-            return new Dictionary<string, ISimpleTextHandler> {
+            return new() {
                 { nameof(status.Model.Alpha), vDemoApplicationHandlers.AlphaTextHandler }
             };
         }

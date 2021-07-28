@@ -53,7 +53,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
 
         public void CreateAndStartTimer(ITashTaskHandlingStatus<TModel> status) {
             vDispatcherTimer = new DispatcherTimer();
-            vDispatcherTimer.Tick += async (s, e) => await TimerCallbackAsync(status);
+            vDispatcherTimer.Tick += async (_, _) => await TimerCallbackAsync(status);
             vDispatcherTimer.Interval = TimeSpan.FromSeconds(7);
             vDispatcherTimer.Start();
         }

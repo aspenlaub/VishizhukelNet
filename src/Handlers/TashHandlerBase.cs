@@ -100,6 +100,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
                     case ControllableProcessTaskType.ProcessTaskList:
                         var taskListTask = status.TaskBeingProcessed;
                         var tasks = JsonConvert.DeserializeObject<List<ControllableProcessTask>>(status.TaskBeingProcessed.Text);
+                        if (tasks == null) {
+                            var deserializationErrorMessage = $"Could not deserialize {status.TaskBeingProcessed.Text}";
+                            SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({deserializationErrorMessage}");
+                            await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", deserializationErrorMessage);
+                            return;
+                        }
                         SimpleLogger.LogInformation($"Processing a list of {tasks.Count} tasks in {nameof(TashHandlerBase<TModel>)}");
                         foreach (var task in tasks) {
                             status.TaskBeingProcessed = task;

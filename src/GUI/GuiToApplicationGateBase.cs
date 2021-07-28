@@ -24,20 +24,20 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         }
 
         public void RegisterAsyncButtonCallback(Button button, Func<Task> action) {
-            button.Click += async (s, e) => await CallbackAsync(() => action());
+            button.Click += async (_, _) => await CallbackAsync(() => action());
         }
 
         public void RegisterAsyncTextBoxCallback(TextBox textBox, Func<string, Task> action) {
-            textBox.TextChanged += async (s, e) => await CallbackAsync(() => action(textBox.Text));
+            textBox.TextChanged += async (_, _) => await CallbackAsync(() => action(textBox.Text));
         }
 
         public void RegisterAsyncSelectorCallback(Selector selector, Func<int, Task> action) {
-            selector.SelectionChanged += async (s, e) => await CallbackAsync(() => action(selector.SelectedIndex));
+            selector.SelectionChanged += async (_, _) => await CallbackAsync(() => action(selector.SelectedIndex));
         }
 
         public void WireToggleButtonAndHandler(ToggleButton toggleButton, IToggleButtonHandler handler, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper) {
             toggleButtonNameToHandlerMapper.Register(toggleButton.Name, handler);
-            toggleButton.Click += async (s, e) => await CallbackAsync(() => handler.ToggledAsync(toggleButton.IsChecked == true));
+            toggleButton.Click += async (_, _) => await CallbackAsync(() => handler.ToggledAsync(toggleButton.IsChecked == true));
         }
 
         public void WireButtonAndCommand(Button button, ICommand command, IButtonNameToCommandMapper buttonNameToCommandMapper) {

@@ -27,13 +27,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
         }
 
         private static DispatcherUnhandledExceptionEventHandler SaveUnhandledDispatchedExceptionAndExit(System.Windows.Application application, IFolder folder) {
-            return (s, e) => {
+            return (_, e) => {
                 SaveUnhandledExceptionAndExitAsync(application, folder, e.Exception, "Application.Current.DispatcherUnhandledException").Wait();
             };
         }
 
         private static UnhandledExceptionEventHandler SaveUnhandledAppDomainExceptionAndExit(System.Windows.Application application, IFolder folder) {
-            return (s, e) => {
+            return (_, e) => {
                 SaveUnhandledExceptionAndExitAsync(application, folder, (Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException").Wait();
             };
         }

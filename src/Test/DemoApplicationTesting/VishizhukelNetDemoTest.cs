@@ -17,7 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
     public class VishizhukelNetDemoTest {
         private VishizhukelDemoApplication vApplication;
         private IDemoApplicationModel vModel;
-        private readonly List<int> vAlphaTestValues = new List<int> { 24, 7, 1970, 1 };
+        private readonly List<int> vAlphaTestValues = new() { 24, 7, 1970, 1 };
 
         [TestInitialize]
         public async Task Initialize() {

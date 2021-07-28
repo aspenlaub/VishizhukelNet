@@ -24,7 +24,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         private readonly ILogConfiguration vLogConfiguration;
 
         public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-                IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, DemoApplicationModel model,
+                IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IDemoApplicationModel model,
                 ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration)
                 : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model) {
             vTashAccessor = tashAccessor;

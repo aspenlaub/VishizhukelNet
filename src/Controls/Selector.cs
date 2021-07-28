@@ -6,7 +6,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls {
     public class Selector : ISelector {
         public int SelectedIndex { get; set; } = -1;
-        public List<Selectable> Selectables { get; private set; } = new List<Selectable>();
+        public List<Selectable> Selectables { get; private set; } = new();
         public string LabelText { get; set; } = "";
 
         public bool SelectionMade => SelectedIndex >= 0;

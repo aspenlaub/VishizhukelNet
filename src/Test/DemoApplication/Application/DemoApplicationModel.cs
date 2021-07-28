@@ -22,8 +22,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         public IRectangle Eta { get; } = new Rectangle {
             Left = 40, Top = 13, Width = 10, Height = 10, Stroke = new SolidColorBrush(Colors.LimeGreen) { Opacity = 0.5 }, StrokeThickness = 2
         };
-        public ICollectionViewSource<IDemoCollectionViewSourceEntity> Theta { get; } = new CollectionViewSource<IDemoCollectionViewSourceEntity> {
-            SortProperty = "Date", SortDirection = ListSortDirection.Descending
+        public ICollectionViewSource Theta { get; } = new CollectionViewSource {
+            EntityType = typeof(IDemoCollectionViewSourceEntity), SortProperty = "Date", SortDirection = ListSortDirection.Descending
         };
 
         public ToggleButton MethodAdd { get; } = new("Method") { IsChecked = true };

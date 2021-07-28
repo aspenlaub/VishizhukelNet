@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -156,7 +157,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             foreach (var modelPropertyToCollectionViewSourceMapping in ModelPropertyToCollectionViewSourceMapping) {
                 var modelProperty = modelPropertyToCollectionViewSourceMapping.Key;
                 var collectionViewSource = modelPropertyToCollectionViewSourceMapping.Value;
-                UpdateCollectionViewSourceIfNecessary((ICollectionViewSourceObject)modelProperty.GetValue(Model), collectionViewSource);
+                UpdateCollectionViewSourceIfNecessary((ICollectionViewSource)modelProperty.GetValue(Model), collectionViewSource);
             }
         }
 
@@ -316,8 +317,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             window.WindowState = modelWindowState;
         }
 
-        private void UpdateCollectionViewSourceIfNecessary(ICollectionViewSourceObject modelCollectionViewSource, WindowsCollectionViewSource windowCollectionViewSource) {
-            windowCollectionViewSource.Source = modelCollectionViewSource.ToObservableCollection();
+        private void UpdateCollectionViewSourceIfNecessary(ICollectionViewSource modelCollectionViewSource, WindowsCollectionViewSource windowCollectionViewSource) {
+            var collection = new ObservableCollection<ICollectionViewSourceEntity>();
+            foreach (var row in modelCollectionViewSource.Items.Where(row => row.GetType() == modelCollectionViewSource.EntityType)) {
+                collection.Add(row);
+            }
+            windowCollectionViewSource.Source = collection;
             windowCollectionViewSource.SortDescriptions.Clear();
             windowCollectionViewSource.SortDescriptions.Add(new SortDescription(modelCollectionViewSource.SortProperty, modelCollectionViewSource.SortDirection));
         }

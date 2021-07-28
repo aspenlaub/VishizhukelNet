@@ -6,6 +6,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interf
         ISimpleSelectorHandler BetaSelectorHandler { get; set; }
         // ReSharper disable once UnusedMemberInSuper.Global
         ISimpleTextHandler DeltaTextHandler { get; set; }
+        ISimpleCollectionViewSourceHandler ThetaHandler { get; set; }
+
         IToggleButtonHandler MethodAddHandler { get; set; }
         IToggleButtonHandler MethodMultiplyHandler { get; set; }
     }

@@ -44,6 +44,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
                 AlphaTextHandler = alphaTextHandler,
                 BetaSelectorHandler = betaSelectorHandler,
                 DeltaTextHandler = deltaTextHandler,
+                ThetaHandler = new ThetaHandler(Model, this),
                 MethodAddHandler = new MethodAddHandler(Model, deltaTextHandler),
                 MethodMultiplyHandler = new MethodMultiplyHandler(Model, deltaTextHandler)
             };
@@ -63,10 +64,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             await base.OnLoadedAsync();
             await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
             // TODO: remove
-            Model.Theta.Items.Add(new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 28), Name = "Unchanged", Balance = 2407.70 });
-            Model.Theta.Items.Add(new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 29), Name = "Increased", Balance = 2707.70 });
-            Model.Theta.Items.Add(new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 30), Name = "Decreased", Balance = 2404.40 });
-            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            await Handlers.ThetaHandler.CollectionChangedAsync(new List<ICollectionViewSourceEntity> {
+                new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 28), Name = "Unchanged", Balance = 2407.70 },
+                new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 29), Name = "Increased", Balance = 2707.70 },
+                new DemoCollectionViewSourceEntity { Date = new DateTime(2021, 7, 30), Name = "Decreased", Balance = 2404.40 }
+            });
         }
 
         public ITashTaskHandlingStatus<IDemoApplicationModel> CreateTashTaskHandlingStatus() {

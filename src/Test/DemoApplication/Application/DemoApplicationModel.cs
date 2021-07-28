@@ -5,6 +5,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application {
@@ -23,7 +24,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             Left = 40, Top = 13, Width = 10, Height = 10, Stroke = new SolidColorBrush(Colors.LimeGreen) { Opacity = 0.5 }, StrokeThickness = 2
         };
         public ICollectionViewSource Theta { get; } = new CollectionViewSource {
-            EntityType = typeof(IDemoCollectionViewSourceEntity), SortProperty = "Date", SortDirection = ListSortDirection.Descending
+            EntityType = typeof(DemoCollectionViewSourceEntity), SortProperty = "Date", SortDirection = ListSortDirection.Descending
         };
 
         public ToggleButton MethodAdd { get; } = new("Method") { IsChecked = true };

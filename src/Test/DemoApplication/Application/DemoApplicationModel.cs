@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Media;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
@@ -23,9 +22,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         public IRectangle Eta { get; } = new Rectangle {
             Left = 40, Top = 13, Width = 10, Height = 10, Stroke = new SolidColorBrush(Colors.LimeGreen) { Opacity = 0.5 }, StrokeThickness = 2
         };
-        public ICollectionViewSource Theta { get; } = new CollectionViewSource {
-            EntityType = typeof(DemoCollectionViewSourceEntity), SortProperty = "Date", SortDirection = ListSortDirection.Descending
-        };
+        public ICollectionViewSource Theta { get; } = new CollectionViewSource { EntityType = typeof(DemoCollectionViewSourceEntity) };
 
         public ToggleButton MethodAdd { get; } = new("Method") { IsChecked = true };
         public ToggleButton MethodMultiply { get; } = new("Method");

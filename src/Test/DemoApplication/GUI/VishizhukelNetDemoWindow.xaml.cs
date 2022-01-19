@@ -20,8 +20,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
     public partial class VishizhukelNetDemoWindow : IDisposable {
         private static IContainer Container { get; set; }
 
-        private VishizhukelDemoApplication vDemoApp;
-        private ITashTimer<IDemoApplicationModel> vTashTimer;
+        private VishizhukelDemoApplication DemoApp;
+        private ITashTimer<IDemoApplicationModel> TashTimer;
 
         public VishizhukelNetDemoWindow() {
             InitializeComponent();
@@ -41,45 +41,45 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
         private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
             await BuildContainerIfNecessaryAsync();
 
-            vDemoApp = Container.Resolve<VishizhukelDemoApplication>();
-            await vDemoApp.OnLoadedAsync();
+            DemoApp = Container.Resolve<VishizhukelDemoApplication>();
+            await DemoApp.OnLoadedAsync();
 
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
             var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
             var toggleButtonNameToHandlerMapper = Container.Resolve<IToggleButtonNameToHandlerMapper>();
 
-            var commands = vDemoApp.Commands;
+            var commands = DemoApp.Commands;
             guiToAppGate.WireButtonAndCommand(Gamma, commands.GammaCommand, buttonNameToCommandMapper);
 
-            var handlers = vDemoApp.Handlers;
-            guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => vDemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));
+            var handlers = DemoApp.Handlers;
+            guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => DemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));
             guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i));
 
-            guiToAppGate.WireToggleButtonAndHandler(MethodAdd, vDemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
-            guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, vDemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
+            guiToAppGate.WireToggleButtonAndHandler(MethodAdd, DemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
+            guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, DemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
 
-            guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => vDemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
+            guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
 
-            vTashTimer = new TashTimer<IDemoApplicationModel>(Container.Resolve<ITashAccessor>(), vDemoApp.TashHandler, guiToAppGate);
-            if (!await vTashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {
+            TashTimer = new TashTimer<IDemoApplicationModel>(Container.Resolve<ITashAccessor>(), DemoApp.TashHandler, guiToAppGate);
+            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {
                 Close();
             }
 
-            vTashTimer.CreateAndStartTimer(vDemoApp.CreateTashTaskHandlingStatus());
+            TashTimer.CreateAndStartTimer(DemoApp.CreateTashTaskHandlingStatus());
 
             AdjustZetaAndItsCanvas();
         }
 
         public void Dispose() {
-            vTashTimer?.StopTimerAndConfirmDead(false);
+            TashTimer?.StopTimerAndConfirmDead(false);
         }
 
         private void OnClosing(object sender, CancelEventArgs e) {
-            vTashTimer?.StopTimerAndConfirmDead(false);
+            TashTimer?.StopTimerAndConfirmDead(false);
         }
 
         private void OnStateChanged(object sender, EventArgs e) {
-            vDemoApp.OnWindowStateChanged(WindowState);
+            DemoApp.OnWindowStateChanged(WindowState);
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {

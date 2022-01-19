@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
@@ -8,6 +10,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
@@ -17,17 +20,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
         public IDemoCommands Commands { get; private set; }
 
         public ITashHandler<IDemoApplicationModel> TashHandler { get; private set; }
-        private readonly ITashAccessor vTashAccessor;
-        private readonly ISimpleLogger vSimpleLogger;
-        private readonly ILogConfiguration vLogConfiguration;
+        private readonly ITashAccessor TashAccessor;
+        private readonly ISimpleLogger SimpleLogger;
+        private readonly ILogConfiguration LogConfiguration;
 
         public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
                 IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IDemoApplicationModel model,
                 ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration)
                 : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model) {
-            vTashAccessor = tashAccessor;
-            vSimpleLogger = simpleLogger;
-            vLogConfiguration = logConfiguration;
+            TashAccessor = tashAccessor;
+            SimpleLogger = simpleLogger;
+            LogConfiguration = logConfiguration;
         }
 
         protected override async Task EnableOrDisableButtonsAsync() {
@@ -49,17 +52,28 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             Commands = new DemoCommands {
                 GammaCommand = new GammaCommand(Model, deltaTextHandler)
             };
-            var communicator = new TashCommunicatorBase<IDemoApplicationModel>(vTashAccessor, vSimpleLogger, vLogConfiguration);
+            var communicator = new TashCommunicatorBase<IDemoApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
             var selectors = new Dictionary<string, ISelector> {
                 { nameof(IDemoApplicationModel.Beta), Model.Beta }
             };
-            var selectorHandler = new TashSelectorHandler(Handlers, vSimpleLogger, communicator, selectors);
-            var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, vSimpleLogger, null, communicator, selectors);
-            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+            var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
+            var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, null, communicator, selectors);
+            TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
         }
 
         public override async Task OnLoadedAsync() {
             await base.OnLoadedAsync();
+            if (!DemoApp.IsIntegrationTest) {
+                var items = new List<IDemoCollectionViewSourceEntity> {
+                    new DemoCollectionViewSourceEntity {
+                        Date = new DateTime(2022, 1, 19),
+                        Name = "Some name",
+                        Balance = 2470.70
+                    }
+
+                }.Cast<ICollectionViewSourceEntity>().ToList();
+                await Handlers.ThetaHandler.CollectionChangedAsync(items);
+            }
             await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
         }
 

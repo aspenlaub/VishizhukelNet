@@ -117,6 +117,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                         UpdateRectangleIfNecessary((IRectangle)modelProperty.GetValue(Model), (WindowsRectangle)windowField.GetValue(Window));
                         break;
                     case "DataGrid":
+                    case "EnvironmentType":
                         continue;
                     default:
                         throw new NotImplementedException($"Field type name {windowField.FieldType.Name} is not implemented yet.");

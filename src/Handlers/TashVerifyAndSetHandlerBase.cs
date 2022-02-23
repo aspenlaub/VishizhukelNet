@@ -104,7 +104,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
             }
 
             if (collectionViewSourceHandler == null) {
-                throw new NotImplementedException();
+                throw new ArgumentNullException(nameof(collectionViewSourceHandler));
             }
 
 

@@ -119,7 +119,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     case "DataGrid":
                         continue;
                     default:
-                        throw new NotImplementedException();
+                        throw new NotImplementedException($"Field type name {windowField.FieldType.Name} is not implemented yet.");
                 }
             }
 
@@ -133,10 +133,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     } else if (modelProperty.GetValue(Model) is ITextBox) {
                         UpdateLabelIfNecessary((ITextBox)modelProperty.GetValue(Model), (ContentControl)labelField.GetValue(Window));
                     } else {
-                        throw new NotImplementedException();
+                        throw new NotImplementedException($"{nameof(labelField)} is neither a selector nor a text box");
                     }
                 } else {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException($"{labelField.FieldType.Name} is not implemented yet");
                 }
             }
 
@@ -149,7 +149,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                         UpdateWindowStateIfNecessary((WindowState) modelProperty.GetValue(Model), Window as Window);
                         break;
                     default:
-                        throw new NotImplementedException();
+                        throw new NotImplementedException($"Window property type {windowProperty.PropertyType.Name} is not implemented yet");
                 }
             }
 

@@ -29,7 +29,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
 
         public async Task EnableOrDisableButtonsThenSyncGuiAndAppAsync() {
             await EnableOrDisableButtonsAsync();
-            GuiAndApplicationSynchronizer.OnModelDataChanged();
+            await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
         }
 
         public void IndicateBusy(bool force) {

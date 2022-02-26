@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -85,7 +86,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         public virtual void OnCursorChanged() {
         }
 
-        public void OnModelDataChanged() {
+        public async Task OnModelDataChangedAsync() {
             IndicateBusy(false);
 
             foreach (var modelPropertyToWindowFieldMapping in ModelPropertyToWindowFieldMapping) {
@@ -159,6 +160,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 var collectionViewSource = modelPropertyToCollectionViewSourceMapping.Value;
                 UpdateCollectionViewSourceIfNecessary((ICollectionViewSource)modelProperty.GetValue(Model), collectionViewSource);
             }
+
+            await Task.CompletedTask;
         }
 
         private void UpdateRectangleIfNecessary(IRectangle modelRectangle, Shape rectangle) {

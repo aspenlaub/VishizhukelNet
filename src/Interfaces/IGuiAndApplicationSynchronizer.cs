@@ -1,8 +1,10 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
+﻿using System.Threading.Tasks;
+
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
     public interface IGuiAndApplicationSynchronizer<out TApplicationModel> where TApplicationModel : IApplicationModel {
         // ReSharper disable once UnusedMemberInSuper.Global
         TApplicationModel Model { get; }
-        void OnModelDataChanged();
+        Task OnModelDataChangedAsync();
         void IndicateBusy(bool force);
     }
 }

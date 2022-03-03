@@ -1,13 +1,13 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Web;
+using WindowsApplication = System.Windows.Application;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
     // ReSharper disable once UnusedMember.Global
@@ -48,14 +48,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
 
         protected static void TryAndExit() {
             try {
-                Process.GetCurrentProcess().Kill();
+                WindowsApplication.Current.Shutdown();
             } catch {
                 try {
-                    Environment.Exit(1);
+                    Process.GetCurrentProcess().Kill();
                 } catch {
-                    while (true) {
-                        Thread.Sleep(TimeSpan.FromHours(1));
-                    }
+                    Environment.Exit(1);
                 }
             }
         }

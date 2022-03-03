@@ -3,14 +3,14 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
     public class ToggleButtonNameToHandlerMapper : IToggleButtonNameToHandlerMapper {
-        private readonly IDictionary<string, IToggleButtonHandler> vToggleButtonNameToHandlerDictionary = new Dictionary<string, IToggleButtonHandler>();
+        private readonly IDictionary<string, IToggleButtonHandler> ToggleButtonNameToHandlerDictionary = new Dictionary<string, IToggleButtonHandler>();
 
         public void Register(string name, IToggleButtonHandler handler) {
-            vToggleButtonNameToHandlerDictionary[name] = handler;
+            ToggleButtonNameToHandlerDictionary[name] = handler;
         }
 
         public IToggleButtonHandler HandlerForToggleButton(string name) {
-            return !vToggleButtonNameToHandlerDictionary.ContainsKey(name) ? null : vToggleButtonNameToHandlerDictionary[name];
+            return !ToggleButtonNameToHandlerDictionary.ContainsKey(name) ? null : ToggleButtonNameToHandlerDictionary[name];
         }
     }
 }

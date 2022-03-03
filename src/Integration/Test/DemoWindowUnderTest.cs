@@ -5,19 +5,19 @@ using Aspenlaub.Net.GitHub.CSharp.VishnetIntegrationTestTools;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
     public class DemoWindowUnderTest : DemoWindowUnderTestActions, IDisposable {
-        private readonly IStarterAndStopper vStarterAndStopper;
+        private readonly IStarterAndStopper StarterAndStopper;
 
         public DemoWindowUnderTest(ITashAccessor tashAccessor, IStarterAndStopper roustStarterAndStopper) : base(tashAccessor) {
-            vStarterAndStopper = roustStarterAndStopper;
+            StarterAndStopper = roustStarterAndStopper;
         }
 
         public override async Task InitializeAsync() {
             await base.InitializeAsync();
-            vStarterAndStopper.Start();
+            StarterAndStopper.Start();
         }
 
         public void Dispose() {
-            vStarterAndStopper.Stop();
+            StarterAndStopper.Stop();
         }
     }
 }

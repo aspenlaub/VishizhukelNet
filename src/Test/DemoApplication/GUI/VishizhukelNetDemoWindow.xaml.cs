@@ -11,13 +11,14 @@ using Autofac;
 using Moq;
 using IContainer = Autofac.IContainer;
 using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.DemoApplication;
+using WindowsApplication = System.Windows.Application;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
     /// <summary>
     /// Interaction logic for VishizhukelNetDemoWindow.xaml
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public partial class VishizhukelNetDemoWindow : IDisposable {
+    public partial class VishizhukelNetDemoWindow : IAsyncDisposable {
         private static IContainer Container { get; set; }
 
         private VishizhukelDemoApplication DemoApp;
@@ -70,12 +71,20 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
             AdjustZetaAndItsCanvas();
         }
 
-        public void Dispose() {
-            TashTimer?.StopTimerAndConfirmDead(false);
+        public async ValueTask DisposeAsync() {
+            if (TashTimer == null) { return; }
+
+            await TashTimer.StopTimerAndConfirmDeadAsync(false);
         }
 
-        private void OnClosing(object sender, CancelEventArgs e) {
-            TashTimer?.StopTimerAndConfirmDead(false);
+        private async void OnClosing(object sender, CancelEventArgs e) {
+            if (TashTimer == null) { return; }
+
+            e.Cancel = true;
+
+            await TashTimer.StopTimerAndConfirmDeadAsync(false);
+
+            WindowsApplication.Current.Shutdown();
         }
 
         private void OnStateChanged(object sender, EventArgs e) {

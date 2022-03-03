@@ -7,19 +7,19 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class BetaSelectorHandler : ISimpleSelectorHandler {
-        private readonly IDemoApplicationModel vModel;
-        private readonly IGuiAndAppHandler vGuiAndAppHandler;
-        private readonly DeltaTextHandler vDeltaTextHandler;
+        private readonly IDemoApplicationModel Model;
+        private readonly IGuiAndAppHandler GuiAndAppHandler;
+        private readonly DeltaTextHandler DeltaTextHandler;
 
         public BetaSelectorHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler, DeltaTextHandler deltaTextHandler) {
-            vModel = model;
-            vGuiAndAppHandler = guiAndAppHandler;
-            vDeltaTextHandler = deltaTextHandler;
+            Model = model;
+            GuiAndAppHandler = guiAndAppHandler;
+            DeltaTextHandler = deltaTextHandler;
         }
 
         public async Task UpdateSelectableValuesAsync() {
             var choices = new List<uint>();
-            if (uint.TryParse(vModel.Alpha.Text, out var alpha)) {
+            if (uint.TryParse(Model.Alpha.Text, out var alpha)) {
                 choices.Add(alpha);
                 choices.Add(alpha + 7);
                 choices.Add(alpha + 24);
@@ -28,18 +28,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
             }
 
             var selectables = choices.Distinct().OrderBy(x => x).Select(x => new Selectable { Guid = x.ToString(), Name = x.ToString() }).ToList();
-            if (vModel.Beta.AreSelectablesIdentical(selectables)) { return; }
+            if (Model.Beta.AreSelectablesIdentical(selectables)) { return; }
 
-            vModel.Beta.UpdateSelectables(selectables);
-            await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            Model.Beta.UpdateSelectables(selectables);
+            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
 
         public async Task SelectedIndexChangedAsync(int selectedIndex) {
-            if (vModel.Beta.SelectedIndex == selectedIndex) { return; }
+            if (Model.Beta.SelectedIndex == selectedIndex) { return; }
 
-            vModel.Beta.SelectedIndex = selectedIndex;
-            await vDeltaTextHandler.TextChangedAsync("");
-            await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            Model.Beta.SelectedIndex = selectedIndex;
+            await DeltaTextHandler.TextChangedAsync("");
+            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }
 }

@@ -8,20 +8,20 @@ using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class ThetaHandler : ISimpleCollectionViewSourceHandler {
-        private readonly IDemoApplicationModel vModel;
-        private readonly IGuiAndAppHandler vGuiAndAppHandler;
+        private readonly IDemoApplicationModel Model;
+        private readonly IGuiAndAppHandler GuiAndAppHandler;
 
         public ThetaHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
-            vModel = model;
-            vGuiAndAppHandler = guiAndAppHandler;
+            Model = model;
+            GuiAndAppHandler = guiAndAppHandler;
         }
 
         public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
-            vModel.Theta.Items.Clear();
-            foreach (var item in items.Where(item => item.GetType() == vModel.Theta.EntityType)) {
-                vModel.Theta.Items.Add(item);
+            Model.Theta.Items.Clear();
+            foreach (var item in items.Where(item => item.GetType() == Model.Theta.EntityType)) {
+                Model.Theta.Items.Add(item);
             }
-            await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
 
         public IList<ICollectionViewSourceEntity> DeserializeJsonObject(string text) {

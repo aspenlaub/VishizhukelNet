@@ -5,29 +5,29 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands {
     public class GammaCommand : ICommand {
-        private readonly IDemoApplicationModel vModel;
-        private readonly ISimpleTextHandler vDeltaTextHandler;
+        private readonly IDemoApplicationModel Model;
+        private readonly ISimpleTextHandler DeltaTextHandler;
 
         public GammaCommand(IDemoApplicationModel model, ISimpleTextHandler deltaTextHandler) {
-            vModel = model;
-            vDeltaTextHandler = deltaTextHandler;
+            Model = model;
+            DeltaTextHandler = deltaTextHandler;
         }
 
         public async Task ExecuteAsync() {
-            if (!vModel.Gamma.Enabled) {
+            if (!Model.Gamma.Enabled) {
                 return;
             }
 
-            var alphaValue = uint.Parse(vModel.Alpha.Text);
-            var betaValue = uint.Parse(vModel.Beta.SelectedItem.Name);
-            var result = vModel.MethodAdd.IsChecked ? alphaValue + betaValue : alphaValue * betaValue;
-            await vDeltaTextHandler.TextChangedAsync(result.ToString());
-            vModel.Status.Type = StatusType.Success;
-            vModel.Status.Text = Properties.Resources.CalculationSuccessful;
+            var alphaValue = uint.Parse(Model.Alpha.Text);
+            var betaValue = uint.Parse(Model.Beta.SelectedItem.Name);
+            var result = Model.MethodAdd.IsChecked ? alphaValue + betaValue : alphaValue * betaValue;
+            await DeltaTextHandler.TextChangedAsync(result.ToString());
+            Model.Status.Type = StatusType.Success;
+            Model.Status.Text = Properties.Resources.CalculationSuccessful;
         }
 
         public async Task<bool> ShouldBeEnabledAsync() {
-            var enabled = vModel.Alpha.Type == StatusType.None && vModel.Beta.SelectionMade;
+            var enabled = Model.Alpha.Type == StatusType.None && Model.Beta.SelectionMade;
             return await Task.FromResult(enabled);
         }
     }

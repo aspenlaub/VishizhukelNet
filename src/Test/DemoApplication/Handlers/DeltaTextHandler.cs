@@ -4,19 +4,19 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class DeltaTextHandler : ISimpleTextHandler {
-        private readonly IDemoApplicationModel vModel;
-        private readonly IGuiAndAppHandler vGuiAndAppHandler;
+        private readonly IDemoApplicationModel Model;
+        private readonly IGuiAndAppHandler GuiAndAppHandler;
 
         public DeltaTextHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
-            vModel = model;
-            vGuiAndAppHandler = guiAndAppHandler;
+            Model = model;
+            GuiAndAppHandler = guiAndAppHandler;
         }
 
         public async Task TextChangedAsync(string text) {
-            if (vModel.Delta.Text == text) { return; }
+            if (Model.Delta.Text == text) { return; }
 
-            vModel.Delta.Text = text;
-            await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            Model.Delta.Text = text;
+            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }
 }

@@ -5,26 +5,26 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class AlphaTextHandler : ISimpleTextHandler {
-        private readonly IDemoApplicationModel vModel;
-        private readonly IGuiAndAppHandler vGuiAndAppHandler;
-        private readonly ISimpleSelectorHandler vBetaSelectorHandler;
-        private readonly ISimpleTextHandler vDeltaTextHandler;
+        private readonly IDemoApplicationModel Model;
+        private readonly IGuiAndAppHandler GuiAndAppHandler;
+        private readonly ISimpleSelectorHandler BetaSelectorHandler;
+        private readonly ISimpleTextHandler DeltaTextHandler;
 
         public AlphaTextHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler, ISimpleSelectorHandler betaSelectorHandler, ISimpleTextHandler deltaTextHandler) {
-            vModel = model;
-            vGuiAndAppHandler = guiAndAppHandler;
-            vBetaSelectorHandler = betaSelectorHandler;
-            vDeltaTextHandler = deltaTextHandler;
+            Model = model;
+            GuiAndAppHandler = guiAndAppHandler;
+            BetaSelectorHandler = betaSelectorHandler;
+            DeltaTextHandler = deltaTextHandler;
         }
 
         public async Task TextChangedAsync(string text) {
-            if (vModel.Alpha.Text == text) { return; }
+            if (Model.Alpha.Text == text) { return; }
 
-            vModel.Alpha.Text = text;
-            vModel.Alpha.Type = uint.TryParse(text, out _) ? StatusType.None : StatusType.Error;
-            await vBetaSelectorHandler.UpdateSelectableValuesAsync();
-            await vDeltaTextHandler.TextChangedAsync("");
-            await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            Model.Alpha.Text = text;
+            Model.Alpha.Type = uint.TryParse(text, out _) ? StatusType.None : StatusType.Error;
+            await BetaSelectorHandler.UpdateSelectableValuesAsync();
+            await DeltaTextHandler.TextChangedAsync("");
+            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }
 }

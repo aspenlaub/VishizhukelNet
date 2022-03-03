@@ -7,12 +7,12 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IDemoApplicationModel> {
-        private readonly IDemoHandlers vDemoApplicationHandlers;
+        private readonly IDemoHandlers DemoApplicationHandlers;
 
         public TashVerifyAndSetHandler(IDemoHandlers demoApplicationHandlers, ISimpleLogger simpleLogger, ITashSelectorHandler<IDemoApplicationModel> tashSelectorHandler,
             ITashCommunicator<IDemoApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors)
             : base(simpleLogger, tashSelectorHandler, tashCommunicator, selectors) {
-            vDemoApplicationHandlers = demoApplicationHandlers;
+            DemoApplicationHandlers = demoApplicationHandlers;
         }
 
         protected override Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<IDemoApplicationModel> status) {
@@ -23,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
 
         protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<IDemoApplicationModel> status) {
             return new() {
-                { nameof(status.Model.Alpha), vDemoApplicationHandlers.AlphaTextHandler }
+                { nameof(status.Model.Alpha), DemoApplicationHandlers.AlphaTextHandler }
             };
         }
 
@@ -35,7 +35,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
 
         protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<IDemoApplicationModel> status) {
             return new() {
-                { nameof(status.Model.Theta), vDemoApplicationHandlers.ThetaHandler }
+                { nameof(status.Model.Theta), DemoApplicationHandlers.ThetaHandler }
             };
         }
 

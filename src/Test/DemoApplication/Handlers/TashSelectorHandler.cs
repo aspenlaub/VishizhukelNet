@@ -9,11 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class TashSelectorHandler : TashSelectorHandlerBase<IDemoApplicationModel> {
-        private readonly IDemoHandlers vDemoApplicationHandlers;
+        private readonly IDemoHandlers DemoApplicationHandlers;
 
         public TashSelectorHandler(IDemoHandlers demoApplicationHandlers, ISimpleLogger simpleLogger, ITashCommunicator<IDemoApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors)
             : base(simpleLogger, tashCommunicator, selectors) {
-            vDemoApplicationHandlers = demoApplicationHandlers;
+            DemoApplicationHandlers = demoApplicationHandlers;
         }
 
         protected override async Task SelectedIndexChangedAsync(ITashTaskHandlingStatus<IDemoApplicationModel> status, string controlName, int selectedIndex, bool selectablesChanged) {
@@ -21,7 +21,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handle
                 SimpleLogger.LogInformation($"Changing selected index for {controlName} to {selectedIndex}");
                 switch (controlName) {
                     case nameof(status.Model.Beta):
-                        await vDemoApplicationHandlers.BetaSelectorHandler.SelectedIndexChangedAsync(selectedIndex);
+                        await DemoApplicationHandlers.BetaSelectorHandler.SelectedIndexChangedAsync(selectedIndex);
                         break;
                     default:
                         var errorMessage = $"Do not know how to select for {status.TaskBeingProcessed.ControlName}";

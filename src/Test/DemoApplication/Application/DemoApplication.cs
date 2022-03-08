@@ -35,6 +35,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
 
         protected override async Task EnableOrDisableButtonsAsync() {
             Model.Gamma.Enabled = await Commands.GammaCommand.ShouldBeEnabledAsync();
+            Model.Iota.Enabled = await Commands.IotaCommand.ShouldBeEnabledAsync();
+            Model.Kappa.Enabled = await Commands.KappaCommand.ShouldBeEnabledAsync();
         }
 
         protected override void CreateCommandsAndHandlers() {
@@ -50,7 +52,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
                 MethodMultiplyHandler = new MethodMultiplyHandler(Model, deltaTextHandler)
             };
             Commands = new DemoCommands {
-                GammaCommand = new GammaCommand(Model, deltaTextHandler)
+                GammaCommand = new GammaCommand(Model, deltaTextHandler),
+                IotaCommand = new IotaCommand(Model),
+                KappaCommand = new KappaCommand(Model)
             };
             var communicator = new TashCommunicatorBase<IDemoApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
             var selectors = new Dictionary<string, ISelector> {

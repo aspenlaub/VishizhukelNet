@@ -23,7 +23,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200*" MinWidth="200" />
-            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="200*" MinWidth="200" />
             <ColumnDefinition Width="400*" MinWidth="400" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -70,5 +70,7 @@
                 <DataGridTextColumn Header="Balance" Width="20*" Binding="{Binding Balance, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
             </DataGrid.Columns>
         </DataGrid>
+        <Button Name="Iota" Grid.Row="6" Grid.Column="0" Margin="5" VerticalAlignment="Top">Crash</Button>
+        <Button Name="Kappa" Grid.Row="6" Grid.Column="1" Margin="5" VerticalAlignment="Top">Unobserved Task</Button>
     </Grid>
 </Window>

@@ -52,6 +52,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
             var commands = DemoApp.Commands;
             guiToAppGate.WireButtonAndCommand(Gamma, commands.GammaCommand, buttonNameToCommandMapper);
+            guiToAppGate.WireButtonAndCommand(Iota, commands.IotaCommand, buttonNameToCommandMapper);
+            guiToAppGate.WireButtonAndCommand(Kappa, commands.KappaCommand, buttonNameToCommandMapper);
 
             var handlers = DemoApp.Handlers;
             guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => DemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));

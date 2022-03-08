@@ -23,6 +23,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             Left = 40, Top = 13, Width = 10, Height = 10, Stroke = new SolidColorBrush(Colors.LimeGreen) { Opacity = 0.5 }, StrokeThickness = 2
         };
         public ICollectionViewSource Theta { get; } = new CollectionViewSource { EntityType = typeof(DemoCollectionViewSourceEntity) };
+        public Button Iota { get; } = new();
+        public Button Kappa { get; } = new();
 
         public ToggleButton MethodAdd { get; } = new("Method") { IsChecked = true };
         public ToggleButton MethodMultiply { get; } = new("Method");

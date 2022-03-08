@@ -14,5 +14,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interf
         IImage Zeta { get; }
         IRectangle Eta { get; }
         ICollectionViewSource Theta { get; }
+        Button Iota { get; }
+        Button Kappa { get; }
     }
 }

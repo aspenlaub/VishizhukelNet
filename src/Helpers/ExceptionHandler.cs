@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Web;
 using WindowsApplication = System.Windows.Application;
 
@@ -18,9 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
 
         public static async Task RunAsync(WindowsApplication application, TimeSpan interval) {
             Application = application;
-            application.DispatcherUnhandledException += Application_DispatcherUnhandledException;
-            AppDomain.CurrentDomain.UnhandledException += SaveUnhandledAppDomainExceptionAndExit;
-            TaskScheduler.UnobservedTaskException += SaveUnobservedTaskExceptionAndExit;
+            AttachEventHandlers();
             var timer = new PeriodicTimer(interval);
             var first = true;
             var synchronizationContext = SynchronizationContext.Current;
@@ -45,7 +42,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
         }
 
         private static void SaveUnobservedTaskExceptionAndExit(object sender, UnobservedTaskExceptionEventArgs e) {
-            throw new NotImplementedException(nameof(SaveUnobservedTaskExceptionAndExit));
+            DetachEventHandlers();
+            e.SetObserved();
+            Exception = e.Exception;
         }
 
         private static void SaveUnhandledAppDomainExceptionAndExit(object sender, UnhandledExceptionEventArgs e) {
@@ -53,9 +52,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
         }
 
         private static void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) {
-            if (Application == null) { return; }
-
-            Application.DispatcherUnhandledException -= Application_DispatcherUnhandledException;
+            DetachEventHandlers();
             e.Handled = true;
             Exception = e.Exception;
         }
@@ -70,6 +67,24 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
                     Environment.Exit(1);
                 }
             }
+        }
+
+        private static void AttachEventHandlers() {
+            AppDomain.CurrentDomain.UnhandledException += SaveUnhandledAppDomainExceptionAndExit;
+            TaskScheduler.UnobservedTaskException += SaveUnobservedTaskExceptionAndExit;
+
+            if (Application == null) { return; }
+
+            Application.DispatcherUnhandledException += Application_DispatcherUnhandledException;
+        }
+
+        private static void DetachEventHandlers() {
+            AppDomain.CurrentDomain.UnhandledException -= SaveUnhandledAppDomainExceptionAndExit;
+            TaskScheduler.UnobservedTaskException -= SaveUnobservedTaskExceptionAndExit;
+
+            if (Application == null) { return; }
+
+            Application.DispatcherUnhandledException -= Application_DispatcherUnhandledException;
         }
 
         public static event EventHandler FirstIntervalRunning;

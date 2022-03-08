@@ -16,8 +16,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Comman
                 return;
             }
 
-            // Not awaited
+            // Not awaited -> throws unobserved task exception
+#pragma warning disable CS4014
             Task.Run(() => { throw new NotImplementedException(); });
+#pragma warning restore CS4014
         }
 
         public async Task<bool> ShouldBeEnabledAsync() {

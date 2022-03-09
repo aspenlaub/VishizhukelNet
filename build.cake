@@ -7,6 +7,7 @@
 using Regex = System.Text.RegularExpressions.Regex;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac;
+using System.Net.Http;
 using System.Runtime.Loader;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
@@ -88,9 +89,11 @@ Task("UpdateBuildCake")
     if (System.IO.File.Exists(tempCakeBuildFileName)) {
       System.IO.File.Delete(tempCakeBuildFileName);
     }
-    using (var webClient = new System.Net.WebClient()) {
-      webClient.DownloadFile(latestBuildCakeUrl, tempCakeBuildFileName);
+    string latestBuildCakeContent;
+    using (var client = new HttpClient()) {
+        latestBuildCakeContent = client.GetStringAsync(latestBuildCakeUrl).Result;
     }
+    System.IO.File.WriteAllText(tempCakeBuildFileName, latestBuildCakeContent);
     if (Regex.Replace(oldContents, @"\s", "") != Regex.Replace(System.IO.File.ReadAllText(tempCakeBuildFileName), @"\s", "")) {
       Information("Updating cake");
       System.IO.File.Delete(buildCakeFileName);

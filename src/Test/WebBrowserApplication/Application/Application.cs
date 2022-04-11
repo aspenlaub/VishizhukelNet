@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
@@ -12,7 +11,6 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Commands;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Interfaces;
-using MSHTML;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Application {
     public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IApplicationModel> {
@@ -23,19 +21,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
         private readonly ITashAccessor TashAccessor;
         private readonly ISimpleLogger SimpleLogger;
         private readonly ILogConfiguration LogConfiguration;
-        private readonly IApplicationLogger ApplicationLogger;
-        private readonly IBasicHtmlHelper BasicHtmlHelper;
 
         public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
                 IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model,
                 ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger,
                 IBasicHtmlHelper basicHtmlHelper)
-                : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model) {
+                : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, basicHtmlHelper, applicationLogger) {
             TashAccessor = tashAccessor;
             SimpleLogger = simpleLogger;
             LogConfiguration = logConfiguration;
-            ApplicationLogger = applicationLogger;
-            BasicHtmlHelper = basicHtmlHelper;
         }
 
         protected override async Task EnableOrDisableButtonsAsync() {
@@ -55,28 +49,5 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
         public ITashTaskHandlingStatus<IApplicationModel> CreateTashTaskHandlingStatus() {
             return new TashTaskHandlingStatus<IApplicationModel>(Model, Process.GetCurrentProcess().Id);
         }
-
-        public void OnWebBrowserNavigating(Uri uri) {
-            Model.WebBrowser.IsNavigating = uri != null;
-            Model.WebBrowserUrl.Text = uri == null ? "(off road)" : uri.OriginalString;
-            Model.WebBrowser.Document = null;
-            Model.WebBrowser.LastNavigationStartedAt = DateTime.Now;
-            ApplicationLogger.LogMessage($"GUI navigating to {Model.WebBrowserUrl.Text}");
-            IndicateBusy(true);
-        }
-
-        public void OnWebBrowserLoadCompleted(object documentObject) {
-            var document = BasicHtmlHelper.ObjectAsDocument(documentObject);
-            OnWebBrowserLoadCompleted(document, BasicHtmlHelper.DocumentToHtml(document));
-        }
-
-        public void OnWebBrowserLoadCompleted(IHTMLDocument3 document, string documentAsString) {
-            ApplicationLogger.LogMessage($"GUI navigation complete: {Model.WebBrowserUrl.Text}");
-            Model.WebBrowser.Document = document;
-            Model.WebBrowser.IsNavigating = false;
-            GuiAndApplicationSynchronizer.OnWebBrowserLoadCompleted();
-            IndicateBusy(true);
-        }
-
     }
 }

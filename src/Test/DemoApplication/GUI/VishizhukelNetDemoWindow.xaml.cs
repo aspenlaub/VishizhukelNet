@@ -11,7 +11,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 using Autofac;
 using Moq;
 using IContainer = Autofac.IContainer;
-using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.DemoApplication;
+using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.Application;
 using WindowsApplication = System.Windows.Application;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
@@ -23,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
         private static IContainer Container { get; set; }
 
         private VishizhukelDemoApplication DemoApp;
-        private ITashTimer<IDemoApplicationModel> TashTimer;
+        private ITashTimer<IApplicationModel> TashTimer;
 
         public VishizhukelNetDemoWindow() {
             InitializeComponent();
@@ -64,7 +64,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
 
             guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
 
-            TashTimer = new TashTimer<IDemoApplicationModel>(Container.Resolve<ITashAccessor>(), DemoApp.TashHandler, guiToAppGate);
+            TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), DemoApp.TashHandler, guiToAppGate);
             if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {
                 Close();
             }

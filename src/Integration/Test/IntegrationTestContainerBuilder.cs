@@ -8,13 +8,13 @@ using Aspenlaub.Net.GitHub.CSharp.VishnetIntegrationTestTools;
 using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
-    public static class DemoIntegrationTestContainerBuilder {
+    public static class IntegrationTestContainerBuilder {
         public static ContainerBuilder RegisterForDemoIntegrationTest(this ContainerBuilder builder, ILogConfiguration logConfiguration) {
             builder.UseDvinAndPegh(new DummyCsArgumentPrompter());
             builder.RegisterInstance(logConfiguration);
             builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();
-            builder.RegisterType<DemoStarterAndStopper>().As<IStarterAndStopper>();
-            builder.RegisterType<DemoWindowUnderTest>();
+            builder.RegisterType<StarterAndStopper>().As<IStarterAndStopper>();
+            builder.RegisterType<WindowUnderTest>();
             builder.RegisterType<TashAccessor>().As<ITashAccessor>();
             return builder;
         }

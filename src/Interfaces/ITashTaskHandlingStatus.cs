@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
-    public interface ITashTaskHandlingStatus<out TModel> where TModel : IApplicationModel {
+    public interface ITashTaskHandlingStatus<out TModel> where TModel : IApplicationModelBase {
         TModel Model { get; }
         int ProcessId { get; }
         DateTime StatusLastConfirmedAt { get; set; }

@@ -15,17 +15,17 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application {
-    public class DemoApplication : ApplicationBase<IDemoGuiAndApplicationSynchronizer, IDemoApplicationModel> {
-        public IDemoHandlers Handlers { get; private set; }
-        public IDemoCommands Commands { get; private set; }
+    public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IApplicationModel> {
+        public IApplicationHandlers Handlers { get; private set; }
+        public IApplicationCommands Commands { get; private set; }
 
-        public ITashHandler<IDemoApplicationModel> TashHandler { get; private set; }
+        public ITashHandler<IApplicationModel> TashHandler { get; private set; }
         private readonly ITashAccessor TashAccessor;
         private readonly ISimpleLogger SimpleLogger;
         private readonly ILogConfiguration LogConfiguration;
 
-        public DemoApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-                IDemoGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IDemoApplicationModel model,
+        public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
+                IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model,
                 ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration)
                 : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model) {
             TashAccessor = tashAccessor;
@@ -43,7 +43,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             var deltaTextHandler = new DeltaTextHandler(Model, this);
             var betaSelectorHandler = new BetaSelectorHandler(Model, this, deltaTextHandler);
             var alphaTextHandler = new AlphaTextHandler(Model, this, betaSelectorHandler, deltaTextHandler);
-            Handlers = new DemoHandlers {
+            Handlers = new ApplicationHandlers {
                 AlphaTextHandler = alphaTextHandler,
                 BetaSelectorHandler = betaSelectorHandler,
                 DeltaTextHandler = deltaTextHandler,
@@ -51,14 +51,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
                 MethodAddHandler = new MethodAddHandler(Model, deltaTextHandler),
                 MethodMultiplyHandler = new MethodMultiplyHandler(Model, deltaTextHandler)
             };
-            Commands = new DemoCommands {
+            Commands = new ApplicationCommands {
                 GammaCommand = new GammaCommand(Model, deltaTextHandler),
                 IotaCommand = new IotaCommand(Model),
                 KappaCommand = new KappaCommand(Model)
             };
-            var communicator = new TashCommunicatorBase<IDemoApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
+            var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
             var selectors = new Dictionary<string, ISelector> {
-                { nameof(IDemoApplicationModel.Beta), Model.Beta }
+                { nameof(IApplicationModel.Beta), Model.Beta }
             };
             var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
             var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, null, communicator, selectors);
@@ -81,8 +81,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
             await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
         }
 
-        public ITashTaskHandlingStatus<IDemoApplicationModel> CreateTashTaskHandlingStatus() {
-            return new TashTaskHandlingStatus<IDemoApplicationModel>(Model, Process.GetCurrentProcess().Id);
+        public ITashTaskHandlingStatus<IApplicationModel> CreateTashTaskHandlingStatus() {
+            return new TashTaskHandlingStatus<IApplicationModel>(Model, Process.GetCurrentProcess().Id);
         }
     }
 }

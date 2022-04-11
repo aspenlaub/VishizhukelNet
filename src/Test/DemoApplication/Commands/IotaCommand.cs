@@ -5,9 +5,9 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands {
     public class IotaCommand : ICommand {
-        private readonly IDemoApplicationModel Model;
+        private readonly IApplicationModel Model;
 
-        public IotaCommand(IDemoApplicationModel model) {
+        public IotaCommand(IApplicationModel model) {
             Model = model;
         }
 

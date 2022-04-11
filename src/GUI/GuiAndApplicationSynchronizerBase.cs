@@ -29,7 +29,7 @@ using WindowsCollectionViewSource = System.Windows.Data.CollectionViewSource;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
     public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow>
             : IGuiAndApplicationSynchronizer<TApplicationModel>
-            where TApplicationModel : class, IApplicationModel {
+            where TApplicationModel : class, IApplicationModelBase {
         protected readonly TWindow Window;
         protected readonly Dictionary<PropertyInfo, FieldInfo> ModelPropertyToWindowFieldMapping, ModelPropertyToWindowLabelMapping;
         protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;

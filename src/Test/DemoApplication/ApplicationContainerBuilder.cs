@@ -9,19 +9,19 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication {
-    public static class DemoApplicationContainerBuilder {
+    public static class ApplicationContainerBuilder {
         public static async Task<ContainerBuilder> UseDemoApplicationAsync(this ContainerBuilder builder, VishizhukelNetDemoWindow vishizhukelNetDemoWindow, ILogConfiguration logConfiguration) {
             await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
             if (vishizhukelNetDemoWindow == null) {
-                builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IDemoGuiAndApplicationSynchronizer>().SingleInstance();
+                builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
             } else {
                 builder.RegisterInstance(vishizhukelNetDemoWindow);
-                builder.RegisterType<DemoGuiAndApplicationSynchronizer>().As<IDemoGuiAndApplicationSynchronizer>().SingleInstance();
+                builder.RegisterType<GuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
             }
 
-            builder.RegisterType<Application.DemoApplication>().As<Application.DemoApplication>().SingleInstance();
-            builder.RegisterType<DemoApplicationModel>().As<DemoApplicationModel>().As<IDemoApplicationModel>().As<IBusy>().SingleInstance();
-            builder.RegisterType<DemoGuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
+            builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
+            builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
+            builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
             return builder;
         }
     }

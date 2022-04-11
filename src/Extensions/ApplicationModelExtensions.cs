@@ -7,7 +7,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions {
     public static class ApplicationModelExtensions {
-        public static List<ToggleButton> OtherToggleButtonsWithSameGroup(this IApplicationModel model, bool returnEmptyList, ToggleButton toggleButton) {
+        public static List<ToggleButton> OtherToggleButtonsWithSameGroup(this IApplicationModelBase model, bool returnEmptyList, ToggleButton toggleButton) {
             var groupName = toggleButton.GroupName;
             var result = new List<ToggleButton>();
             if (returnEmptyList || groupName == "") { return result; }

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Application;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers {
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Helpers {
     public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
         public IApplicationModel Model { get; }
         public ApplicationModel LastModelKnownToMe { get; }
@@ -19,10 +19,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helper
         }
 
         public void SetLastModelKnownToMeGreeks() {
-            LastModelKnownToMe.Alpha.Text = Model.Alpha.Text;
-            LastModelKnownToMe.Beta.UpdateSelectables(Model.Beta.Selectables);
-            LastModelKnownToMe.Beta.SelectedIndex = Model.Beta.SelectedIndex;
-            LastModelKnownToMe.Delta.Text = Model.Delta.Text;
         }
 
         public void IndicateBusy(bool force) {

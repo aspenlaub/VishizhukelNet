@@ -6,7 +6,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
-    public abstract class TashSelectorHandlerBase<TModel> : ITashSelectorHandler<TModel> where TModel : IApplicationModel {
+    public abstract class TashSelectorHandlerBase<TModel> : ITashSelectorHandler<TModel> where TModel : IApplicationModelBase {
         protected readonly ISimpleLogger SimpleLogger;
         protected readonly ITashCommunicator<TModel> TashCommunicator;
         protected readonly Dictionary<string, ISelector> Selectors;

@@ -4,10 +4,10 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class DeltaTextHandler : ISimpleTextHandler {
-        private readonly IDemoApplicationModel Model;
+        private readonly IApplicationModel Model;
         private readonly IGuiAndAppHandler GuiAndAppHandler;
 
-        public DeltaTextHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+        public DeltaTextHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
             Model = model;
             GuiAndAppHandler = guiAndAppHandler;
         }

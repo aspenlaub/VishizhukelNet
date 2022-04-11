@@ -4,7 +4,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
-    public abstract class ToggleButtonHandlerBase<TModel> : IToggleButtonHandler where TModel : IApplicationModel {
+    public abstract class ToggleButtonHandlerBase<TModel> : IToggleButtonHandler where TModel : IApplicationModelBase {
         protected readonly TModel Model;
         protected readonly ToggleButton ToggleButton;
 

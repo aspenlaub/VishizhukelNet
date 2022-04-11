@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
     [TestClass]
-    public class VishizhukelNetDemoWindowTest : VishizhukelNetDemoIntegrationTestBase {
+    public class WindowTest : IntegrationTestBase {
         [TestMethod]
         public async Task CanOpenAndMaximizeDemoWindow() {
             using var sut = await CreateDemoWindowUnderTestAsync();
@@ -25,10 +25,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
             using var sut = await CreateDemoWindowUnderTestAsync();
             var process = await sut.FindIdleProcessAsync();
             var tasks = new List<ControllableProcessTask> {
-                sut.CreateVerifyWhetherEnabledTask(process, nameof(IDemoApplicationModel.Beta), false),
-                sut.CreateSetValueTask(process, nameof(IDemoApplicationModel.Alpha), "7"),
-                sut.CreateVerifyWhetherEnabledTask(process, nameof(IDemoApplicationModel.Beta), true),
-                sut.CreateVerifyNumberOfItemsTask(process, nameof(IDemoApplicationModel.Beta), 5),
+                sut.CreateVerifyWhetherEnabledTask(process, nameof(IApplicationModel.Beta), false),
+                sut.CreateSetValueTask(process, nameof(IApplicationModel.Alpha), "7"),
+                sut.CreateVerifyWhetherEnabledTask(process, nameof(IApplicationModel.Beta), true),
+                sut.CreateVerifyNumberOfItemsTask(process, nameof(IApplicationModel.Beta), 5),
                 sut.CreateSelectBetaTask(process, "49")
             };
             await sut.RemotelyProcessTaskListAsync(process, tasks);
@@ -47,9 +47,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
             };
             var nonEmptyListJson = JsonConvert.SerializeObject(nonEmptyList);
             var tasks = new List<ControllableProcessTask> {
-                sut.CreateVerifyValueTask(process, nameof(IDemoApplicationModel.Theta), emptyListJson),
-                sut.CreateSetValueTask(process, nameof(IDemoApplicationModel.Theta), nonEmptyListJson),
-                sut.CreateVerifyValueTask(process, nameof(IDemoApplicationModel.Theta), nonEmptyListJson),
+                sut.CreateVerifyValueTask(process, nameof(IApplicationModel.Theta), emptyListJson),
+                sut.CreateSetValueTask(process, nameof(IApplicationModel.Theta), nonEmptyListJson),
+                sut.CreateVerifyValueTask(process, nameof(IApplicationModel.Theta), nonEmptyListJson),
             };
             await sut.RemotelyProcessTaskListAsync(process, tasks);
             await Task.Delay(TimeSpan.FromSeconds(20));

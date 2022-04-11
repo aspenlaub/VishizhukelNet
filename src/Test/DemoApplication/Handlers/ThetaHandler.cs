@@ -8,10 +8,10 @@ using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class ThetaHandler : ISimpleCollectionViewSourceHandler {
-        private readonly IDemoApplicationModel Model;
+        private readonly IApplicationModel Model;
         private readonly IGuiAndAppHandler GuiAndAppHandler;
 
-        public ThetaHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+        public ThetaHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
             Model = model;
             GuiAndAppHandler = guiAndAppHandler;
         }

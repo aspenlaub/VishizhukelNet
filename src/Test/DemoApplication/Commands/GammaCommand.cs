@@ -5,10 +5,10 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands {
     public class GammaCommand : ICommand {
-        private readonly IDemoApplicationModel Model;
+        private readonly IApplicationModel Model;
         private readonly ISimpleTextHandler DeltaTextHandler;
 
-        public GammaCommand(IDemoApplicationModel model, ISimpleTextHandler deltaTextHandler) {
+        public GammaCommand(IApplicationModel model, ISimpleTextHandler deltaTextHandler) {
             Model = model;
             DeltaTextHandler = deltaTextHandler;
         }

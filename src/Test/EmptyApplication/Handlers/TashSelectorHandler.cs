@@ -4,32 +4,22 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
 using Microsoft.Extensions.Logging;
+using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces.IApplicationModel;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Handlers {
     public class TashSelectorHandler : TashSelectorHandlerBase<IApplicationModel> {
-        private readonly IApplicationHandlers DemoApplicationHandlers;
+        // ReSharper disable once NotAccessedField.Local
+        private readonly IApplicationHandlers ApplicationHandlers;
 
-        public TashSelectorHandler(IApplicationHandlers demoApplicationHandlers, ISimpleLogger simpleLogger, ITashCommunicator<IApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors)
+        public TashSelectorHandler(IApplicationHandlers applicationHandlers, ISimpleLogger simpleLogger, ITashCommunicator<IApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors)
             : base(simpleLogger, tashCommunicator, selectors) {
-            DemoApplicationHandlers = demoApplicationHandlers;
+            ApplicationHandlers = applicationHandlers;
         }
 
         protected override async Task SelectedIndexChangedAsync(ITashTaskHandlingStatus<IApplicationModel> status, string controlName, int selectedIndex, bool selectablesChanged) {
-            if (selectedIndex >= 0) {
-                SimpleLogger.LogInformation($"Changing selected index for {controlName} to {selectedIndex}");
-                switch (controlName) {
-                    case nameof(status.Model.Beta):
-                        await DemoApplicationHandlers.BetaSelectorHandler.SelectedIndexChangedAsync(selectedIndex);
-                        break;
-                    default:
-                        var errorMessage = $"Do not know how to select for {status.TaskBeingProcessed.ControlName}";
-                        SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage})");
-                        await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
-                        break;
-                }
-            }
+            await Task.CompletedTask;
         }
 
         public override async Task ProcessSelectComboOrResetTaskAsync(ITashTaskHandlingStatus<IApplicationModel> status) {

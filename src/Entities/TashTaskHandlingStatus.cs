@@ -4,7 +4,7 @@ using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities {
-    public class TashTaskHandlingStatus<TModel> : ITashTaskHandlingStatus<TModel> where TModel : IApplicationModel {
+    public class TashTaskHandlingStatus<TModel> : ITashTaskHandlingStatus<TModel> where TModel : IApplicationModelBase {
         public TModel Model { get; }
         public int ProcessId { get; }
         public DateTime StatusLastConfirmedAt { get; set; }

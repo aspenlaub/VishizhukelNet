@@ -10,7 +10,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
-    public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TModel : IApplicationModel {
+    public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TModel : IApplicationModelBase {
         protected readonly ITashAccessor TashAccessor;
         protected readonly ISimpleLogger SimpleLogger;
         protected readonly string LogId;

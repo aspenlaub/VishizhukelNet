@@ -3,40 +3,34 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
+using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces.IApplicationModel;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Handlers {
     public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationModel> {
-        private readonly IApplicationHandlers DemoApplicationHandlers;
+        // ReSharper disable once NotAccessedField.Local
+        private readonly IApplicationHandlers ApplicationHandlers;
 
-        public TashVerifyAndSetHandler(IApplicationHandlers demoApplicationHandlers, ISimpleLogger simpleLogger, ITashSelectorHandler<IApplicationModel> tashSelectorHandler,
+        public TashVerifyAndSetHandler(IApplicationHandlers applicationHandlers, ISimpleLogger simpleLogger, ITashSelectorHandler<IApplicationModel> tashSelectorHandler,
             ITashCommunicator<IApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors)
             : base(simpleLogger, tashSelectorHandler, tashCommunicator, selectors) {
-            DemoApplicationHandlers = demoApplicationHandlers;
+            ApplicationHandlers = applicationHandlers;
         }
 
         protected override Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
-            return new() {
-                { nameof(status.Model.Alpha), status.Model.Alpha }
-            };
+            return new();
         }
 
         protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
-            return new() {
-                { nameof(status.Model.Alpha), DemoApplicationHandlers.AlphaTextHandler }
-            };
+            return new();
         }
 
         protected override Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
-            return new() {
-                { nameof(status.Model.Theta), status.Model.Theta }
-            };
+            return new();
         }
 
         protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
-            return new() {
-                { nameof(status.Model.Theta), DemoApplicationHandlers.ThetaHandler }
-            };
+            return new();
         }
 
         protected override void OnValueTaskProcessed(ITashTaskHandlingStatus<IApplicationModel> status, bool verify, bool set, string actualValue) {

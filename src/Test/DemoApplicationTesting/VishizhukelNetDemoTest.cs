@@ -10,13 +10,13 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.DemoApplication;
+using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.Application;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting {
     [TestClass]
     public class VishizhukelNetDemoTest {
         private VishizhukelDemoApplication Application;
-        private IDemoApplicationModel Model;
+        private IApplicationModel Model;
         private readonly List<int> AlphaTestValues = new() { 24, 7, 1970, 1 };
 
         [TestInitialize]
@@ -29,7 +29,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplicationTesting
                 .Build();
             Application = container.Resolve<VishizhukelDemoApplication>();
             Assert.IsNotNull(Application);
-            Model = container.Resolve<IDemoApplicationModel>();
+            Model = container.Resolve<IApplicationModel>();
             Assert.IsNotNull(Model);
             await Application.OnLoadedAsync();
         }

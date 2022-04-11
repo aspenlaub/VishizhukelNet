@@ -8,7 +8,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application {
-    public class DemoApplicationModel : ApplicationModelBase, IDemoApplicationModel {
+    public class ApplicationModel : ApplicationModelBase, IApplicationModel {
         public ITextBox Alpha { get; } = new TextBox();
         public ISelector Beta { get; } = new ComboBox();
         public Button Gamma { get; } = new();

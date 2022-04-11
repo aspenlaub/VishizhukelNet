@@ -3,10 +3,10 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
-    public class MethodMultiplyHandler : ToggleButtonHandlerBase<IDemoApplicationModel> {
+    public class MethodMultiplyHandler : ToggleButtonHandlerBase<IApplicationModel> {
         private readonly DeltaTextHandler DeltaTextHandler;
 
-        public MethodMultiplyHandler(IDemoApplicationModel model, DeltaTextHandler deltaTextHandler) : base(model, model.MethodMultiply) {
+        public MethodMultiplyHandler(IApplicationModel model, DeltaTextHandler deltaTextHandler) : base(model, model.MethodMultiply) {
             DeltaTextHandler = deltaTextHandler;
         }
 

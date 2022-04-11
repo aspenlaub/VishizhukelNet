@@ -7,11 +7,11 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class BetaSelectorHandler : ISimpleSelectorHandler {
-        private readonly IDemoApplicationModel Model;
+        private readonly IApplicationModel Model;
         private readonly IGuiAndAppHandler GuiAndAppHandler;
         private readonly DeltaTextHandler DeltaTextHandler;
 
-        public BetaSelectorHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler, DeltaTextHandler deltaTextHandler) {
+        public BetaSelectorHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler, DeltaTextHandler deltaTextHandler) {
             Model = model;
             GuiAndAppHandler = guiAndAppHandler;
             DeltaTextHandler = deltaTextHandler;

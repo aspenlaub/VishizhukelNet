@@ -11,7 +11,7 @@ using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
-    public class TashTimer<TModel> : IAsyncDisposable, ITashTimer<TModel> where TModel : IApplicationModel {
+    public class TashTimer<TModel> : IAsyncDisposable, ITashTimer<TModel> where TModel : IApplicationModelBase {
         private DispatcherTimer DispatcherTimer;
         private readonly int ProcessId;
         private readonly ITashAccessor TashAccessor;

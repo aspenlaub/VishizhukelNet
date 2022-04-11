@@ -5,9 +5,9 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands {
     public class KappaCommand : ICommand {
-        private readonly IDemoApplicationModel Model;
+        private readonly IApplicationModel Model;
 
-        public KappaCommand(IDemoApplicationModel model) {
+        public KappaCommand(IApplicationModel model) {
             Model = model;
         }
 

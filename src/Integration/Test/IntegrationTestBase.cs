@@ -8,19 +8,19 @@ using Autofac;
 using Moq;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
-    public class VishizhukelNetDemoIntegrationTestBase {
+    public class IntegrationTestBase {
         protected readonly IContainer Container;
 
-        public VishizhukelNetDemoIntegrationTestBase() {
+        public IntegrationTestBase() {
             var logConfigurationMock = new Mock<ILogConfiguration>();
-            logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoIntegrationTestBase));
+            logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(IntegrationTestBase));
             logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
             logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
             Container = new ContainerBuilder().RegisterForDemoIntegrationTest(logConfigurationMock.Object).Build();
         }
 
-        protected async Task<DemoWindowUnderTest> CreateDemoWindowUnderTestAsync() {
-            var sut = Container.Resolve<DemoWindowUnderTest>();
+        protected async Task<WindowUnderTest> CreateDemoWindowUnderTestAsync() {
+            var sut = Container.Resolve<WindowUnderTest>();
             await sut.InitializeAsync();
             var process = await sut.FindIdleProcessAsync();
             var tasks = new List<ControllableProcessTask> {

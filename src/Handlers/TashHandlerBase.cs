@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 // ReSharper disable UnusedMember.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
-    public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class, IApplicationModel {
+    public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class, IApplicationModelBase {
         protected readonly ITashAccessor TashAccessor;
         protected readonly ISimpleLogger SimpleLogger;
         protected readonly ILogConfiguration LogConfiguration;

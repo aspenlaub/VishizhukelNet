@@ -5,12 +5,12 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
     public class AlphaTextHandler : ISimpleTextHandler {
-        private readonly IDemoApplicationModel Model;
+        private readonly IApplicationModel Model;
         private readonly IGuiAndAppHandler GuiAndAppHandler;
         private readonly ISimpleSelectorHandler BetaSelectorHandler;
         private readonly ISimpleTextHandler DeltaTextHandler;
 
-        public AlphaTextHandler(IDemoApplicationModel model, IGuiAndAppHandler guiAndAppHandler, ISimpleSelectorHandler betaSelectorHandler, ISimpleTextHandler deltaTextHandler) {
+        public AlphaTextHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler, ISimpleSelectorHandler betaSelectorHandler, ISimpleTextHandler deltaTextHandler) {
             Model = model;
             GuiAndAppHandler = guiAndAppHandler;
             BetaSelectorHandler = betaSelectorHandler;

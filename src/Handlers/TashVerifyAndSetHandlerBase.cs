@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers {
-    public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHandler<TModel> where TModel : IApplicationModel {
+    public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHandler<TModel> where TModel : IApplicationModelBase {
         protected readonly ISimpleLogger SimpleLogger;
         protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
         protected readonly ITashCommunicator<TModel> TashCommunicator;

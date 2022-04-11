@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI;
@@ -22,6 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication {
             builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
             builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
             builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
+            builder.RegisterType<FakeApplicationLogger>().As<IApplicationLogger>().SingleInstance();
             return builder;
         }
     }

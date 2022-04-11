@@ -6,5 +6,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
         TApplicationModel Model { get; }
         Task OnModelDataChangedAsync();
         void IndicateBusy(bool force);
+
+        void OnWebBrowserLoadCompleted();
     }
 }

@@ -27,5 +27,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helper
 
         public void IndicateBusy(bool force) {
         }
+
+        public void OnWebBrowserLoadCompleted() {
+        }
     }
 }

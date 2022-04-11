@@ -10,5 +10,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities {
         public ITextBox Status { get; set; } = new TextBox { Enabled = false };
 
         public WindowState WindowState { get; set; }
+
+        public bool UsesRealBrowser { get; set; }
+        public IWebBrowserWithDocument WebBrowser { get; } = new WebBrowser();
+        public ITextBox WebBrowserUrl { get; } = new TextBox();
     }
 }

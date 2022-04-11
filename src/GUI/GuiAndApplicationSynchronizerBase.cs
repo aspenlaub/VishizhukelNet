@@ -338,5 +338,25 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
 
             windowCollectionViewSource.Source = newItems;
         }
+
+        public void OnWebBrowserLoadCompleted() {
+            foreach (var modelToWindowPropertyMapping in ModelPropertyToWindowFieldMapping) {
+                var modelProperty = modelToWindowPropertyMapping.Key;
+                var windowField = modelToWindowPropertyMapping.Value;
+                if (windowField.FieldType.Name != "WebBrowser") { continue; }
+
+                var webBrowser = (WindowsWebBrowser)windowField.GetValue(Window);
+                if (webBrowser == null) { continue; }
+
+                var modelWebBrowser = (IWebBrowserWithDocument)modelProperty.GetValue(Model);
+                if (modelWebBrowser == null) { continue; }
+
+                if (webBrowser.Source != null && modelWebBrowser.Url == webBrowser.Source.OriginalString) { continue; }
+                if (webBrowser.Source == null && string.IsNullOrWhiteSpace(modelWebBrowser.Url)) { continue; }
+
+                modelWebBrowser.Url = string.IsNullOrWhiteSpace(webBrowser.Source?.OriginalString) ? "" : webBrowser.Source.OriginalString;
+                modelWebBrowser.AskedForNavigationToUrl = modelWebBrowser.Url;
+            }
+        }
     }
 }

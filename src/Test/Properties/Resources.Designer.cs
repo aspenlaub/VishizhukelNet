@@ -106,5 +106,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Browser Window.
+        /// </summary>
+        internal static string WebBrowserWindowTitle {
+            get {
+                return ResourceManager.GetString("WebBrowserWindowTitle", resourceCulture);
+            }
+        }
     }
 }

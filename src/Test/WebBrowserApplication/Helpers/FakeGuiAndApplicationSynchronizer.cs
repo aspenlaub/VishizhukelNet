@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Application;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Application;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Helpers {
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Helpers {
     public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
         public IApplicationModel Model { get; }
         public ApplicationModel LastModelKnownToMe { get; }

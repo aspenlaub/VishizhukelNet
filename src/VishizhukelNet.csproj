@@ -1,61 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <AssemblyName>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</AssemblyName>
-    <RootNamespace>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</RootNamespace>
-    <GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Deterministic>false</Deterministic>
-    <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</AssemblyTitle>
-    <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</AssemblyProduct>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/aspenlaub/VishizhukelNet.git</RepositoryUrl>
-    <RepositoryBranch>master</RepositoryBranch>
-    <PackageId>VishizhukelNet</PackageId>
-    <VersionDays>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2019-07-24"))).Days.ToString())</VersionDays>
-    <VersionMinutes>$([System.Math]::Floor($([System.DateTime]::UtcNow.Subtract($([System.DateTime]::UtcNow.Date)).TotalMinutes)).ToString())</VersionMinutes>
-    <Version>2.0.$(VersionDays).$(VersionMinutes)</Version>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <NuspecFile>VishizhukelNet.nuspec</NuspecFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Integration\**" />
-    <Compile Remove="Test\**" />
-    <EmbeddedResource Remove="Integration\**" />
-    <EmbeddedResource Remove="Test\**" />
-    <None Remove="Integration\**" />
-    <None Remove="Test\**" />
-    <Page Remove="Integration\**" />
-    <Page Remove="Test\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="packageicon.ico" />
-    <None Remove="packageicon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packageicon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="TashClient" Version="2.0.948.953" />
-    <PackageReference Include="Vishizhukel" Version="2.0.948.497" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<AssemblyName>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</AssemblyName>
+		<RootNamespace>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</RootNamespace>
+		<GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<Deterministic>false</Deterministic>
+		<AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</AssemblyTitle>
+		<AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</AssemblyProduct>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/aspenlaub/VishizhukelNet.git</RepositoryUrl>
+		<RepositoryBranch>master</RepositoryBranch>
+		<PackageId>VishizhukelNet</PackageId>
+		<VersionDays>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2019-07-24"))).Days.ToString())</VersionDays>
+		<VersionMinutes>$([System.Math]::Floor($([System.DateTime]::UtcNow.Subtract($([System.DateTime]::UtcNow.Date)).TotalMinutes)).ToString())</VersionMinutes>
+		<Version>2.0.$(VersionDays).$(VersionMinutes)</Version>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+		<NuspecFile>VishizhukelNet.nuspec</NuspecFile>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="Integration\**" />
+		<Compile Remove="Test\**" />
+		<EmbeddedResource Remove="Integration\**" />
+		<EmbeddedResource Remove="Test\**" />
+		<None Remove="Integration\**" />
+		<None Remove="Test\**" />
+		<Page Remove="Integration\**" />
+		<Page Remove="Test\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="packageicon.ico" />
+		<None Remove="packageicon.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="packageicon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<COMReference Include="MSHTML.dll">
+			<Guid>3050f1c5-98b5-11cf-bb82-00aa00bdce0b</Guid>
+			<VersionMajor>4</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+			<EmbedInteropTypes>false</EmbedInteropTypes>
+		</COMReference>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="TashClient" Version="2.0.948.953" />
+		<PackageReference Include="Vishizhukel" Version="2.0.948.497" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 </Project>

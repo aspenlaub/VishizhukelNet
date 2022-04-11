@@ -133,4 +133,7 @@
   <data name="PressToCalculate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>press_to_calculate.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="WebBrowserWindowTitle" xml:space="preserve">
+    <value>Web Browser Window</value>
+  </data>
 </root>

@@ -19,7 +19,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -70,11 +70,38 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not load URL.
+        /// </summary>
+        internal static string CouldNotLoadUrl {
+            get {
+                return ResourceManager.GetString("CouldNotLoadUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not make Tash registration (error code: {0}).
         /// </summary>
         internal static string CouldNotMakeTashRegistration {
             get {
                 return ResourceManager.GetString("CouldNotMakeTashRegistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request timed out after {0} second/-s.
+        /// </summary>
+        internal static string RequestTimedOutAfter {
+            get {
+                return ResourceManager.GetString("RequestTimedOutAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web browser still is busy with a preceding request after {0} second/-s.
+        /// </summary>
+        internal static string WebBrowserStillBusyAfter {
+            get {
+                return ResourceManager.GetString("WebBrowserStillBusyAfter", resourceCulture);
             }
         }
     }

@@ -1,62 +1,73 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <IsPackable>false</IsPackable>
-    <AssemblyName>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyName>
-    <RootNamespace>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</RootNamespace>
-    <GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Deterministic>false</Deterministic>
-    <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyTitle>
-    <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyProduct>
-    <OutputType>WinExe</OutputType>
-    <ApplicationIcon>DemoApplication\GUI\demo.ico</ApplicationIcon>
-    <StartupObject>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.DemoApp</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
-  <ItemGroup>
-    <None Remove="DemoApplication\demo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Remove="DemoApplication\DemoApp.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="DemoApplication\DemoApp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </ApplicationDefinition>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="DemoApplication\GUI\demo.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="3.1.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="Moq" Version="4.17.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\VishizhukelNet.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<IsPackable>false</IsPackable>
+		<AssemblyName>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyName>
+		<RootNamespace>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</RootNamespace>
+		<GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<Deterministic>false</Deterministic>
+		<AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyTitle>
+		<AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyProduct>
+		<OutputType>WinExe</OutputType>
+		<ApplicationIcon>DemoApplication\GUI\demo.ico</ApplicationIcon>
+		<StartupObject>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.DemoApp</StartupObject>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+	<ItemGroup>
+		<None Remove="DemoApplication\demo.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<Page Remove="DemoApplication\DemoApp.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<ApplicationDefinition Include="DemoApplication\DemoApp.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</ApplicationDefinition>
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="DemoApplication\GUI\demo.ico">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<COMReference Include="MSHTML.dll">
+			<Guid>3050f1c5-98b5-11cf-bb82-00aa00bdce0b</Guid>
+			<VersionMajor>4</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+			<EmbedInteropTypes>false</EmbedInteropTypes>
+		</COMReference>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="coverlet.collector" Version="3.1.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+		<PackageReference Include="Moq" Version="4.17.1" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\VishizhukelNet.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.GUI;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.GUI;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication {
     /// <summary>
@@ -20,6 +21,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication {
 
             var emptyWindow = new VishizhukelNetEmptyWindow();
             emptyWindow.Show();
+            var browserWindow = new VishizhukelNetWebBrowserWindow();
+            browserWindow.Show();
         }
     }
 }

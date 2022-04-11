@@ -120,7 +120,16 @@
   <data name="CouldNotConnectToTash" xml:space="preserve">
     <value>Could not connect to Tash, please start Tash Host</value>
   </data>
+  <data name="CouldNotLoadUrl" xml:space="preserve">
+    <value>Could not load URL</value>
+  </data>
   <data name="CouldNotMakeTashRegistration" xml:space="preserve">
     <value>Could not make Tash registration (error code: {0})</value>
+  </data>
+  <data name="RequestTimedOutAfter" xml:space="preserve">
+    <value>Request timed out after {0} second/-s</value>
+  </data>
+  <data name="WebBrowserStillBusyAfter" xml:space="preserve">
+    <value>Web browser still is busy with a preceding request after {0} second/-s</value>
   </data>
 </root>

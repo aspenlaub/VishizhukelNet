@@ -7,6 +7,7 @@ using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Commands;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Handlers;
@@ -21,6 +22,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
         private readonly ITashAccessor TashAccessor;
         private readonly ISimpleLogger SimpleLogger;
         private readonly ILogConfiguration LogConfiguration;
+        private readonly IWebBrowserNavigationHelper WebBrowserNavigationHelper;
 
         public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
                 IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model,
@@ -30,15 +32,20 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
             TashAccessor = tashAccessor;
             SimpleLogger = simpleLogger;
             LogConfiguration = logConfiguration;
+            WebBrowserNavigationHelper = new WebBrowserNavigationHelper<IApplicationModel>(model, applicationLogger, this);
         }
 
         protected override async Task EnableOrDisableButtonsAsync() {
-            await Task.CompletedTask;
+            Model.GoToUrl.Enabled = await Commands.GoToUrlCommand.ShouldBeEnabledAsync();
         }
 
         protected override void CreateCommandsAndHandlers() {
-            Handlers = new ApplicationHandlers();
-            Commands = new ApplicationCommands();
+            Handlers = new ApplicationHandlers {
+                WebBrowserUrlTextHandler = new WebBrowserUrlTextHandler(Model, this)
+            };
+            Commands = new ApplicationCommands {
+                GoToUrlCommand = new GoToUrlCommand(Model, WebBrowserNavigationHelper)
+            };
             var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
             var selectors = new Dictionary<string, ISelector>();
             var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);

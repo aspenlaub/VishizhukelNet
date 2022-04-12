@@ -69,7 +69,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Applic
 
         public override async Task OnLoadedAsync() {
             await base.OnLoadedAsync();
-            if (!DemoApp.IsIntegrationTest) {
+            if (!App.IsIntegrationTest) {
                 var items = new List<IDemoCollectionViewSourceEntity> {
                     new DemoCollectionViewSourceEntity {
                         Date = new DateTime(2022, 1, 19),

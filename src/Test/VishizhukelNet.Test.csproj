@@ -13,7 +13,7 @@
 		<AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test</AssemblyProduct>
 		<OutputType>WinExe</OutputType>
 		<ApplicationIcon>DemoApplication\GUI\demo.ico</ApplicationIcon>
-		<StartupObject>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.DemoApp</StartupObject>
+		<StartupObject>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.App</StartupObject>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
@@ -21,10 +21,10 @@
 		<None Remove="DemoApplication\demo.ico" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Remove="DemoApplication\DemoApp.xaml" />
+		<Page Remove="DemoApplication\App.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-		<ApplicationDefinition Include="DemoApplication\DemoApp.xaml">
+		<ApplicationDefinition Include="DemoApplication\App.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</ApplicationDefinition>
 	</ItemGroup>
@@ -50,9 +50,9 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-		<PackageReference Include="Moq" Version="4.17.1" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+		<PackageReference Include="Moq" Version="4.17.2" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.9" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.9" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\VishizhukelNet.csproj" />

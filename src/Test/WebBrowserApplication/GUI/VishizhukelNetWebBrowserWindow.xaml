@@ -9,7 +9,7 @@
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <Button Name="GoToUrl" DockPanel.Dock="Right" Padding="20,5,20,5">_Go</Button>
-            <TextBox Name="Url" Padding="5"/>
+            <TextBox Name="WebBrowserUrl" Padding="5"/>
         </DockPanel>
         <TabControl>
             <TabItem Header="Browser" Padding="60,5,60,5">

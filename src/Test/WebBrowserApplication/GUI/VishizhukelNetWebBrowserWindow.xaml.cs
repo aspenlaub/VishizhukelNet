@@ -23,6 +23,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
         private Application.Application Application;
         private ITashTimer<IApplicationModel> TashTimer;
 
+        public bool NoTash { get; set; }
+
         public VishizhukelNetWebBrowserWindow() {
             InitializeComponent();
         }
@@ -44,13 +46,23 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
             Application = Container.Resolve<Application.Application>();
             await Application.OnLoadedAsync();
 
-            var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
-            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.WebBrowserWindowTitle)) {
-                Close();
-            }
+            var commands = Application.Commands;
 
-            TashTimer.CreateAndStartTimer(Application.CreateTashTaskHandlingStatus());
+            var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
+            var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
+
+            guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserUrl, t => Application.Handlers.WebBrowserUrlTextHandler.TextChangedAsync(t));
+
+            guiToAppGate.WireButtonAndCommand(GoToUrl, commands.GoToUrlCommand, buttonNameToCommandMapper);
+
+            if (!NoTash) {
+                TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
+                if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.WebBrowserWindowTitle)) {
+                    Close();
+                }
+
+                TashTimer.CreateAndStartTimer(Application.CreateTashTaskHandlingStatus());
+            }
 
             await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(5));
         }

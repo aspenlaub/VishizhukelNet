@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Application;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Helpers {

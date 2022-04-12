@@ -21,6 +21,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.GUI {
         private Application.Application Application;
         private ITashTimer<IApplicationModel> TashTimer;
 
+        public bool NoTash { get; set; }
+
         public VishizhukelNetEmptyWindow() {
             InitializeComponent();
         }
@@ -42,13 +44,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.GUI {
             Application = Container.Resolve<Application.Application>();
             await Application.OnLoadedAsync();
 
-            var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
-            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.EmptyWindowTitle)) {
-                Close();
-            }
+            if (!NoTash) {
+                var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
+                TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
+                if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.EmptyWindowTitle)) {
+                    Close();
+                }
 
-            TashTimer.CreateAndStartTimer(Application.CreateTashTaskHandlingStatus());
+                TashTimer.CreateAndStartTimer(Application.CreateTashTaskHandlingStatus());
+            }
 
             await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(5));
         }

@@ -98,6 +98,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Okay.
+        /// </summary>
+        internal static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] PressToCalculate {

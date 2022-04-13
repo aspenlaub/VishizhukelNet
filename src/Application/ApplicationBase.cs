@@ -68,7 +68,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
             ApplicationLogger.LogMessage($"GUI navigation complete: {Model.WebBrowserOrViewUrl.Text}");
             Model.WebBrowser.Document = document;
             Model.WebBrowser.IsNavigating = false;
-            Model.WebBrowser.HasValidDocument = document != null;
+            Model.WebBrowser.RevalidateDocument();
             GuiAndApplicationSynchronizer.OnWebBrowserLoadCompleted();
             Model.WebBrowserOrViewContentSource.Text = documentAsString;
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();

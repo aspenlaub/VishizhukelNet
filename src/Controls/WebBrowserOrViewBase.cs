@@ -17,4 +17,7 @@ public class WebBrowserOrViewBase : IWebBrowserOrView {
         AskedForNavigationToUrl = "";
         HasValidDocument = false;
     }
+
+    public void RevalidateDocument() {
+    }
 }

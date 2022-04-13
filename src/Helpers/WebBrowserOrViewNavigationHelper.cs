@@ -60,6 +60,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
                     ApplicationLogger.LogMessage($"Problem when navigating to {url}");
                     return false;
                 }
+            } else {
+                Model.WebBrowserOrView.RevalidateDocument();
             }
 
             if (Model.WebBrowserOrView.HasValidDocument) {

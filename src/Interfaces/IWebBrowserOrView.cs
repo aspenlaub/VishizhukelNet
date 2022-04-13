@@ -8,5 +8,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
         DateTime LastNavigationStartedAt { get; set; }
         string AskedForNavigationToUrl { get; set; }
         bool HasValidDocument { get; set; }
+
+        void RevalidateDocument();
     }
 }

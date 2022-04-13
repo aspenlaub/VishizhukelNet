@@ -31,6 +31,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
 
         public virtual async Task OnLoadedAsync() {
             CreateCommandsAndHandlers();
+            Model.WebBrowserUrl.Text = "http://localhost/";
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
 
@@ -47,25 +48,29 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
             Model.WindowState = windowState;
         }
 
-        public void OnWebBrowserNavigating(Uri uri) {
+        public async Task OnWebBrowserNavigatingAsync(Uri uri) {
             Model.WebBrowser.IsNavigating = uri != null;
             Model.WebBrowserUrl.Text = uri == null ? "(off road)" : uri.OriginalString;
             Model.WebBrowser.Document = null;
             Model.WebBrowser.LastNavigationStartedAt = DateTime.Now;
+            Model.WebBrowserContentSource.Text = "";
+            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
             ApplicationLogger.LogMessage($"GUI navigating to {Model.WebBrowserUrl.Text}");
             IndicateBusy(true);
         }
 
-        public void OnWebBrowserLoadCompleted(object documentObject) {
+        public async Task OnWebBrowserLoadCompletedAsync(object documentObject) {
             var document = BasicHtmlHelper.ObjectAsDocument(documentObject);
-            OnWebBrowserLoadCompleted(document, BasicHtmlHelper.DocumentToHtml(document));
+            await OnWebBrowserLoadCompletedAsync(document, BasicHtmlHelper.DocumentToHtml(document));
         }
 
-        public void OnWebBrowserLoadCompleted(IHTMLDocument3 document, string documentAsString) {
+        public async Task OnWebBrowserLoadCompletedAsync(IHTMLDocument3 document, string documentAsString) {
             ApplicationLogger.LogMessage($"GUI navigation complete: {Model.WebBrowserUrl.Text}");
             Model.WebBrowser.Document = document;
             Model.WebBrowser.IsNavigating = false;
             GuiAndApplicationSynchronizer.OnWebBrowserLoadCompleted();
+            Model.WebBrowserContentSource.Text = documentAsString;
+            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
             IndicateBusy(true);
         }
     }

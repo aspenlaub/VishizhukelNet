@@ -13,10 +13,10 @@
         </DockPanel>
         <TabControl>
             <TabItem Header="Browser" Padding="60,5,60,5">
-                <WebBrowser Name="WebBrowser" Navigating="OnWebBrowserNavigating" LoadCompleted="OnWebBrowserLoadCompleted" Navigated="OnWebBrowserNavigated" />
+                <WebBrowser Name="WebBrowser" Navigating="OnWebBrowserNavigatingAsync" LoadCompleted="OnWebBrowserLoadCompletedAsync" Navigated="OnWebBrowserNavigated" />
             </TabItem>
             <TabItem Header="Source" Padding="60,5,60,5">
-                <TextBox Name="Source" Padding="5" FontFamily="Courier New"/>
+                <TextBox Name="WebBrowserContentSource" Padding="5" FontFamily="Courier New"/>
             </TabItem>
         </TabControl>
     </DockPanel>

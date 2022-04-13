@@ -4,5 +4,6 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Inte
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Handlers {
     public class ApplicationHandlers : IApplicationHandlers {
         public ISimpleTextHandler WebBrowserUrlTextHandler { get; set; }
+        public ISimpleTextHandler WebBrowserContentSourceTextHandler { get; set; }
     }
 }

@@ -14,5 +14,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities {
         public bool UsesRealBrowser { get; set; }
         public IWebBrowserWithDocument WebBrowser { get; } = new WebBrowser();
         public ITextBox WebBrowserUrl { get; } = new TextBox();
+        public ITextBox WebBrowserContentSource { get; } = new TextBox();
     }
 }

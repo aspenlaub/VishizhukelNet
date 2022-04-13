@@ -41,7 +41,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
 
         protected override void CreateCommandsAndHandlers() {
             Handlers = new ApplicationHandlers {
-                WebBrowserUrlTextHandler = new WebBrowserUrlTextHandler(Model, this)
+                WebBrowserUrlTextHandler = new WebBrowserUrlTextHandler(Model, this),
+                WebBrowserContentSourceTextHandler = new WebBrowserContentSourceTextHandler(Model, this)
             };
             Commands = new ApplicationCommands {
                 GoToUrlCommand = new GoToUrlCommand(Model, WebBrowserNavigationHelper)

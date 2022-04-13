@@ -52,6 +52,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
             var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
 
             guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserUrl, t => Application.Handlers.WebBrowserUrlTextHandler.TextChangedAsync(t));
+            guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserContentSource, t => Application.Handlers.WebBrowserContentSourceTextHandler.TextChangedAsync(t));
 
             guiToAppGate.WireButtonAndCommand(GoToUrl, commands.GoToUrlCommand, buttonNameToCommandMapper);
 
@@ -87,12 +88,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
             Application.OnWindowStateChanged(WindowState);
         }
 
-        private void OnWebBrowserNavigating(object sender, NavigatingCancelEventArgs e) {
-            Application.OnWebBrowserNavigating(e.Uri);
+        private async void OnWebBrowserNavigatingAsync(object sender, NavigatingCancelEventArgs e) {
+            await Application.OnWebBrowserNavigatingAsync(e.Uri);
         }
 
-        private void OnWebBrowserLoadCompleted(object sender, NavigationEventArgs e) {
-            Application.OnWebBrowserLoadCompleted(((WebBrowser)sender).Document);
+        private async void OnWebBrowserLoadCompletedAsync(object sender, NavigationEventArgs e) {
+            await Application.OnWebBrowserLoadCompletedAsync(((WebBrowser)sender).Document);
         }
 
         private void OnWebBrowserNavigated(object sender, NavigationEventArgs e) {

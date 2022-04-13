@@ -2,7 +2,8 @@
 using System.Linq;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.GUI;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.GUI;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GUI;
+using VishizhukelNetWebBrowserWindow = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.GUI.VishizhukelNetWebBrowserWindow;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication;
 
@@ -28,5 +29,8 @@ public partial class App {
 
         var browserWindow = new VishizhukelNetWebBrowserWindow { NoTash = true };
         browserWindow.Show();
+
+        var webView2Window = new VishizhukelNetWebView2Window { NoTash = true };
+        webView2Window.Show();
     }
 }

@@ -6,9 +6,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
 
         WindowState WindowState { get; set; }
 
-        bool UsesRealBrowser { get; set; }
-        IWebBrowserWithDocument WebBrowser { get; }
-        ITextBox WebBrowserUrl { get; }
-        ITextBox WebBrowserContentSource { get; }
+        bool UsesRealBrowserOrView { get; set; }
+        IWebBrowserOrView WebBrowserOrView { get; }
+        IWebBrowser WebBrowser { get; }
+        IWebView WebView { get; }
+        ITextBox WebBrowserOrViewUrl { get; }
+        ITextBox WebBrowserOrViewContentSource { get; }
     }
 }

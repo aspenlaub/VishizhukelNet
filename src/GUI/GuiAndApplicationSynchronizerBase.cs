@@ -15,6 +15,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Microsoft.Web.WebView2.Wpf;
 using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.Button;
 using ToggleButton = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.ToggleButton;
 using WindowsTextBox = System.Windows.Controls.TextBox;
@@ -120,6 +121,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     case "DataGrid":
                     case "EnvironmentType":
                         continue;
+                    case "WebView2":
+                        UpdateWebViewIfNecessary((IWebView)modelProperty.GetValue(Model), (WebView2)windowField.GetValue(Window));
+                        break;
                     default:
                         throw new NotImplementedException($"Field type name {windowField.FieldType.Name} is not implemented yet.");
                 }
@@ -217,19 +221,37 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             label.Content = modelSelector.LabelText;
         }
 
-        private void UpdateWebBrowserIfNecessary(IWebBrowser modelWebBrowser, WindowsWebBrowser webBrowser) {
-            if (modelWebBrowser == null) {
-                throw new ArgumentNullException(nameof(modelWebBrowser));
+        private void UpdateWebBrowserIfNecessary(IWebBrowser modelWebBrowserOrView, WindowsWebBrowser webBrowser) {
+            if (modelWebBrowserOrView == null) {
+                throw new ArgumentNullException(nameof(modelWebBrowserOrView));
             }
 
-            if (modelWebBrowser.Url == modelWebBrowser.AskedForNavigationToUrl) { return; }
+            if (modelWebBrowserOrView.Url == modelWebBrowserOrView.AskedForNavigationToUrl) { return; }
 
-            if (string.IsNullOrWhiteSpace(modelWebBrowser.Url)) {
-                modelWebBrowser.AskedForNavigationToUrl = null;
+            if (string.IsNullOrWhiteSpace(modelWebBrowserOrView.Url)) {
+                modelWebBrowserOrView.AskedForNavigationToUrl = null;
                 webBrowser.Navigate((Uri)null);
             } else {
-                modelWebBrowser.AskedForNavigationToUrl = modelWebBrowser.Url;
-                webBrowser.Navigate(modelWebBrowser.Url);
+                modelWebBrowserOrView.AskedForNavigationToUrl = modelWebBrowserOrView.Url;
+                webBrowser.Navigate(modelWebBrowserOrView.Url);
+            }
+        }
+
+        private void UpdateWebViewIfNecessary(IWebView modelWebBrowserOrView, WebView2 webView2) {
+            if (modelWebBrowserOrView == null) {
+                throw new ArgumentNullException(nameof(modelWebBrowserOrView));
+            }
+
+            if (modelWebBrowserOrView.Url == modelWebBrowserOrView.AskedForNavigationToUrl) { return; }
+
+            if (string.IsNullOrWhiteSpace(modelWebBrowserOrView.Url)) {
+                modelWebBrowserOrView.AskedForNavigationToUrl = null;
+                modelWebBrowserOrView.LastNavigationStartedAt = DateTime.Now;
+                webView2.CoreWebView2?.Navigate("about:blank");
+            } else {
+                modelWebBrowserOrView.AskedForNavigationToUrl = modelWebBrowserOrView.Url;
+                modelWebBrowserOrView.LastNavigationStartedAt = DateTime.Now;
+                webView2.CoreWebView2?.Navigate(modelWebBrowserOrView.Url);
             }
         }
 
@@ -348,7 +370,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 var webBrowser = (WindowsWebBrowser)windowField.GetValue(Window);
                 if (webBrowser == null) { continue; }
 
-                var modelWebBrowser = (IWebBrowserWithDocument)modelProperty.GetValue(Model);
+                var modelWebBrowser = (IWebBrowser)modelProperty.GetValue(Model);
                 if (modelWebBrowser == null) { continue; }
 
                 if (webBrowser.Source != null && modelWebBrowser.Url == webBrowser.Source.OriginalString) { continue; }

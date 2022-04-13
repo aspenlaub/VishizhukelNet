@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Commands {
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Commands {
     public class GoToUrlCommand : ICommand {
         private readonly IApplicationModel Model;
         private readonly IWebBrowserOrViewNavigationHelper WebBrowserOrViewNavigationHelper;

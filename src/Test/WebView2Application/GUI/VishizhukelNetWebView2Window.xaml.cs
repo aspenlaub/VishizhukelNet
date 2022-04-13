@@ -1,23 +1,23 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
+using Microsoft.Web.WebView2.Core;
 using Moq;
-using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Interfaces.IApplicationModel;
+using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces.IApplicationModel;
 using IContainer = Autofac.IContainer;
 using WindowsApplication = System.Windows.Application;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.GUI {
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GUI {
     // ReSharper disable once UnusedMember.Global
-    public partial class VishizhukelNetWebBrowserWindow : IAsyncDisposable {
+    public partial class VishizhukelNetWebView2Window : IAsyncDisposable {
         private static IContainer Container { get; set; }
 
         private Application.Application Application;
@@ -25,7 +25,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
 
         public bool NoTash { get; set; }
 
-        public VishizhukelNetWebBrowserWindow() {
+        public VishizhukelNetWebView2Window() {
             InitializeComponent();
         }
 
@@ -33,7 +33,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
             if (Container != null) { return; }
 
             var logConfigurationMock = new Mock<ILogConfiguration>();
-            logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetWebBrowserWindow));
+            logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetWebView2Window));
             logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
             logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
             var builder = await new ContainerBuilder().UseApplicationAsync(this, logConfigurationMock.Object);
@@ -88,15 +88,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.
             Application.OnWindowStateChanged(WindowState);
         }
 
-        private async void OnWebBrowserNavigatingAsync(object sender, NavigatingCancelEventArgs e) {
-            await Application.OnWebBrowserNavigatingAsync(e.Uri);
+        private void OnWebViewNavigationStartingAsync(object sender, CoreWebView2NavigationStartingEventArgs e) {
         }
 
-        private async void OnWebBrowserLoadCompletedAsync(object sender, NavigationEventArgs e) {
-            await Application.OnWebBrowserLoadCompletedAsync(((WebBrowser)sender).Document);
+        private async void OnWebViewNavigationCompletedAsync(object sender, CoreWebView2NavigationCompletedEventArgs e) {
+            if (Application == null) { return; }
+
+            var source = await WebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.innerHTML");
+            source = Regex.Unescape(source);
+            source = source.Substring(1, source.Length - 2);
+            await Application.OnWebViewNavigationCompletedAsync(source, e.IsSuccess);
         }
 
-        private void OnWebBrowserNavigated(object sender, NavigationEventArgs e) {
+        private async void OnWebViewSourceChangedAsync(object sender, CoreWebView2SourceChangedEventArgs e) {
+            if (Application == null) { return; }
+
+            await Application.OnWebViewNavigationStartingAsync(WebView.CoreWebView2.Source);
         }
     }
 }

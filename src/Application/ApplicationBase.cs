@@ -31,7 +31,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
 
         public virtual async Task OnLoadedAsync() {
             CreateCommandsAndHandlers();
-            Model.WebBrowserUrl.Text = "http://localhost/";
+            Model.WebBrowserOrViewUrl.Text = "http://localhost/";
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
 
@@ -50,12 +50,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
 
         public async Task OnWebBrowserNavigatingAsync(Uri uri) {
             Model.WebBrowser.IsNavigating = uri != null;
-            Model.WebBrowserUrl.Text = uri == null ? "(off road)" : uri.OriginalString;
+            Model.WebBrowserOrViewUrl.Text = uri == null ? "(off road)" : uri.OriginalString;
             Model.WebBrowser.Document = null;
             Model.WebBrowser.LastNavigationStartedAt = DateTime.Now;
-            Model.WebBrowserContentSource.Text = "";
+            Model.WebBrowserOrViewContentSource.Text = "";
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
-            ApplicationLogger.LogMessage($"GUI navigating to {Model.WebBrowserUrl.Text}");
+            ApplicationLogger.LogMessage($"GUI navigating to {Model.WebBrowserOrViewUrl.Text}");
             IndicateBusy(true);
         }
 
@@ -65,11 +65,31 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
         }
 
         public async Task OnWebBrowserLoadCompletedAsync(IHTMLDocument3 document, string documentAsString) {
-            ApplicationLogger.LogMessage($"GUI navigation complete: {Model.WebBrowserUrl.Text}");
+            ApplicationLogger.LogMessage($"GUI navigation complete: {Model.WebBrowserOrViewUrl.Text}");
             Model.WebBrowser.Document = document;
             Model.WebBrowser.IsNavigating = false;
+            Model.WebBrowser.HasValidDocument = document != null;
             GuiAndApplicationSynchronizer.OnWebBrowserLoadCompleted();
-            Model.WebBrowserContentSource.Text = documentAsString;
+            Model.WebBrowserOrViewContentSource.Text = documentAsString;
+            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            IndicateBusy(true);
+        }
+
+        public async Task OnWebViewNavigationStartingAsync(string uri) {
+            Model.WebView.IsNavigating = uri != null;
+            Model.WebBrowserOrViewUrl.Text = uri ?? "(off road)";
+            Model.WebView.LastNavigationStartedAt = DateTime.Now;
+            Model.WebBrowserOrViewContentSource.Text = "";
+            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            ApplicationLogger.LogMessage($"GUI navigating to {Model.WebBrowserOrViewUrl.Text}");
+            IndicateBusy(true);
+        }
+
+        public async Task OnWebViewNavigationCompletedAsync(string contentSource, bool isSuccess) {
+            ApplicationLogger.LogMessage($"GUI navigation complete: {Model.WebBrowserOrViewUrl.Text}");
+            Model.WebView.IsNavigating = false;
+            Model.WebBrowserOrViewContentSource.Text = contentSource;
+            Model.WebView.HasValidDocument = isSuccess;
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
             IndicateBusy(true);
         }

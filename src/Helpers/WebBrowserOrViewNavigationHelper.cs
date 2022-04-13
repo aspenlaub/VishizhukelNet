@@ -5,7 +5,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
-    public class WebBrowserNavigationHelper<TApplicationModel> : IWebBrowserNavigationHelper where TApplicationModel : IApplicationModelBase {
+    public class WebBrowserOrViewNavigationHelper<TApplicationModel> : IWebBrowserOrViewNavigationHelper where TApplicationModel : IApplicationModelBase {
         private readonly TApplicationModel Model;
         private readonly IApplicationLogger ApplicationLogger;
         private readonly IGuiAndAppHandler GuiAndAppHandler;
@@ -14,7 +14,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
 
         private const int IntervalInMilliseconds = 500;
 
-        public WebBrowserNavigationHelper(TApplicationModel model, IApplicationLogger applicationLogger, IGuiAndAppHandler guiAndAppHandler) {
+        public WebBrowserOrViewNavigationHelper(TApplicationModel model, IApplicationLogger applicationLogger, IGuiAndAppHandler guiAndAppHandler) {
             Model = model;
             ApplicationLogger = applicationLogger;
             GuiAndAppHandler = guiAndAppHandler;
@@ -23,14 +23,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
         public async Task<bool> NavigateToUrlAsync(string url) {
             ApplicationLogger.LogMessage($"App navigating to {url}");
 
-            if (Model.UsesRealBrowser) {
+            if (Model.UsesRealBrowserOrView) {
                 var attempts = MaxSeconds * 1000 / IntervalInMilliseconds;
-                while (Model.WebBrowser.IsNavigating && attempts > 0) {
+                while (Model.WebBrowserOrView.IsNavigating && attempts > 0) {
                     await Task.Delay(TimeSpan.FromMilliseconds(IntervalInMilliseconds));
                     attempts--;
                 }
 
-                if (Model.WebBrowser.IsNavigating) {
+                if (Model.WebBrowserOrView.IsNavigating) {
                     Model.Status.Text = string.Format(Properties.Resources.WebBrowserStillBusyAfter, MaxSeconds);
                     Model.Status.Type = StatusType.Error;
                     ApplicationLogger.LogMessage($"Problem when navigating to {url}");
@@ -38,22 +38,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
                 }
             }
 
-            Model.WebBrowser.Url = "";
+            Model.WebBrowserOrView.Url = "";
             await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
             var minNavigationStartTime = DateTime.Now;
 
-            Model.WebBrowser.Url = url;
+            Model.WebBrowserOrView.Url = url;
             await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
-            if (Model.UsesRealBrowser) {
+            if (Model.UsesRealBrowserOrView) {
                 var attempts = MaxSeconds * 1000 / IntervalInMilliseconds;
-                while ((Model.WebBrowser.LastNavigationStartedAt < minNavigationStartTime || Model.WebBrowser.IsNavigating) && attempts > 0) {
+                while ((Model.WebBrowserOrView.LastNavigationStartedAt < minNavigationStartTime || Model.WebBrowserOrView.IsNavigating) && attempts > 0) {
                     await Task.Delay(TimeSpan.FromMilliseconds(IntervalInMilliseconds));
                     attempts--;
                 }
 
-                if (Model.WebBrowser.IsNavigating) {
+                if (Model.WebBrowserOrView.IsNavigating) {
                     ApplicationLogger.LogMessage("App failed");
                     Model.Status.Text = string.Format(Properties.Resources.RequestTimedOutAfter, MaxSeconds);
                     Model.Status.Type = StatusType.Error;
@@ -62,7 +62,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
                 }
             }
 
-            if (Model.WebBrowser.Document != null) {
+            if (Model.WebBrowserOrView.HasValidDocument) {
                 return true;
             }
 

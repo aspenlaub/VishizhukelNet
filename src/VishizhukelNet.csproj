@@ -42,6 +42,7 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1185.39" />
 		<PackageReference Include="TashClient" Version="2.0.993.1069" />
 		<PackageReference Include="Vishizhukel" Version="2.0.948.497" />
 	</ItemGroup>

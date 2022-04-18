@@ -122,7 +122,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                     case "EnvironmentType":
                         continue;
                     case "WebView2":
-                        UpdateWebViewIfNecessary((IWebView)modelProperty.GetValue(Model), (WebView2)windowField.GetValue(Window));
+                        await UpdateWebViewIfNecessaryAsync((IWebView)modelProperty.GetValue(Model), (WebView2)windowField.GetValue(Window));
                         break;
                     default:
                         throw new NotImplementedException($"Field type name {windowField.FieldType.Name} is not implemented yet.");
@@ -237,21 +237,28 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             }
         }
 
-        private void UpdateWebViewIfNecessary(IWebView modelWebBrowserOrView, WebView2 webView2) {
+        private async Task UpdateWebViewIfNecessaryAsync(IWebView modelWebBrowserOrView, WebView2 webView2) {
             if (modelWebBrowserOrView == null) {
                 throw new ArgumentNullException(nameof(modelWebBrowserOrView));
             }
 
-            if (modelWebBrowserOrView.Url == modelWebBrowserOrView.AskedForNavigationToUrl) { return; }
+            if (modelWebBrowserOrView.Url != modelWebBrowserOrView.AskedForNavigationToUrl) {
+                if (string.IsNullOrWhiteSpace(modelWebBrowserOrView.Url)) {
+                    modelWebBrowserOrView.AskedForNavigationToUrl = null;
+                    modelWebBrowserOrView.LastNavigationStartedAt = DateTime.Now;
+                    webView2.CoreWebView2?.Navigate("about:blank");
+                } else {
+                    modelWebBrowserOrView.AskedForNavigationToUrl = modelWebBrowserOrView.Url;
+                    modelWebBrowserOrView.LastNavigationStartedAt = DateTime.Now;
+                    webView2.CoreWebView2?.Navigate(modelWebBrowserOrView.Url);
+                }
+            }
 
-            if (string.IsNullOrWhiteSpace(modelWebBrowserOrView.Url)) {
-                modelWebBrowserOrView.AskedForNavigationToUrl = null;
-                modelWebBrowserOrView.LastNavigationStartedAt = DateTime.Now;
-                webView2.CoreWebView2?.Navigate("about:blank");
-            } else {
-                modelWebBrowserOrView.AskedForNavigationToUrl = modelWebBrowserOrView.Url;
-                modelWebBrowserOrView.LastNavigationStartedAt = DateTime.Now;
-                webView2.CoreWebView2?.Navigate(modelWebBrowserOrView.Url);
+            if (!string.IsNullOrEmpty(modelWebBrowserOrView.ScriptCodeToExecute) && webView2.CoreWebView2 != null) {
+                var result = await webView2.CoreWebView2.ExecuteScriptAsync(modelWebBrowserOrView.ScriptCodeToExecute);
+                await modelWebBrowserOrView.OnScriptCodeExecutedAsync(result);
+                modelWebBrowserOrView.ScriptCodeToExecute = "";
+                modelWebBrowserOrView.OnScriptCodeExecutedAsync = _ => Task.CompletedTask;
             }
         }
 

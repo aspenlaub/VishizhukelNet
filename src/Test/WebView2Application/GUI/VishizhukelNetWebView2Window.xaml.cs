@@ -55,6 +55,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GU
             guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserOrViewContentSource, t => Application.Handlers.WebBrowserContentSourceTextHandler.TextChangedAsync(t));
 
             guiToAppGate.WireButtonAndCommand(GoToUrl, commands.GoToUrlCommand, buttonNameToCommandMapper);
+            guiToAppGate.WireButtonAndCommand(RunJs, commands.RunJsCommand, buttonNameToCommandMapper);
 
             if (!NoTash) {
                 TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);

@@ -4,5 +4,6 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interf
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Commands {
     public class ApplicationCommands : IApplicationCommands {
         public ICommand GoToUrlCommand { get; set; }
+        public ICommand RunJsCommand { get; set; }
     }
 }

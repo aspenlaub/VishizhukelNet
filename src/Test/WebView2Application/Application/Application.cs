@@ -37,6 +37,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Ap
 
         protected override async Task EnableOrDisableButtonsAsync() {
             Model.GoToUrl.Enabled = await Commands.GoToUrlCommand.ShouldBeEnabledAsync();
+            Model.RunJs.Enabled = await Commands.RunJsCommand.ShouldBeEnabledAsync();
         }
 
         protected override void CreateCommandsAndHandlers() {
@@ -45,7 +46,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Ap
                 WebBrowserContentSourceTextHandler = new WebBrowserContentSourceTextHandler(Model, this)
             };
             Commands = new ApplicationCommands {
-                GoToUrlCommand = new GoToUrlCommand(Model, WebBrowserOrViewNavigationHelper)
+                GoToUrlCommand = new GoToUrlCommand(Model, WebBrowserOrViewNavigationHelper),
+                RunJsCommand = new RunJsCommand(Model, this)
             };
             var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
             var selectors = new Dictionary<string, ISelector>();

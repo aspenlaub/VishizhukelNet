@@ -21,6 +21,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GU
         private static IContainer Container { get; set; }
 
         private Application.Application Application;
+        private IApplicationModel ApplicationModel;
         private ITashTimer<IApplicationModel> TashTimer;
 
         public bool NoTash { get; set; }
@@ -44,6 +45,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GU
             await BuildContainerIfNecessaryAsync();
 
             Application = Container.Resolve<Application.Application>();
+            ApplicationModel = Container.Resolve<IApplicationModel>();
+
+            const string url = "https://www.viperfisch.de/js/bootstrap.min-v24070.js";
+            ApplicationModel.WebView.ScriptToExecuteOnDocumentLoaded
+                = $"var script = document.createElement(\"script\"); script.src = \"{url}\"; document.head.appendChild(script);";
+
             await Application.OnLoadedAsync();
 
             var commands = Application.Commands;
@@ -94,6 +101,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GU
 
         private async void OnWebViewNavigationCompletedAsync(object sender, CoreWebView2NavigationCompletedEventArgs e) {
             if (Application == null) { return; }
+
+            if (!string.IsNullOrEmpty(ApplicationModel.WebView.ScriptToExecuteOnDocumentLoaded)) {
+                await WebView.CoreWebView2.ExecuteScriptAsync(ApplicationModel.WebView.ScriptToExecuteOnDocumentLoaded);
+            }
 
             var source = await WebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.innerHTML");
             source = Regex.Unescape(source);

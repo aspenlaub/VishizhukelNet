@@ -18,7 +18,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Co
                 return;
             }
 
-            Model.WebView.ScriptCodeToExecute = "alert('A script has been run');";
+            Model.WebView.ScriptCodeToExecute = "alert('A script has been run: ' + document.head.children[document.head.children.length - 1].outerHTML);";
 
             await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 

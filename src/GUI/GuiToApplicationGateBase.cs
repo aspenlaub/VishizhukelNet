@@ -1,22 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using Button = System.Windows.Controls.Button;
 using Selector = System.Windows.Controls.Primitives.Selector;
 using TextBox = System.Windows.Controls.TextBox;
 using ToggleButton = System.Windows.Controls.Primitives.ToggleButton;
 
+#nullable disable
+
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
-    public abstract class GuiToApplicationGateBase<TApplication> : IGuiToApplicationGate where TApplication : IGuiAndAppHandler {
+    public abstract class GuiToApplicationGateBase<TApplication> : IGuiToApplicationGate where TApplication : class, IGuiAndAppHandler {
         protected readonly IBusy Busy;
         protected readonly TApplication Application;
+        protected readonly IApplicationModelBase ApplicationModel;
 
         protected GuiToApplicationGateBase(IBusy busy, TApplication application) {
             Busy = busy;
             Application = application;
+            ApplicationModel = Application.GetModel();
         }
 
         public async Task CallbackAsync(Func<Task> action) {
@@ -55,6 +63,36 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 var items = dataGrid.Items.OfType<ICollectionViewSourceEntity>().ToList();
                 return action(items);
             });
+        }
+
+        public void WireWebView(WebView2 webView) {
+            webView.SourceChanged += OnWebViewOnSourceChanged;
+            webView.NavigationCompleted += OnNavigationCompleted;
+        }
+
+        private async void OnWebViewOnSourceChanged(object sender, CoreWebView2SourceChangedEventArgs e) {
+            if (Application == null) { return; }
+
+            var webView = sender as WebView2;
+            if (webView == null) { return; }
+
+            await Application.OnWebViewSourceChangedAsync(webView.CoreWebView2.Source);
+        }
+
+        private async void OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e) {
+            if (Application == null) { return; }
+
+            var webView = sender as WebView2;
+            if (webView == null) { return; }
+
+            if (ApplicationModel.WebView.OnDocumentLoaded.Any()) {
+                await webView.CoreWebView2.ExecuteScriptAsync(ApplicationModel.WebView.OnDocumentLoaded.Statement);
+            }
+
+            var source = await webView.CoreWebView2.ExecuteScriptAsync("document.documentElement.innerHTML");
+            source = Regex.Unescape(source);
+            source = source.Substring(1, source.Length - 2);
+            await Application.OnWebViewNavigationCompletedAsync(source, e.IsSuccess);
         }
     }
 }

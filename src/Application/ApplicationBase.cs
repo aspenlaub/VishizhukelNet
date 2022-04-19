@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using MSHTML;
 
@@ -28,6 +29,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
 
         protected abstract Task EnableOrDisableButtonsAsync();
         protected abstract void CreateCommandsAndHandlers();
+
+        public IApplicationModelBase GetModel() {
+            return Model;
+        }
 
         public virtual async Task OnLoadedAsync() {
             CreateCommandsAndHandlers();
@@ -75,7 +80,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
             IndicateBusy(true);
         }
 
-        public async Task OnWebViewNavigationStartingAsync(string uri) {
+        public async Task OnWebViewSourceChangedAsync(string uri) {
             Model.WebView.IsNavigating = uri != null;
             Model.WebBrowserOrViewUrl.Text = uri ?? "(off road)";
             Model.WebView.LastNavigationStartedAt = DateTime.Now;
@@ -90,6 +95,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
             Model.WebView.IsNavigating = false;
             Model.WebBrowserOrViewContentSource.Text = contentSource;
             Model.WebView.HasValidDocument = isSuccess;
+            if (!isSuccess) {
+                ApplicationLogger.LogMessage("App failed");
+                Model.Status.Text = Properties.Resources.CouldNotLoadUrl;
+                Model.Status.Type = StatusType.Error;
+            }
+
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
             IndicateBusy(true);
         }

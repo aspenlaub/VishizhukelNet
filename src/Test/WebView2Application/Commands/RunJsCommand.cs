@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces;
 
@@ -18,7 +19,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Co
                 return;
             }
 
-            Model.WebView.ScriptCodeToExecute = "alert('A script has been run: ' + document.head.children[document.head.children.length - 1].outerHTML);";
+            Model.WebView.ToExecute.AppendStatement("alert('A script has been run: ' + document.head.children[document.head.children.length - 1].outerHTML);");
 
             await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 

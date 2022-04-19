@@ -1,15 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
-using Microsoft.Web.WebView2.Core;
 using Moq;
 using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces.IApplicationModel;
 using IContainer = Autofac.IContainer;
@@ -48,8 +47,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GU
             ApplicationModel = Container.Resolve<IApplicationModel>();
 
             const string url = "https://www.viperfisch.de/js/bootstrap.min-v24070.js";
-            ApplicationModel.WebView.ScriptToExecuteOnDocumentLoaded
-                = $"var script = document.createElement(\"script\"); script.src = \"{url}\"; document.head.appendChild(script);";
+            ApplicationModel.WebView
+                .OnDocumentLoaded.AppendStatement($"var script = document.createElement(\"script\"); script.src = \"{url}\"; document.head.appendChild(script);");
 
             await Application.OnLoadedAsync();
 
@@ -63,6 +62,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GU
 
             guiToAppGate.WireButtonAndCommand(GoToUrl, commands.GoToUrlCommand, buttonNameToCommandMapper);
             guiToAppGate.WireButtonAndCommand(RunJs, commands.RunJsCommand, buttonNameToCommandMapper);
+
+            guiToAppGate.WireWebView(WebView);
 
             if (!NoTash) {
                 TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
@@ -94,28 +95,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GU
 
         private void OnStateChanged(object sender, EventArgs e) {
             Application.OnWindowStateChanged(WindowState);
-        }
-
-        private void OnWebViewNavigationStartingAsync(object sender, CoreWebView2NavigationStartingEventArgs e) {
-        }
-
-        private async void OnWebViewNavigationCompletedAsync(object sender, CoreWebView2NavigationCompletedEventArgs e) {
-            if (Application == null) { return; }
-
-            if (!string.IsNullOrEmpty(ApplicationModel.WebView.ScriptToExecuteOnDocumentLoaded)) {
-                await WebView.CoreWebView2.ExecuteScriptAsync(ApplicationModel.WebView.ScriptToExecuteOnDocumentLoaded);
-            }
-
-            var source = await WebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.innerHTML");
-            source = Regex.Unescape(source);
-            source = source.Substring(1, source.Length - 2);
-            await Application.OnWebViewNavigationCompletedAsync(source, e.IsSuccess);
-        }
-
-        private async void OnWebViewSourceChangedAsync(object sender, CoreWebView2SourceChangedEventArgs e) {
-            if (Application == null) { return; }
-
-            await Application.OnWebViewNavigationStartingAsync(WebView.CoreWebView2.Source);
         }
     }
 }

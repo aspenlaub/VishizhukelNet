@@ -254,10 +254,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 }
             }
 
-            if (!string.IsNullOrEmpty(modelWebBrowserOrView.ScriptCodeToExecute) && webView2.CoreWebView2 != null) {
-                var result = await webView2.CoreWebView2.ExecuteScriptAsync(modelWebBrowserOrView.ScriptCodeToExecute);
+            if (modelWebBrowserOrView.ToExecute.Any() && webView2.CoreWebView2 != null) {
+                var result = await webView2.CoreWebView2.ExecuteScriptAsync(modelWebBrowserOrView.ToExecute.Statement);
                 await modelWebBrowserOrView.OnScriptCodeExecutedAsync(result);
-                modelWebBrowserOrView.ScriptCodeToExecute = "";
+                modelWebBrowserOrView.ToExecute.Reset();
                 modelWebBrowserOrView.OnScriptCodeExecutedAsync = _ => Task.CompletedTask;
             }
         }

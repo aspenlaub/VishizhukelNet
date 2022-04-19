@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="VishizhukelNet WebView2 Window" Height="295" MinHeight="295" Width="800" MinWidth="800" Icon="..\..\DemoApplication\GUI\demo.ico"
+        Title="VishizhukelNet WebView2 Window" Height="512" MinHeight="512" Width="800" MinWidth="800" Icon="..\..\DemoApplication\GUI\demo.ico"
         Loaded="OnLoadedAsync" Closing="OnClosing" StateChanged="OnStateChanged">
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
@@ -15,7 +15,7 @@
         </DockPanel>
         <TabControl>
             <TabItem Header="Browser" Padding="60,5,60,5">
-                <wv2:WebView2 Name="WebView" Source="http://localhost" NavigationStarting="OnWebViewNavigationStartingAsync" SourceChanged="OnWebViewSourceChangedAsync" NavigationCompleted="OnWebViewNavigationCompletedAsync" />
+                <wv2:WebView2 Name="WebView" Source="http://localhost" />
             </TabItem>
             <TabItem Header="Source" Padding="60,5,60,5">
                 <TextBox Name="WebBrowserOrViewContentSource" Padding="5" FontFamily="Courier New"/>

@@ -62,17 +62,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
                 }
             } else {
                 Model.WebBrowserOrView.RevalidateDocument();
+
+                if (Model.WebBrowserOrView.HasValidDocument) {
+                    Model.Status.Text = "";
+                    Model.Status.Type = StatusType.None;
+                    return true;
+                }
+
+                ApplicationLogger.LogMessage("App failed");
+                Model.Status.Text = Properties.Resources.CouldNotLoadUrl;
+                Model.Status.Type = StatusType.Error;
+                return false;
             }
 
-            if (Model.WebBrowserOrView.HasValidDocument) {
-                return true;
-            }
-
-            ApplicationLogger.LogMessage("App failed");
-            Model.Status.Text = Properties.Resources.CouldNotLoadUrl;
-            Model.Status.Type = StatusType.Error;
-            return false;
-
+            Model.Status.Text = "";
+            Model.Status.Type = StatusType.None;
+            return true;
         }
     }
 }

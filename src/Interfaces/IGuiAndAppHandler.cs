@@ -5,5 +5,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
         Task EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         // ReSharper disable once UnusedMemberInSuper.Global
         void IndicateBusy(bool force);
+
+        IApplicationModelBase GetModel();
+
+        Task OnWebViewSourceChangedAsync(string uri);
+        Task OnWebViewNavigationCompletedAsync(string contentSource, bool isSuccess);
     }
 }

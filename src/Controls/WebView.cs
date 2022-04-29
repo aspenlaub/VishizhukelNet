@@ -7,6 +7,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls {
     public class WebView : WebBrowserOrViewBase, IWebView {
         public IScriptStatement OnDocumentLoaded { get; set; } = new ScriptStatement();
         public IScriptStatement ToExecute { get; set; } = new ScriptStatement();
+        public bool IsWired { get; set; } = false;
 
         public Func<string, Task> OnScriptCodeExecutedAsync { get; set; } = _ => Task.CompletedTask;
     }

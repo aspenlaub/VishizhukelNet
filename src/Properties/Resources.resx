@@ -132,4 +132,7 @@
   <data name="WebBrowserStillBusyAfter" xml:space="preserve">
     <value>Web browser still is busy with a preceding request after {0} second/-s</value>
   </data>
+  <data name="WebViewMustBeWired" xml:space="preserve">
+    <value>Web view must be wired before this method can be used</value>
+  </data>
 </root>

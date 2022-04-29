@@ -104,5 +104,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
                 return ResourceManager.GetString("WebBrowserStillBusyAfter", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web view must be wired before this method can be used.
+        /// </summary>
+        internal static string WebViewMustBeWired {
+            get {
+                return ResourceManager.GetString("WebViewMustBeWired", resourceCulture);
+            }
+        }
     }
 }

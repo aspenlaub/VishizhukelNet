@@ -6,5 +6,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
         IScriptStatement OnDocumentLoaded { get; set; }
         IScriptStatement ToExecute { get; set; }
         Func<string, Task> OnScriptCodeExecutedAsync { get; set; }
+        bool IsWired { get; set; }
     }
 }

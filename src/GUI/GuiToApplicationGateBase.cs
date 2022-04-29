@@ -66,11 +66,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         }
 
         public void WireWebView(WebView2 webView) {
-            webView.SourceChanged += OnWebViewOnSourceChanged;
-            webView.NavigationCompleted += OnNavigationCompleted;
+            webView.SourceChanged += OnWebViewOnSourceChangedAsync;
+            webView.NavigationStarting += OnNavigationStartingAsync;
+            webView.NavigationCompleted += OnNavigationCompletedAsync;
+            ApplicationModel.WebView.IsWired = true;
         }
 
-        private async void OnWebViewOnSourceChanged(object sender, CoreWebView2SourceChangedEventArgs e) {
+        private async void OnNavigationStartingAsync(object sender, CoreWebView2NavigationStartingEventArgs e) {
             if (Application == null) { return; }
 
             var webView = sender as WebView2;
@@ -79,7 +81,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             await Application.OnWebViewSourceChangedAsync(webView.CoreWebView2.Source);
         }
 
-        private async void OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e) {
+        private async void OnWebViewOnSourceChangedAsync(object sender, CoreWebView2SourceChangedEventArgs e) {
+            if (Application == null) { return; }
+
+            var webView = sender as WebView2;
+            if (webView == null) { return; }
+
+            await Application.OnWebViewSourceChangedAsync(webView.CoreWebView2.Source);
+        }
+
+        private async void OnNavigationCompletedAsync(object sender, CoreWebView2NavigationCompletedEventArgs e) {
             if (Application == null) { return; }
 
             var webView = sender as WebView2;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
@@ -9,55 +8,32 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
         private readonly TApplicationModel Model;
         private readonly IApplicationLogger ApplicationLogger;
         private readonly IGuiAndAppHandler GuiAndAppHandler;
+        private readonly IWebBrowserOrViewNavigatingHelper WebBrowserOrViewNavigatingHelper;
 
-        public int MaxSeconds => 600;
-
-        private const int IntervalInMilliseconds = 500;
-
-        public WebBrowserOrViewNavigationHelper(TApplicationModel model, IApplicationLogger applicationLogger, IGuiAndAppHandler guiAndAppHandler) {
+        public WebBrowserOrViewNavigationHelper(TApplicationModel model, IApplicationLogger applicationLogger, IGuiAndAppHandler guiAndAppHandler, IWebBrowserOrViewNavigatingHelper webBrowserOrViewNavigatingHelper) {
             Model = model;
             ApplicationLogger = applicationLogger;
             GuiAndAppHandler = guiAndAppHandler;
+            WebBrowserOrViewNavigatingHelper = webBrowserOrViewNavigatingHelper;
         }
 
         public async Task<bool> NavigateToUrlAsync(string url) {
-            ApplicationLogger.LogMessage($"App navigating to {url}");
+            ApplicationLogger.LogMessage($"App navigating to '{url}'");
 
-            if (Model.UsesRealBrowserOrView) {
-                var attempts = MaxSeconds * 1000 / IntervalInMilliseconds;
-                while (Model.WebBrowserOrView.IsNavigating && attempts > 0) {
-                    await Task.Delay(TimeSpan.FromMilliseconds(IntervalInMilliseconds));
-                    attempts--;
-                }
-
-                if (Model.WebBrowserOrView.IsNavigating) {
-                    Model.Status.Text = string.Format(Properties.Resources.WebBrowserStillBusyAfter, MaxSeconds);
-                    Model.Status.Type = StatusType.Error;
-                    ApplicationLogger.LogMessage($"Problem when navigating to {url}");
-                    return false;
-                }
+            if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url)) {
+                return false;
             }
 
+            ApplicationLogger.LogMessage("Clear model url and sync");
             Model.WebBrowserOrView.Url = "";
             await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
-            var minNavigationStartTime = DateTime.Now;
-
+            ApplicationLogger.LogMessage("Set model url and sync");
             Model.WebBrowserOrView.Url = url;
             await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
             if (Model.UsesRealBrowserOrView) {
-                var attempts = MaxSeconds * 1000 / IntervalInMilliseconds;
-                while ((Model.WebBrowserOrView.LastNavigationStartedAt < minNavigationStartTime || Model.WebBrowserOrView.IsNavigating) && attempts > 0) {
-                    await Task.Delay(TimeSpan.FromMilliseconds(IntervalInMilliseconds));
-                    attempts--;
-                }
-
-                if (Model.WebBrowserOrView.IsNavigating) {
-                    ApplicationLogger.LogMessage("App failed");
-                    Model.Status.Text = string.Format(Properties.Resources.RequestTimedOutAfter, MaxSeconds);
-                    Model.Status.Type = StatusType.Error;
-                    ApplicationLogger.LogMessage($"Problem when navigating to {url}");
+                if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url)) {
                     return false;
                 }
             } else {

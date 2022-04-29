@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using MSHTML;
 
@@ -16,6 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
         protected readonly TModel Model;
         protected readonly IBasicHtmlHelper BasicHtmlHelper;
         protected readonly IApplicationLogger ApplicationLogger;
+        protected readonly IWebBrowserOrViewNavigatingHelper WebBrowserOrViewNavigatingHelper;
 
         protected ApplicationBase(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
                 TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model, IBasicHtmlHelper basicHtmlHelper, IApplicationLogger applicationLogger) {
@@ -25,6 +27,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
             Model = model;
             BasicHtmlHelper = basicHtmlHelper;
             ApplicationLogger = applicationLogger;
+            WebBrowserOrViewNavigatingHelper = new WebBrowserOrViewNavigatingHelper(model, applicationLogger);
         }
 
         protected abstract Task EnableOrDisableButtonsAsync();
@@ -54,13 +57,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
         }
 
         public async Task OnWebBrowserNavigatingAsync(Uri uri) {
+            ApplicationLogger.LogMessage($"Web browser navigating to '{Model.WebBrowserOrViewUrl.Text}'");
             Model.WebBrowser.IsNavigating = uri != null;
             Model.WebBrowserOrViewUrl.Text = uri == null ? "(off road)" : uri.OriginalString;
             Model.WebBrowser.Document = null;
             Model.WebBrowser.LastNavigationStartedAt = DateTime.Now;
             Model.WebBrowserOrViewContentSource.Text = "";
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
-            ApplicationLogger.LogMessage($"GUI navigating to {Model.WebBrowserOrViewUrl.Text}");
             IndicateBusy(true);
         }
 
@@ -70,7 +73,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
         }
 
         public async Task OnWebBrowserLoadCompletedAsync(IHTMLDocument3 document, string documentAsString) {
-            ApplicationLogger.LogMessage($"GUI navigation complete: {Model.WebBrowserOrViewUrl.Text}");
+            ApplicationLogger.LogMessage($"Web browser navigation complete: '{Model.WebBrowserOrViewUrl.Text}'");
             Model.WebBrowser.Document = document;
             Model.WebBrowser.IsNavigating = false;
             Model.WebBrowser.RevalidateDocument();
@@ -81,17 +84,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application {
         }
 
         public async Task OnWebViewSourceChangedAsync(string uri) {
+            ApplicationLogger.LogMessage($"Web view source changes to '{uri}'");
             Model.WebView.IsNavigating = uri != null;
             Model.WebBrowserOrViewUrl.Text = uri ?? "(off road)";
             Model.WebView.LastNavigationStartedAt = DateTime.Now;
             Model.WebBrowserOrViewContentSource.Text = "";
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
-            ApplicationLogger.LogMessage($"GUI navigating to {Model.WebBrowserOrViewUrl.Text}");
+            ApplicationLogger.LogMessage($"GUI navigating to '{Model.WebBrowserOrViewUrl.Text}'");
             IndicateBusy(true);
         }
 
         public async Task OnWebViewNavigationCompletedAsync(string contentSource, bool isSuccess) {
-            ApplicationLogger.LogMessage($"GUI navigation complete: {Model.WebBrowserOrViewUrl.Text}");
+            ApplicationLogger.LogMessage($"Web view navigation complete: '{Model.WebBrowserOrViewUrl.Text}'");
             Model.WebView.IsNavigating = false;
             Model.WebBrowserOrViewContentSource.Text = contentSource;
             Model.WebView.HasValidDocument = isSuccess;

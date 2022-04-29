@@ -23,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication {
             builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
             builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
             builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
-            builder.RegisterType<FakeApplicationLogger>().As<IApplicationLogger>().SingleInstance();
+            builder.RegisterType<ApplicationLogger>().As<IApplicationLogger>().SingleInstance();
             return builder;
         }
     }

@@ -25,7 +25,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication 
             builder.RegisterType<ApplicationModel>().OnActivated(e => e.Instance.UsesRealBrowserOrView = true)
                 .As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
             builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
-            builder.RegisterType<FakeApplicationLogger>().As<IApplicationLogger>().SingleInstance();
+            builder.RegisterType<ApplicationLogger>().As<IApplicationLogger>().SingleInstance();
             return builder;
         }
     }

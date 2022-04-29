@@ -6,7 +6,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
         string Url { get; set; }
         bool IsNavigating { get; set; }
         DateTime LastNavigationStartedAt { get; set; }
-        string AskedForNavigationToUrl { get; set; }
+        string LastUrl { get; set; }
         bool HasValidDocument { get; set; }
 
         void RevalidateDocument();

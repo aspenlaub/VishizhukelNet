@@ -32,7 +32,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Ap
             TashAccessor = tashAccessor;
             SimpleLogger = simpleLogger;
             LogConfiguration = logConfiguration;
-            WebBrowserOrViewNavigationHelper = new WebBrowserOrViewNavigationHelper<IApplicationModel>(model, applicationLogger, this);
+            WebBrowserOrViewNavigationHelper = new WebBrowserOrViewNavigationHelper<IApplicationModel>(model, applicationLogger, this, WebBrowserOrViewNavigatingHelper);
         }
 
         protected override async Task EnableOrDisableButtonsAsync() {

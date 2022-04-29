@@ -11,9 +11,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Microsoft.Web.WebView2.Wpf;
 using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.Button;
@@ -35,12 +37,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
         protected readonly Dictionary<PropertyInfo, FieldInfo> ModelPropertyToWindowFieldMapping, ModelPropertyToWindowLabelMapping;
         protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
         protected readonly Dictionary<PropertyInfo, WindowsCollectionViewSource> ModelPropertyToCollectionViewSourceMapping;
+        protected readonly IApplicationLogger ApplicationLogger;
+        protected readonly IWebBrowserOrViewNavigatingHelper WebBrowserOrViewNavigatingHelper;
 
         public TApplicationModel Model { get; }
 
-        protected GuiAndApplicationSynchronizerBase(TApplicationModel model, TWindow window) {
+        protected GuiAndApplicationSynchronizerBase(TApplicationModel model, TWindow window, IApplicationLogger applicationLogger) {
             Model = model;
             Window = window;
+            ApplicationLogger = applicationLogger;
+            WebBrowserOrViewNavigatingHelper = new WebBrowserOrViewNavigatingHelper(Model, ApplicationLogger);
             ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
             ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
             ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();
@@ -226,39 +232,50 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 throw new ArgumentNullException(nameof(modelWebBrowserOrView));
             }
 
-            if (modelWebBrowserOrView.Url == modelWebBrowserOrView.AskedForNavigationToUrl) { return; }
+            if (modelWebBrowserOrView.Url == modelWebBrowserOrView.LastUrl) { return; }
 
             if (string.IsNullOrWhiteSpace(modelWebBrowserOrView.Url)) {
-                modelWebBrowserOrView.AskedForNavigationToUrl = null;
+                modelWebBrowserOrView.LastUrl = null;
                 webBrowser.Navigate((Uri)null);
             } else {
-                modelWebBrowserOrView.AskedForNavigationToUrl = modelWebBrowserOrView.Url;
+                modelWebBrowserOrView.LastUrl = modelWebBrowserOrView.Url;
                 webBrowser.Navigate(modelWebBrowserOrView.Url);
             }
         }
 
-        private async Task UpdateWebViewIfNecessaryAsync(IWebView modelWebBrowserOrView, WebView2 webView2) {
-            if (modelWebBrowserOrView == null) {
-                throw new ArgumentNullException(nameof(modelWebBrowserOrView));
+        private async Task UpdateWebViewIfNecessaryAsync(IWebView modelWebView, WebView2 webView2) {
+            if (modelWebView == null) {
+                throw new ArgumentNullException(nameof(modelWebView));
             }
 
-            if (modelWebBrowserOrView.Url != modelWebBrowserOrView.AskedForNavigationToUrl) {
-                if (string.IsNullOrWhiteSpace(modelWebBrowserOrView.Url)) {
-                    modelWebBrowserOrView.AskedForNavigationToUrl = null;
-                    modelWebBrowserOrView.LastNavigationStartedAt = DateTime.Now;
+            if (!modelWebView.IsWired) {
+                return;
+            }
+
+            if (modelWebView.Url != modelWebView.LastUrl) {
+                if (string.IsNullOrWhiteSpace(modelWebView.Url)) {
+                    modelWebView.LastUrl = null;
+                    ApplicationLogger.LogMessage("Calling webView2.CoreWebView2.Navigate with about:blank");
                     webView2.CoreWebView2?.Navigate("about:blank");
                 } else {
-                    modelWebBrowserOrView.AskedForNavigationToUrl = modelWebBrowserOrView.Url;
-                    modelWebBrowserOrView.LastNavigationStartedAt = DateTime.Now;
-                    webView2.CoreWebView2?.Navigate(modelWebBrowserOrView.Url);
+                    modelWebView.LastUrl = modelWebView.Url;
+                    ApplicationLogger.LogMessage($"Calling webView2.CoreWebView2.Navigate with '{modelWebView.Url}'");
+                    webView2.CoreWebView2?.Navigate(modelWebView.Url);
+                }
+
+                if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(modelWebView.LastUrl ?? "about:blank")) {
+                    return;
                 }
             }
 
-            if (modelWebBrowserOrView.ToExecute.Any() && webView2.CoreWebView2 != null) {
-                var result = await webView2.CoreWebView2.ExecuteScriptAsync(modelWebBrowserOrView.ToExecute.Statement);
-                await modelWebBrowserOrView.OnScriptCodeExecutedAsync(result);
-                modelWebBrowserOrView.ToExecute.Reset();
-                modelWebBrowserOrView.OnScriptCodeExecutedAsync = _ => Task.CompletedTask;
+            if (modelWebView.ToExecute.Any() && webView2.CoreWebView2 != null) {
+                ApplicationLogger.LogMessage("Executing script");
+                var result = await webView2.CoreWebView2.ExecuteScriptAsync(modelWebView.ToExecute.Statement);
+                ApplicationLogger.LogMessage("Script executed, communicating result");
+                await modelWebView.OnScriptCodeExecutedAsync(result);
+                ApplicationLogger.LogMessage("No script to execute");
+                modelWebView.ToExecute.Reset();
+                modelWebView.OnScriptCodeExecutedAsync = _ => Task.CompletedTask;
             }
         }
 
@@ -384,7 +401,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
                 if (webBrowser.Source == null && string.IsNullOrWhiteSpace(modelWebBrowser.Url)) { continue; }
 
                 modelWebBrowser.Url = string.IsNullOrWhiteSpace(webBrowser.Source?.OriginalString) ? "" : webBrowser.Source.OriginalString;
-                modelWebBrowser.AskedForNavigationToUrl = modelWebBrowser.Url;
+                modelWebBrowser.LastUrl = modelWebBrowser.Url;
             }
         }
     }

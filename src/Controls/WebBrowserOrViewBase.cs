@@ -7,14 +7,14 @@ public class WebBrowserOrViewBase : IWebBrowserOrView {
     public string Url { get; set; }
     public bool IsNavigating { get; set; }
     public DateTime LastNavigationStartedAt { get; set; }
-    public string AskedForNavigationToUrl { get; set; }
+    public string LastUrl { get; set; }
     public bool HasValidDocument { get; set; }
 
     public WebBrowserOrViewBase() {
         Url = "";
         IsNavigating = false;
         LastNavigationStartedAt = DateTime.MinValue;
-        AskedForNavigationToUrl = "";
+        LastUrl = "";
         HasValidDocument = false;
     }
 

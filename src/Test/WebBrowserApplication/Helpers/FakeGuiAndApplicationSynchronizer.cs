@@ -2,29 +2,29 @@
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Helpers {
-    public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
-        public IApplicationModel Model { get; }
-        public ApplicationModel LastModelKnownToMe { get; }
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Helpers;
 
-        public FakeGuiAndApplicationSynchronizer(IApplicationModel model) {
-            Model = model;
-            LastModelKnownToMe = new ApplicationModel();
-            SetLastModelKnownToMeGreeks();
-        }
+public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
+    public IApplicationModel Model { get; }
+    public ApplicationModel LastModelKnownToMe { get; }
 
-        public async Task OnModelDataChangedAsync() {
-            SetLastModelKnownToMeGreeks();
-            await Task.CompletedTask;
-        }
+    public FakeGuiAndApplicationSynchronizer(IApplicationModel model) {
+        Model = model;
+        LastModelKnownToMe = new ApplicationModel();
+        SetLastModelKnownToMeGreeks();
+    }
 
-        public void SetLastModelKnownToMeGreeks() {
-        }
+    public async Task OnModelDataChangedAsync() {
+        SetLastModelKnownToMeGreeks();
+        await Task.CompletedTask;
+    }
 
-        public void IndicateBusy(bool force) {
-        }
+    public void SetLastModelKnownToMeGreeks() {
+    }
 
-        public void OnWebBrowserLoadCompleted() {
-        }
+    public void IndicateBusy(bool force) {
+    }
+
+    public void OnWebBrowserLoadCompleted() {
     }
 }

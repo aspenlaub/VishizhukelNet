@@ -2,19 +2,19 @@
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers {
-    public class MethodMultiplyHandler : ToggleButtonHandlerBase<IApplicationModel> {
-        private readonly DeltaTextHandler DeltaTextHandler;
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
-        public MethodMultiplyHandler(IApplicationModel model, DeltaTextHandler deltaTextHandler) : base(model, model.MethodMultiply) {
-            DeltaTextHandler = deltaTextHandler;
-        }
+public class MethodMultiplyHandler : ToggleButtonHandlerBase<IApplicationModel> {
+    private readonly DeltaTextHandler DeltaTextHandler;
 
-        public override async Task ToggledAsync(bool isChecked) {
-            if (Unchanged(isChecked)) { return; }
+    public MethodMultiplyHandler(IApplicationModel model, DeltaTextHandler deltaTextHandler) : base(model, model.MethodMultiply) {
+        DeltaTextHandler = deltaTextHandler;
+    }
 
-            SetChecked(isChecked);
-            await DeltaTextHandler.TextChangedAsync("");
-        }
+    public override async Task ToggledAsync(bool isChecked) {
+        if (Unchanged(isChecked)) { return; }
+
+        SetChecked(isChecked);
+        await DeltaTextHandler.TextChangedAsync("");
     }
 }

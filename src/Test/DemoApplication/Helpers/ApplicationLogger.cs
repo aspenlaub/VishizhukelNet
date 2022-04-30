@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 
+[assembly: InternalsVisibleTo("Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test")]
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers;
 
 public class ApplicationLogger : IApplicationLogger {
-    protected static string LogFileName = @"C:\Temp\DemoApplicationLogger.log";
+    internal static string LogFileName = @"C:\Temp\DemoApplicationLogger.log";
     private static readonly object LogFileLocker = new();
 
     public ApplicationLogger() {

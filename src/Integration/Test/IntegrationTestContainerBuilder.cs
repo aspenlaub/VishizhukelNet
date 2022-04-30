@@ -7,16 +7,16 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishnetIntegrationTestTools;
 using Autofac;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
-    public static class IntegrationTestContainerBuilder {
-        public static ContainerBuilder RegisterForIntegrationTest(this ContainerBuilder builder, ILogConfiguration logConfiguration) {
-            builder.UseDvinAndPegh(new DummyCsArgumentPrompter());
-            builder.RegisterInstance(logConfiguration);
-            builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();
-            builder.RegisterType<StarterAndStopper>().As<IStarterAndStopper>();
-            builder.RegisterType<WindowUnderTest>();
-            builder.RegisterType<TashAccessor>().As<ITashAccessor>();
-            return builder;
-        }
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test;
+
+public static class IntegrationTestContainerBuilder {
+    public static ContainerBuilder RegisterForIntegrationTest(this ContainerBuilder builder, ILogConfiguration logConfiguration) {
+        builder.UseDvinAndPegh(new DummyCsArgumentPrompter());
+        builder.RegisterInstance(logConfiguration);
+        builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();
+        builder.RegisterType<StarterAndStopper>().As<IStarterAndStopper>();
+        builder.RegisterType<WindowUnderTest>();
+        builder.RegisterType<TashAccessor>().As<ITashAccessor>();
+        return builder;
     }
 }

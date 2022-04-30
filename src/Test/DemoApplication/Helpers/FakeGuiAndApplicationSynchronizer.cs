@@ -2,33 +2,33 @@
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers {
-    public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
-        public IApplicationModel Model { get; }
-        public ApplicationModel LastModelKnownToMe { get; }
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers;
 
-        public FakeGuiAndApplicationSynchronizer(IApplicationModel model) {
-            Model = model;
-            LastModelKnownToMe = new ApplicationModel();
-            SetLastModelKnownToMeGreeks();
-        }
+public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
+    public IApplicationModel Model { get; }
+    public ApplicationModel LastModelKnownToMe { get; }
 
-        public async Task OnModelDataChangedAsync() {
-            SetLastModelKnownToMeGreeks();
-            await Task.CompletedTask;
-        }
+    public FakeGuiAndApplicationSynchronizer(IApplicationModel model) {
+        Model = model;
+        LastModelKnownToMe = new ApplicationModel();
+        SetLastModelKnownToMeGreeks();
+    }
 
-        public void SetLastModelKnownToMeGreeks() {
-            LastModelKnownToMe.Alpha.Text = Model.Alpha.Text;
-            LastModelKnownToMe.Beta.UpdateSelectables(Model.Beta.Selectables);
-            LastModelKnownToMe.Beta.SelectedIndex = Model.Beta.SelectedIndex;
-            LastModelKnownToMe.Delta.Text = Model.Delta.Text;
-        }
+    public async Task OnModelDataChangedAsync() {
+        SetLastModelKnownToMeGreeks();
+        await Task.CompletedTask;
+    }
 
-        public void IndicateBusy(bool force) {
-        }
+    public void SetLastModelKnownToMeGreeks() {
+        LastModelKnownToMe.Alpha.Text = Model.Alpha.Text;
+        LastModelKnownToMe.Beta.UpdateSelectables(Model.Beta.Selectables);
+        LastModelKnownToMe.Beta.SelectedIndex = Model.Beta.SelectedIndex;
+        LastModelKnownToMe.Delta.Text = Model.Delta.Text;
+    }
 
-        public void OnWebBrowserLoadCompleted() {
-        }
+    public void IndicateBusy(bool force) {
+    }
+
+    public void OnWebBrowserLoadCompleted() {
     }
 }

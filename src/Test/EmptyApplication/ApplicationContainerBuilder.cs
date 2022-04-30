@@ -10,22 +10,22 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interface
 using Autofac;
 using FakeGuiAndApplicationSynchronizer = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Helpers.FakeGuiAndApplicationSynchronizer;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication {
-    public static class ApplicationContainerBuilder {
-        public static async Task<ContainerBuilder> UseApplicationAsync(this ContainerBuilder builder, VishizhukelNetEmptyWindow vishizhukelNetEmptyWindow, ILogConfiguration logConfiguration) {
-            await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
-            if (vishizhukelNetEmptyWindow == null) {
-                builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
-            } else {
-                builder.RegisterInstance(vishizhukelNetEmptyWindow);
-                builder.RegisterType<GuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
-            }
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication;
 
-            builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
-            builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
-            builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
-            builder.RegisterType<ApplicationLogger>().As<IApplicationLogger>().SingleInstance();
-            return builder;
+public static class ApplicationContainerBuilder {
+    public static async Task<ContainerBuilder> UseApplicationAsync(this ContainerBuilder builder, VishizhukelNetEmptyWindow vishizhukelNetEmptyWindow, ILogConfiguration logConfiguration) {
+        await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
+        if (vishizhukelNetEmptyWindow == null) {
+            builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
+        } else {
+            builder.RegisterInstance(vishizhukelNetEmptyWindow);
+            builder.RegisterType<GuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
         }
+
+        builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
+        builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
+        builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
+        builder.RegisterType<ApplicationLogger>().As<IApplicationLogger>().SingleInstance();
+        return builder;
     }
 }

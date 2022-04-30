@@ -2,22 +2,22 @@
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Handlers {
-    public class WebBrowserUrlTextHandler : ISimpleTextHandler {
-        private readonly IApplicationModel Model;
-        private readonly IGuiAndAppHandler GuiAndAppHandler;
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Handlers;
 
-        public WebBrowserUrlTextHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
-            Model = model;
-            GuiAndAppHandler = guiAndAppHandler;
-        }
+public class WebBrowserUrlTextHandler : ISimpleTextHandler {
+    private readonly IApplicationModel Model;
+    private readonly IGuiAndAppHandler GuiAndAppHandler;
 
-        public async Task TextChangedAsync(string text) {
-            if (Model.WebBrowserOrViewUrl.Text == text) { return; }
+    public WebBrowserUrlTextHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+        Model = model;
+        GuiAndAppHandler = guiAndAppHandler;
+    }
 
-            Model.WebBrowserOrViewUrl.Text = text;
+    public async Task TextChangedAsync(string text) {
+        if (Model.WebBrowserOrViewUrl.Text == text) { return; }
 
-            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
-        }
+        Model.WebBrowserOrViewUrl.Text = text;
+
+        await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 }

@@ -13,49 +13,49 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Comm
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Application {
-    public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IApplicationModel> {
-        public IApplicationHandlers Handlers { get; private set; }
-        public IApplicationCommands Commands { get; private set; }
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Application;
 
-        public ITashHandler<IApplicationModel> TashHandler { get; private set; }
-        private readonly ITashAccessor TashAccessor;
-        private readonly ISimpleLogger SimpleLogger;
-        private readonly ILogConfiguration LogConfiguration;
-        private readonly IWebBrowserOrViewNavigationHelper WebBrowserOrViewNavigationHelper;
+public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IApplicationModel> {
+    public IApplicationHandlers Handlers { get; private set; }
+    public IApplicationCommands Commands { get; private set; }
 
-        public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-                IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model,
-                ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger,
-                IBasicHtmlHelper basicHtmlHelper)
-                : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, basicHtmlHelper, applicationLogger) {
-            TashAccessor = tashAccessor;
-            SimpleLogger = simpleLogger;
-            LogConfiguration = logConfiguration;
-            WebBrowserOrViewNavigationHelper = new WebBrowserOrViewNavigationHelper<IApplicationModel>(model, applicationLogger, this, WebBrowserOrViewNavigatingHelper);
-        }
+    public ITashHandler<IApplicationModel> TashHandler { get; private set; }
+    private readonly ITashAccessor TashAccessor;
+    private readonly ISimpleLogger SimpleLogger;
+    private readonly ILogConfiguration LogConfiguration;
+    private readonly IWebBrowserOrViewNavigationHelper WebBrowserOrViewNavigationHelper;
 
-        protected override async Task EnableOrDisableButtonsAsync() {
-            Model.GoToUrl.Enabled = await Commands.GoToUrlCommand.ShouldBeEnabledAsync();
-        }
+    public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
+        IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model,
+        ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger,
+        IBasicHtmlHelper basicHtmlHelper)
+        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, basicHtmlHelper, applicationLogger) {
+        TashAccessor = tashAccessor;
+        SimpleLogger = simpleLogger;
+        LogConfiguration = logConfiguration;
+        WebBrowserOrViewNavigationHelper = new WebBrowserOrViewNavigationHelper<IApplicationModel>(model, applicationLogger, this, WebBrowserOrViewNavigatingHelper);
+    }
 
-        protected override void CreateCommandsAndHandlers() {
-            Handlers = new ApplicationHandlers {
-                WebBrowserUrlTextHandler = new WebBrowserUrlTextHandler(Model, this),
-                WebBrowserContentSourceTextHandler = new WebBrowserContentSourceTextHandler(Model, this)
-            };
-            Commands = new ApplicationCommands {
-                GoToUrlCommand = new GoToUrlCommand(Model, WebBrowserOrViewNavigationHelper)
-            };
-            var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
-            var selectors = new Dictionary<string, ISelector>();
-            var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
-            var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, null, communicator, selectors);
-            TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
-        }
+    protected override async Task EnableOrDisableButtonsAsync() {
+        Model.GoToUrl.Enabled = await Commands.GoToUrlCommand.ShouldBeEnabledAsync();
+    }
 
-        public ITashTaskHandlingStatus<IApplicationModel> CreateTashTaskHandlingStatus() {
-            return new TashTaskHandlingStatus<IApplicationModel>(Model, Process.GetCurrentProcess().Id);
-        }
+    protected override void CreateCommandsAndHandlers() {
+        Handlers = new ApplicationHandlers {
+            WebBrowserUrlTextHandler = new WebBrowserUrlTextHandler(Model, this),
+            WebBrowserContentSourceTextHandler = new WebBrowserContentSourceTextHandler(Model, this)
+        };
+        Commands = new ApplicationCommands {
+            GoToUrlCommand = new GoToUrlCommand(Model, WebBrowserOrViewNavigationHelper)
+        };
+        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
+        var selectors = new Dictionary<string, ISelector>();
+        var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
+        var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, null, communicator, selectors);
+        TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+    }
+
+    public ITashTaskHandlingStatus<IApplicationModel> CreateTashTaskHandlingStatus() {
+        return new TashTaskHandlingStatus<IApplicationModel>(Model, Process.GetCurrentProcess().Id);
     }
 }

@@ -1,8 +1,7 @@
 ﻿<Application x:Class="Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="DemoApplication/GUI/VishizhukelNetDemoWindow.xaml"
-             Activated="OnActivated">
+             Startup="LaunchWindows">
     <Application.Resources>
 
     </Application.Resources>

@@ -1,14 +1,14 @@
 ﻿using System.Threading.Tasks;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
-    public interface IGuiAndAppHandler {
-        Task EnableOrDisableButtonsThenSyncGuiAndAppAsync();
-        // ReSharper disable once UnusedMemberInSuper.Global
-        void IndicateBusy(bool force);
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-        IApplicationModelBase GetModel();
+public interface IGuiAndAppHandler {
+    Task EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+    // ReSharper disable once UnusedMemberInSuper.Global
+    void IndicateBusy(bool force);
 
-        Task OnWebViewSourceChangedAsync(string uri);
-        Task OnWebViewNavigationCompletedAsync(string contentSource, bool isSuccess);
-    }
+    IApplicationModelBase GetModel();
+
+    Task OnWebViewSourceChangedAsync(string uri);
+    Task OnWebViewNavigationCompletedAsync(string contentSource, bool isSuccess);
 }

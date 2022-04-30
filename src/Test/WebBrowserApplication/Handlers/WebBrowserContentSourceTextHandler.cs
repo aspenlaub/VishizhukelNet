@@ -2,22 +2,22 @@
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Handlers {
-    internal class WebBrowserContentSourceTextHandler : ISimpleTextHandler {
-        private readonly IApplicationModel Model;
-        private readonly IGuiAndAppHandler GuiAndAppHandler;
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.Handlers;
 
-        public WebBrowserContentSourceTextHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
-            Model = model;
-            GuiAndAppHandler = guiAndAppHandler;
-        }
+internal class WebBrowserContentSourceTextHandler : ISimpleTextHandler {
+    private readonly IApplicationModel Model;
+    private readonly IGuiAndAppHandler GuiAndAppHandler;
 
-        public async Task TextChangedAsync(string text) {
-            if (Model.WebBrowserOrViewContentSource.Text == text) { return; }
+    public WebBrowserContentSourceTextHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+        Model = model;
+        GuiAndAppHandler = guiAndAppHandler;
+    }
 
-            Model.WebBrowserOrViewContentSource.Text = text;
+    public async Task TextChangedAsync(string text) {
+        if (Model.WebBrowserOrViewContentSource.Text == text) { return; }
 
-            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
-        }
+        Model.WebBrowserOrViewContentSource.Text = text;
+
+        await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 }

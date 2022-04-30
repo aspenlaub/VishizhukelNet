@@ -8,93 +8,94 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Autofac;
 using Moq;
 using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces.IApplicationModel;
 using IContainer = Autofac.IContainer;
 using WindowsApplication = System.Windows.Application;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GUI {
-    // ReSharper disable once UnusedMember.Global
-    public partial class VishizhukelNetWebView2Window : IAsyncDisposable {
-        private static IContainer Container { get; set; }
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GUI;
 
-        private Application.Application Application;
-        private IApplicationModel ApplicationModel;
-        private ITashTimer<IApplicationModel> TashTimer;
+// ReSharper disable once UnusedMember.Global
+public partial class VishizhukelNetWebView2Window : IAsyncDisposable, IVishizhukelNetWindowUnderTest {
+    private static IContainer Container { get; set; }
 
-        public bool NoTash { get; set; }
+    private Application.Application Application;
+    private IApplicationModel ApplicationModel;
+    private ITashTimer<IApplicationModel> TashTimer;
 
-        public VishizhukelNetWebView2Window() {
-            InitializeComponent();
-        }
+    public bool IsWindowUnderTest { get; set; }
 
-        private async Task BuildContainerIfNecessaryAsync() {
-            if (Container != null) { return; }
+    public VishizhukelNetWebView2Window() {
+        InitializeComponent();
+    }
 
-            var logConfigurationMock = new Mock<ILogConfiguration>();
-            logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetWebView2Window));
-            logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
-            logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
-            var builder = await new ContainerBuilder().UseApplicationAsync(this, logConfigurationMock.Object);
-            Container = builder.Build();
-        }
+    private async Task BuildContainerIfNecessaryAsync() {
+        if (Container != null) { return; }
 
-        private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
-            await BuildContainerIfNecessaryAsync();
+        var logConfigurationMock = new Mock<ILogConfiguration>();
+        logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetWebView2Window));
+        logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
+        logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
+        var builder = await new ContainerBuilder().UseApplicationAsync(this, logConfigurationMock.Object);
+        Container = builder.Build();
+    }
 
-            Application = Container.Resolve<Application.Application>();
-            ApplicationModel = Container.Resolve<IApplicationModel>();
+    private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
+        await BuildContainerIfNecessaryAsync();
 
-            const string url = "https://www.viperfisch.de/js/bootstrap.min-v24070.js";
-            ApplicationModel.WebView
-                .OnDocumentLoaded.AppendStatement($"var script = document.createElement(\"script\"); script.src = \"{url}\"; document.head.appendChild(script);");
+        Application = Container.Resolve<Application.Application>();
+        ApplicationModel = Container.Resolve<IApplicationModel>();
 
-            await Application.OnLoadedAsync();
+        const string url = "https://www.viperfisch.de/js/bootstrap.min-v24070.js";
+        ApplicationModel.WebView
+            .OnDocumentLoaded.AppendStatement($"var script = document.createElement(\"script\"); script.src = \"{url}\"; document.head.appendChild(script);");
 
-            var commands = Application.Commands;
+        await Application.OnLoadedAsync();
 
-            var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
+        var commands = Application.Commands;
 
-            guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserOrViewUrl, t => Application.Handlers.WebBrowserUrlTextHandler.TextChangedAsync(t));
-            guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserOrViewContentSource, t => Application.Handlers.WebBrowserContentSourceTextHandler.TextChangedAsync(t));
+        var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
+        var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
 
-            guiToAppGate.WireButtonAndCommand(GoToUrl, commands.GoToUrlCommand, buttonNameToCommandMapper);
-            guiToAppGate.WireButtonAndCommand(RunJs, commands.RunJsCommand, buttonNameToCommandMapper);
+        guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserOrViewUrl, t => Application.Handlers.WebBrowserUrlTextHandler.TextChangedAsync(t));
+        guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserOrViewContentSource, t => Application.Handlers.WebBrowserContentSourceTextHandler.TextChangedAsync(t));
 
-            guiToAppGate.WireWebView(WebView);
+        guiToAppGate.WireButtonAndCommand(GoToUrl, commands.GoToUrlCommand, buttonNameToCommandMapper);
+        guiToAppGate.WireButtonAndCommand(RunJs, commands.RunJsCommand, buttonNameToCommandMapper);
 
-            if (!NoTash) {
-                TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
-                if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.WebBrowserWindowTitle)) {
-                    Close();
-                }
+        guiToAppGate.WireWebView(WebView);
 
-                TashTimer.CreateAndStartTimer(Application.CreateTashTaskHandlingStatus());
+        if (IsWindowUnderTest) {
+            TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
+            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.WebBrowserWindowTitle)) {
+                Close();
             }
 
-            await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(5));
+            TashTimer.CreateAndStartTimer(Application.CreateTashTaskHandlingStatus());
         }
 
-        public async ValueTask DisposeAsync() {
-            if (TashTimer == null) { return; }
+        await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(5));
+    }
 
-            await TashTimer.StopTimerAndConfirmDeadAsync(false);
-        }
+    public async ValueTask DisposeAsync() {
+        if (TashTimer == null) { return; }
 
-        private async void OnClosing(object sender, CancelEventArgs e) {
-            if (TashTimer == null) { return; }
+        await TashTimer.StopTimerAndConfirmDeadAsync(false);
+    }
 
-            e.Cancel = true;
+    private async void OnClosing(object sender, CancelEventArgs e) {
+        if (TashTimer == null) { return; }
 
-            await TashTimer.StopTimerAndConfirmDeadAsync(false);
+        e.Cancel = true;
 
-            WindowsApplication.Current.Shutdown();
-        }
+        await TashTimer.StopTimerAndConfirmDeadAsync(false);
 
-        private void OnStateChanged(object sender, EventArgs e) {
-            Application.OnWindowStateChanged(WindowState);
-        }
+        WindowsApplication.Current.Shutdown();
+    }
+
+    private void OnStateChanged(object sender, EventArgs e) {
+        Application.OnWindowStateChanged(WindowState);
     }
 }

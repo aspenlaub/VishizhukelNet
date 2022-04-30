@@ -14,95 +14,99 @@ using IContainer = Autofac.IContainer;
 using VishizhukelDemoApplication = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.Application;
 using WindowsApplication = System.Windows.Application;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI {
-    /// <summary>
-    /// Interaction logic for VishizhukelNetDemoWindow.xaml
-    /// </summary>
-    // ReSharper disable once UnusedMember.Global
-    public partial class VishizhukelNetDemoWindow : IAsyncDisposable {
-        private static IContainer Container { get; set; }
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI;
 
-        private VishizhukelDemoApplication DemoApp;
-        private ITashTimer<IApplicationModel> TashTimer;
+/// <summary>
+/// Interaction logic for VishizhukelNetDemoWindow.xaml
+/// </summary>
+// ReSharper disable once UnusedMember.Global
+public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNetWindowUnderTest {
+    private static IContainer Container { get; set; }
 
-        public VishizhukelNetDemoWindow() {
-            InitializeComponent();
-        }
+    private VishizhukelDemoApplication DemoApp;
+    private ITashTimer<IApplicationModel> TashTimer;
 
-        private async Task BuildContainerIfNecessaryAsync() {
-            if (Container != null) { return; }
+    public bool IsWindowUnderTest { get; set; }
 
-            var logConfigurationMock = new Mock<ILogConfiguration>();
-            logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoWindow));
-            logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
-            logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
-            var builder = await new ContainerBuilder().UseDemoApplicationAsync(this, logConfigurationMock.Object);
-            Container = builder.Build();
-        }
+    public VishizhukelNetDemoWindow() {
+        InitializeComponent();
+    }
 
-        private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
-            await BuildContainerIfNecessaryAsync();
+    private async Task BuildContainerIfNecessaryAsync() {
+        if (Container != null) { return; }
 
-            DemoApp = Container.Resolve<VishizhukelDemoApplication>();
-            await DemoApp.OnLoadedAsync();
+        var logConfigurationMock = new Mock<ILogConfiguration>();
+        logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoWindow));
+        logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
+        logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
+        var builder = await new ContainerBuilder().UseDemoApplicationAsync(this, logConfigurationMock.Object);
+        Container = builder.Build();
+    }
 
-            var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
-            var toggleButtonNameToHandlerMapper = Container.Resolve<IToggleButtonNameToHandlerMapper>();
+    private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
+        await BuildContainerIfNecessaryAsync();
 
-            var commands = DemoApp.Commands;
-            guiToAppGate.WireButtonAndCommand(Gamma, commands.GammaCommand, buttonNameToCommandMapper);
-            guiToAppGate.WireButtonAndCommand(Iota, commands.IotaCommand, buttonNameToCommandMapper);
-            guiToAppGate.WireButtonAndCommand(Kappa, commands.KappaCommand, buttonNameToCommandMapper);
+        DemoApp = Container.Resolve<VishizhukelDemoApplication>();
+        await DemoApp.OnLoadedAsync();
 
-            var handlers = DemoApp.Handlers;
-            guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => DemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));
-            guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i));
+        var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
+        var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
+        var toggleButtonNameToHandlerMapper = Container.Resolve<IToggleButtonNameToHandlerMapper>();
 
-            guiToAppGate.WireToggleButtonAndHandler(MethodAdd, DemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
-            guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, DemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
+        var commands = DemoApp.Commands;
+        guiToAppGate.WireButtonAndCommand(Gamma, commands.GammaCommand, buttonNameToCommandMapper);
+        guiToAppGate.WireButtonAndCommand(Iota, commands.IotaCommand, buttonNameToCommandMapper);
+        guiToAppGate.WireButtonAndCommand(Kappa, commands.KappaCommand, buttonNameToCommandMapper);
 
-            guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
+        var handlers = DemoApp.Handlers;
+        guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => DemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));
+        guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i));
 
+        guiToAppGate.WireToggleButtonAndHandler(MethodAdd, DemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
+        guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, DemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
+
+        guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
+
+        if (IsWindowUnderTest) {
             TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), DemoApp.TashHandler, guiToAppGate);
             if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {
                 Close();
             }
 
             TashTimer.CreateAndStartTimer(DemoApp.CreateTashTaskHandlingStatus());
-
-            AdjustZetaAndItsCanvas();
-
-            await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(5));
         }
 
-        public async ValueTask DisposeAsync() {
-            if (TashTimer == null) { return; }
+        AdjustZetaAndItsCanvas();
 
-            await TashTimer.StopTimerAndConfirmDeadAsync(false);
-        }
+        await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(5));
+    }
 
-        private async void OnClosing(object sender, CancelEventArgs e) {
-            if (TashTimer == null) { return; }
+    public async ValueTask DisposeAsync() {
+        if (TashTimer == null) { return; }
 
-            e.Cancel = true;
+        await TashTimer.StopTimerAndConfirmDeadAsync(false);
+    }
 
-            await TashTimer.StopTimerAndConfirmDeadAsync(false);
+    private async void OnClosing(object sender, CancelEventArgs e) {
+        if (TashTimer == null) { return; }
 
-            WindowsApplication.Current.Shutdown();
-        }
+        e.Cancel = true;
 
-        private void OnStateChanged(object sender, EventArgs e) {
-            DemoApp.OnWindowStateChanged(WindowState);
-        }
+        await TashTimer.StopTimerAndConfirmDeadAsync(false);
 
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
-            AdjustZetaAndItsCanvas();
-        }
+        WindowsApplication.Current.Shutdown();
+    }
 
-        private void AdjustZetaAndItsCanvas() {
-            var adjuster = Container?.Resolve<ICanvasAndImageSizeAdjuster>();
-            adjuster?.AdjustCanvasAndImage(ZetaCanvasContainer, ZetaCanvas, Zeta);
-        }
+    private void OnStateChanged(object sender, EventArgs e) {
+        DemoApp.OnWindowStateChanged(WindowState);
+    }
+
+    private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+        AdjustZetaAndItsCanvas();
+    }
+
+    private void AdjustZetaAndItsCanvas() {
+        var adjuster = Container?.Resolve<ICanvasAndImageSizeAdjuster>();
+        adjuster?.AdjustCanvasAndImage(ZetaCanvasContainer, ZetaCanvas, Zeta);
     }
 }

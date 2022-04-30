@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces {
-    public interface IGuiAndApplicationSynchronizer<out TApplicationModel> where TApplicationModel : IApplicationModelBase {
-        // ReSharper disable once UnusedMemberInSuper.Global
-        TApplicationModel Model { get; }
-        Task OnModelDataChangedAsync();
-        void IndicateBusy(bool force);
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-        void OnWebBrowserLoadCompleted();
-    }
+public interface IGuiAndApplicationSynchronizer<out TApplicationModel> where TApplicationModel : IApplicationModelBase {
+    // ReSharper disable once UnusedMemberInSuper.Global
+    TApplicationModel Model { get; }
+    Task OnModelDataChangedAsync();
+    void IndicateBusy(bool force);
+
+    void OnWebBrowserLoadCompleted();
 }

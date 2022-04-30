@@ -9,22 +9,22 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Autofac;
 
-namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication {
-    public static class ApplicationContainerBuilder {
-        public static async Task<ContainerBuilder> UseDemoApplicationAsync(this ContainerBuilder builder, VishizhukelNetDemoWindow vishizhukelNetDemoWindow, ILogConfiguration logConfiguration) {
-            await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
-            if (vishizhukelNetDemoWindow == null) {
-                builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
-            } else {
-                builder.RegisterInstance(vishizhukelNetDemoWindow);
-                builder.RegisterType<GuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
-            }
+namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication;
 
-            builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
-            builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
-            builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
-            builder.RegisterType<ApplicationLogger>().As<IApplicationLogger>().SingleInstance();
-            return builder;
+public static class ApplicationContainerBuilder {
+    public static async Task<ContainerBuilder> UseDemoApplicationAsync(this ContainerBuilder builder, VishizhukelNetDemoWindow vishizhukelNetDemoWindow, ILogConfiguration logConfiguration) {
+        await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
+        if (vishizhukelNetDemoWindow == null) {
+            builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
+        } else {
+            builder.RegisterInstance(vishizhukelNetDemoWindow);
+            builder.RegisterType<GuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
         }
+
+        builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
+        builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
+        builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
+        builder.RegisterType<ApplicationLogger>().As<IApplicationLogger>().SingleInstance();
+        return builder;
     }
 }

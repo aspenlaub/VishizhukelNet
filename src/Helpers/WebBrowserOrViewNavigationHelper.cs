@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
@@ -20,20 +21,28 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers {
         public async Task<bool> NavigateToUrlAsync(string url) {
             ApplicationLogger.LogMessage($"App navigating to '{url}'");
 
-            if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url)) {
+            if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url, DateTime.MinValue)) {
                 return false;
             }
 
-            ApplicationLogger.LogMessage("Clear model url and sync");
-            Model.WebBrowserOrView.Url = "";
-            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
-
-            ApplicationLogger.LogMessage("Set model url and sync");
-            Model.WebBrowserOrView.Url = url;
+            ApplicationLogger.LogMessage("Reset model url and sync");
+            Model.WebBrowserOrView.Url = Urls.AboutBlank;
+            var minLastUpdateTime = DateTime.Now;
             await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
             if (Model.UsesRealBrowserOrView) {
-                if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url)) {
+                if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url, minLastUpdateTime)) {
+                    return false;
+                }
+            }
+
+            ApplicationLogger.LogMessage("Set model url and sync");
+            Model.WebBrowserOrView.Url = url;
+            minLastUpdateTime = DateTime.Now;
+            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+
+            if (Model.UsesRealBrowserOrView) {
+                if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url, minLastUpdateTime)) {
                     return false;
                 }
             } else {

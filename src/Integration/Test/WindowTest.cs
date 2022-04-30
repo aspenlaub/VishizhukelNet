@@ -12,7 +12,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
     public class WindowTest : IntegrationTestBase {
         [TestMethod]
         public async Task CanOpenAndMaximizeDemoWindow() {
-            using var sut = await CreateDemoWindowUnderTestAsync();
+            using var sut = await CreateWindowUnderTestAsync();
             var process = await sut.FindIdleProcessAsync();
             var tasks = new List<ControllableProcessTask> {
                 sut.CreateMaximizeTask(process)
@@ -22,7 +22,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
 
         [TestMethod]
         public async Task CanCalculateSum() {
-            using var sut = await CreateDemoWindowUnderTestAsync();
+            using var sut = await CreateWindowUnderTestAsync();
             var process = await sut.FindIdleProcessAsync();
             var tasks = new List<ControllableProcessTask> {
                 sut.CreateVerifyWhetherEnabledTask(process, nameof(IApplicationModel.Beta), false),
@@ -36,7 +36,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
 
         [TestMethod]
         public async Task CanGetAndSetGridItems() {
-            using var sut = await CreateDemoWindowUnderTestAsync();
+            using var sut = await CreateWindowUnderTestAsync();
             var process = await sut.FindIdleProcessAsync();
             var emptyList = new List<DemoCollectionViewSourceEntity>();
             var emptyListJson = JsonConvert.SerializeObject(emptyList);

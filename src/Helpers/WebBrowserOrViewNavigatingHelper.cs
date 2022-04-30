@@ -19,7 +19,7 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
         ApplicationLogger = applicationLogger;
     }
 
-    public async Task<bool> WaitUntilNotNavigatingAnymoreAsync(string url) {
+    public async Task<bool> WaitUntilNotNavigatingAnymoreAsync(string url, DateTime minLastUpdateTime) {
         if (!Model.UsesRealBrowserOrView) {
             return true;
         }
@@ -33,12 +33,13 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
 
         ApplicationLogger.LogMessage("Wait until not navigating anymore");
         var attempts = MaxSeconds * 1000 / IntervalInMilliseconds;
-        while (Model.WebBrowserOrView.IsNavigating && attempts > 0) {
+        while ((Model.WebBrowserOrView.LastNavigationStartedAt < minLastUpdateTime || Model.WebBrowserOrView.IsNavigating) && attempts > 0) {
             await Task.Delay(TimeSpan.FromMilliseconds(IntervalInMilliseconds));
             attempts--;
         }
 
         if (!Model.WebBrowserOrView.IsNavigating) {
+            ApplicationLogger.LogMessage("Not navigating anymore");
             return true;
         }
 

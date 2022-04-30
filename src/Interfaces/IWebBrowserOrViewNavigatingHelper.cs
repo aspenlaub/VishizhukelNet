@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 public interface IWebBrowserOrViewNavigatingHelper {
-    Task<bool> WaitUntilNotNavigatingAnymoreAsync(string url);
+    Task<bool> WaitUntilNotNavigatingAnymoreAsync(string url, DateTime minLastUpdateTime);
 }

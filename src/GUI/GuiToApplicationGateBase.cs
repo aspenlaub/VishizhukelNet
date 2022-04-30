@@ -78,7 +78,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             var webView = sender as WebView2;
             if (webView == null) { return; }
 
-            await Application.OnWebViewSourceChangedAsync(webView.CoreWebView2.Source);
+            await Application.OnWebViewSourceChangedAsync(e.Uri);
         }
 
         private async void OnWebViewOnSourceChangedAsync(object sender, CoreWebView2SourceChangedEventArgs e) {
@@ -86,6 +86,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
 
             var webView = sender as WebView2;
             if (webView == null) { return; }
+
+            if (ApplicationModel.WebView.IsNavigating && ApplicationModel.WebView.Url == webView.CoreWebView2.Source) {
+                return;
+            }
 
             await Application.OnWebViewSourceChangedAsync(webView.CoreWebView2.Source);
         }

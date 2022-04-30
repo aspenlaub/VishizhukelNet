@@ -1,4 +1,5 @@
 ﻿using System;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
@@ -11,7 +12,7 @@ public class WebBrowserOrViewBase : IWebBrowserOrView {
     public bool HasValidDocument { get; set; }
 
     public WebBrowserOrViewBase() {
-        Url = "";
+        Url = Urls.None;
         IsNavigating = false;
         LastNavigationStartedAt = DateTime.MinValue;
         LastUrl = "";

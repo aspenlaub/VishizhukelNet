@@ -235,12 +235,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             if (modelWebBrowserOrView.Url == modelWebBrowserOrView.LastUrl) { return; }
 
             if (string.IsNullOrWhiteSpace(modelWebBrowserOrView.Url)) {
-                modelWebBrowserOrView.LastUrl = null;
-                webBrowser.Navigate((Uri)null);
-            } else {
-                modelWebBrowserOrView.LastUrl = modelWebBrowserOrView.Url;
-                webBrowser.Navigate(modelWebBrowserOrView.Url);
+                modelWebBrowserOrView.Url = Urls.AboutBlank;
             }
+
+            modelWebBrowserOrView.LastUrl = modelWebBrowserOrView.Url;
+            webBrowser.Navigate(modelWebBrowserOrView.Url);
         }
 
         private async Task UpdateWebViewIfNecessaryAsync(IWebView modelWebView, WebView2 webView2) {
@@ -253,17 +252,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI {
             }
 
             if (modelWebView.Url != modelWebView.LastUrl) {
-                if (string.IsNullOrWhiteSpace(modelWebView.Url)) {
-                    modelWebView.LastUrl = null;
-                    ApplicationLogger.LogMessage("Calling webView2.CoreWebView2.Navigate with about:blank");
-                    webView2.CoreWebView2?.Navigate("about:blank");
-                } else {
-                    modelWebView.LastUrl = modelWebView.Url;
-                    ApplicationLogger.LogMessage($"Calling webView2.CoreWebView2.Navigate with '{modelWebView.Url}'");
-                    webView2.CoreWebView2?.Navigate(modelWebView.Url);
-                }
+                modelWebView.LastUrl = modelWebView.Url;
+                ApplicationLogger.LogMessage($"Calling webView2.CoreWebView2.Navigate with '{modelWebView.Url}'");
+                var minLastUpdateTime = DateTime.Now;
+                webView2.CoreWebView2?.Navigate(modelWebView.Url);
 
-                if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(modelWebView.LastUrl ?? "about:blank")) {
+                if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(modelWebView.LastUrl, minLastUpdateTime)) {
                     return;
                 }
             }

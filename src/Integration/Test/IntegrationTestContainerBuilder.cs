@@ -9,7 +9,7 @@ using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test {
     public static class IntegrationTestContainerBuilder {
-        public static ContainerBuilder RegisterForDemoIntegrationTest(this ContainerBuilder builder, ILogConfiguration logConfiguration) {
+        public static ContainerBuilder RegisterForIntegrationTest(this ContainerBuilder builder, ILogConfiguration logConfiguration) {
             builder.UseDvinAndPegh(new DummyCsArgumentPrompter());
             builder.RegisterInstance(logConfiguration);
             builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();

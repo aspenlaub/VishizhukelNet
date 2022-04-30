@@ -7,8 +7,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 
 public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelper {
-    public int MaxSeconds => 600;
-
+    public const int MaxSeconds = 600;
     private const int IntervalInMilliseconds = 500;
 
     private readonly IApplicationModelBase Model;

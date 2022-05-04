@@ -22,7 +22,7 @@ public class RunJsCommand : ICommand {
 
         Model.WebView.ToExecute.AppendStatement("alert('A script has been run: ' + document.head.children[document.head.children.length - 1].outerHTML);");
 
-        await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+        await GuiAndAppHandler.SyncGuiAndAppAsync();
 
     }
 

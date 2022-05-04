@@ -4,6 +4,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 public interface IGuiAndAppHandler {
     Task EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+    Task SyncGuiAndAppAsync();
     // ReSharper disable once UnusedMemberInSuper.Global
     void IndicateBusy(bool force);
 

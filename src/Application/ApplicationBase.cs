@@ -49,6 +49,10 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel> : 
         await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
     }
 
+    public async Task SyncGuiAndAppAsync() {
+        await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
+    }
+
     public void IndicateBusy(bool force) {
         GuiAndApplicationSynchronizer.IndicateBusy(force);
     }

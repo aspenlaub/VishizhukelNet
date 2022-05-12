@@ -31,7 +31,8 @@ public class RunJsCommand : ICommand {
                                  + "})();";
         const string inconclusiveErrorMessage = "Script result is inconclusive";
         const string noSuccessErrorMessage = "Script call failed";
-        await GuiAndAppHandler.RunScriptAsync<ScriptCallResponseBase>(new ScriptStatement { Statement = statement, InconclusiveErrorMessage = inconclusiveErrorMessage, NoSuccessErrorMessage = noSuccessErrorMessage });
+        var scriptStatement = new ScriptStatement { Statement = statement, InconclusiveErrorMessage = inconclusiveErrorMessage, NoSuccessErrorMessage = noSuccessErrorMessage };
+        await GuiAndAppHandler.RunScriptAsync<ScriptCallResponseBase>(scriptStatement, false);
     }
 
     public async Task<bool> ShouldBeEnabledAsync() {

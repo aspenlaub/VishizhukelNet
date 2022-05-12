@@ -114,15 +114,21 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel> : 
         IndicateBusy(true);
     }
 
-    public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {
+    public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement, bool mayFail) where TResult : IScriptCallResponse, new() {
         var scriptCallResponse = await GuiAndApplicationSynchronizer.RunScriptAsync<TResult>(scriptStatement);
+
         if (scriptCallResponse.Success.Inconclusive) {
             Model.Status.Text = string.IsNullOrEmpty(scriptStatement.InconclusiveErrorMessage) ? scriptStatement.NoSuccessErrorMessage : scriptStatement.InconclusiveErrorMessage;
             Model.Status.Type = StatusType.Error;
-        } else if (!scriptCallResponse.Success.YesNo) {
-            Model.Status.Text = scriptStatement.NoSuccessErrorMessage;
-            Model.Status.Type = StatusType.Error;
+            return scriptCallResponse;
         }
+
+        if (scriptCallResponse.Success.YesNo || mayFail) {
+            return scriptCallResponse;
+        }
+
+        Model.Status.Text = scriptStatement.NoSuccessErrorMessage;
+        Model.Status.Type = StatusType.Error;
         return scriptCallResponse;
     }
 }

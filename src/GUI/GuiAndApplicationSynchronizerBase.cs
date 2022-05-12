@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
@@ -248,30 +250,16 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
             throw new ArgumentNullException(nameof(modelWebView));
         }
 
-        if (!modelWebView.IsWired) {
+        if (!modelWebView.IsWired || modelWebView.Url == modelWebView.LastUrl) {
             return;
         }
 
-        if (modelWebView.Url != modelWebView.LastUrl) {
-            modelWebView.LastUrl = modelWebView.Url;
-            ApplicationLogger.LogMessage($"Calling webView2.CoreWebView2.Navigate with '{modelWebView.Url}'");
-            var minLastUpdateTime = DateTime.Now;
-            webView2.CoreWebView2?.Navigate(modelWebView.Url);
+        modelWebView.LastUrl = modelWebView.Url;
+        ApplicationLogger.LogMessage($"Calling webView2.CoreWebView2.Navigate with '{modelWebView.Url}'");
+        var minLastUpdateTime = DateTime.Now;
+        webView2.CoreWebView2?.Navigate(modelWebView.Url);
 
-            if (!await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(modelWebView.LastUrl, minLastUpdateTime)) {
-                return;
-            }
-        }
-
-        if (modelWebView.ToExecute.Any() && webView2.CoreWebView2 != null) {
-            ApplicationLogger.LogMessage("Executing script");
-            var result = await webView2.CoreWebView2.ExecuteScriptAsync(modelWebView.ToExecute.Statement);
-            ApplicationLogger.LogMessage("Script executed, communicating result");
-            await modelWebView.OnScriptCodeExecutedAsync(result);
-            ApplicationLogger.LogMessage("No script to execute");
-            modelWebView.ToExecute.Reset();
-            modelWebView.OnScriptCodeExecutedAsync = _ => Task.CompletedTask;
-        }
+        await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(modelWebView.LastUrl, minLastUpdateTime);
     }
 
     private void UpdateButtonIfNecessary(Button modelButton, UIElement windowsButton) {
@@ -398,5 +386,37 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
             modelWebBrowser.Url = string.IsNullOrWhiteSpace(webBrowser.Source?.OriginalString) ? "" : webBrowser.Source.OriginalString;
             modelWebBrowser.LastUrl = modelWebBrowser.Url;
         }
+    }
+
+    public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {
+        ApplicationLogger.LogMessage(Properties.Resources.ExecutingScript);
+        var webView2Property = typeof(TApplicationModel).GetPropertiesAndInterfaceProperties().FirstOrDefault(p => p.Name == nameof(IApplicationModelBase.WebView));
+        var webView2 = webView2Property == null || !ModelPropertyToWindowFieldMapping.ContainsKey(webView2Property)
+            ? null
+            : (WebView2)ModelPropertyToWindowFieldMapping[webView2Property].GetValue(Window);
+        if (webView2 == null) {
+            ApplicationLogger.LogMessage(Properties.Resources.UiDoesNotContainAWebView);
+            return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = false, YesNo = false }, ErrorMessage = Properties.Resources.UiDoesNotContainAWebView });
+        }
+
+        var json = await webView2.CoreWebView2.ExecuteScriptAsync(scriptStatement.Statement);
+        ApplicationLogger.LogMessage(Properties.Resources.ScriptExecutedDeserializingResult);
+        if (string.IsNullOrEmpty(json)) {
+            ApplicationLogger.LogMessage(Properties.Resources.ScriptCallJsonResultIsEmpty);
+            return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = false, YesNo = false }, ErrorMessage = Properties.Resources.ScriptCallJsonResultIsEmpty });
+        }
+
+        try {
+            var scriptCallResult = JsonSerializer.Deserialize<TResult>(json);
+            if (scriptCallResult is { }) {
+                return scriptCallResult;
+
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+        } catch {
+        }
+
+        ApplicationLogger.LogMessage(Properties.Resources.CouldNotDeserializeScriptCallJsonResult);
+        return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = false, YesNo = false }, ErrorMessage = Properties.Resources.CouldNotDeserializeScriptCallJsonResult });
     }
 }

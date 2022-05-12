@@ -61,11 +61,29 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to App failed.
+        /// </summary>
+        internal static string AppFailed {
+            get {
+                return ResourceManager.GetString("AppFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not connect to Tash, please start Tash Host.
         /// </summary>
         internal static string CouldNotConnectToTash {
             get {
                 return ResourceManager.GetString("CouldNotConnectToTash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not deserialize script call JSON result.
+        /// </summary>
+        internal static string CouldNotDeserializeScriptCallJsonResult {
+            get {
+                return ResourceManager.GetString("CouldNotDeserializeScriptCallJsonResult", resourceCulture);
             }
         }
         
@@ -88,11 +106,92 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Executing script.
+        /// </summary>
+        internal static string ExecutingScript {
+            get {
+                return ResourceManager.GetString("ExecutingScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not navigating anymore.
+        /// </summary>
+        internal static string NotNavigatingAnymore {
+            get {
+                return ResourceManager.GetString("NotNavigatingAnymore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request timed out after {0} second/-s.
         /// </summary>
         internal static string RequestTimedOutAfter {
             get {
                 return ResourceManager.GetString("RequestTimedOutAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset model URL and sync.
+        /// </summary>
+        internal static string ResetModelUrlAndSync {
+            get {
+                return ResourceManager.GetString("ResetModelUrlAndSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script call failed.
+        /// </summary>
+        internal static string ScriptCallFailed {
+            get {
+                return ResourceManager.GetString("ScriptCallFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script call JSON result is null or empty.
+        /// </summary>
+        internal static string ScriptCallJsonResultIsEmpty {
+            get {
+                return ResourceManager.GetString("ScriptCallJsonResultIsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script executed, deserializing result.
+        /// </summary>
+        internal static string ScriptExecutedDeserializingResult {
+            get {
+                return ResourceManager.GetString("ScriptExecutedDeserializingResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set model URL and sync.
+        /// </summary>
+        internal static string SetModelUrlAndAsync {
+            get {
+                return ResourceManager.GetString("SetModelUrlAndAsync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User interface does not contain a WebView.
+        /// </summary>
+        internal static string UiDoesNotContainAWebView {
+            get {
+                return ResourceManager.GetString("UiDoesNotContainAWebView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait until not navigating anymore.
+        /// </summary>
+        internal static string WaitUntilNotNavigatingAnymore {
+            get {
+                return ResourceManager.GetString("WaitUntilNotNavigatingAnymore", resourceCulture);
             }
         }
         

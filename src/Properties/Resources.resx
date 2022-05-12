@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppFailed" xml:space="preserve">
+    <value>App failed</value>
+  </data>
   <data name="CouldNotConnectToTash" xml:space="preserve">
     <value>Could not connect to Tash, please start Tash Host</value>
+  </data>
+  <data name="CouldNotDeserializeScriptCallJsonResult" xml:space="preserve">
+    <value>Could not deserialize script call JSON result</value>
   </data>
   <data name="CouldNotLoadUrl" xml:space="preserve">
     <value>Could not load URL</value>
@@ -126,8 +132,35 @@
   <data name="CouldNotMakeTashRegistration" xml:space="preserve">
     <value>Could not make Tash registration (error code: {0})</value>
   </data>
+  <data name="ExecutingScript" xml:space="preserve">
+    <value>Executing script</value>
+  </data>
+  <data name="NotNavigatingAnymore" xml:space="preserve">
+    <value>Not navigating anymore</value>
+  </data>
   <data name="RequestTimedOutAfter" xml:space="preserve">
     <value>Request timed out after {0} second/-s</value>
+  </data>
+  <data name="ResetModelUrlAndSync" xml:space="preserve">
+    <value>Reset model URL and sync</value>
+  </data>
+  <data name="ScriptCallFailed" xml:space="preserve">
+    <value>Script call failed</value>
+  </data>
+  <data name="ScriptCallJsonResultIsEmpty" xml:space="preserve">
+    <value>Script call JSON result is null or empty</value>
+  </data>
+  <data name="ScriptExecutedDeserializingResult" xml:space="preserve">
+    <value>Script executed, deserializing result</value>
+  </data>
+  <data name="SetModelUrlAndAsync" xml:space="preserve">
+    <value>Set model URL and sync</value>
+  </data>
+  <data name="UiDoesNotContainAWebView" xml:space="preserve">
+    <value>User interface does not contain a WebView</value>
+  </data>
+  <data name="WaitUntilNotNavigatingAnymore" xml:space="preserve">
+    <value>Wait until not navigating anymore</value>
   </data>
   <data name="WebBrowserStillBusyAfter" xml:space="preserve">
     <value>Web browser still is busy with a preceding request after {0} second/-s</value>

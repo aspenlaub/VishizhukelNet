@@ -105,12 +105,24 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel> : 
         Model.WebBrowserOrViewContentSource.Text = contentSource;
         Model.WebView.HasValidDocument = isSuccess;
         if (!isSuccess) {
-            ApplicationLogger.LogMessage("App failed");
+            ApplicationLogger.LogMessage(Properties.Resources.AppFailed);
             Model.Status.Text = Properties.Resources.CouldNotLoadUrl;
             Model.Status.Type = StatusType.Error;
         }
 
         await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         IndicateBusy(true);
+    }
+
+    public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {
+        var scriptCallResponse = await GuiAndApplicationSynchronizer.RunScriptAsync<TResult>(scriptStatement);
+        if (scriptCallResponse.Success.Inconclusive) {
+            Model.Status.Text = string.IsNullOrEmpty(scriptStatement.InconclusiveErrorMessage) ? scriptStatement.NoSuccessErrorMessage : scriptStatement.InconclusiveErrorMessage;
+            Model.Status.Type = StatusType.Error;
+        } else if (!scriptCallResponse.Success.YesNo) {
+            Model.Status.Text = scriptStatement.NoSuccessErrorMessage;
+            Model.Status.Type = StatusType.Error;
+        }
+        return scriptCallResponse;
     }
 }

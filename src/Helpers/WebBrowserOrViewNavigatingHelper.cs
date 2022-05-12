@@ -30,7 +30,7 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
             return false;
         }
 
-        ApplicationLogger.LogMessage("Wait until not navigating anymore");
+        ApplicationLogger.LogMessage(Properties.Resources.WaitUntilNotNavigatingAnymore);
         var attempts = MaxSeconds * 1000 / IntervalInMilliseconds;
         while ((Model.WebBrowserOrView.LastNavigationStartedAt < minLastUpdateTime || Model.WebBrowserOrView.IsNavigating) && attempts > 0) {
             await Task.Delay(TimeSpan.FromMilliseconds(IntervalInMilliseconds));
@@ -38,7 +38,7 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
         }
 
         if (!Model.WebBrowserOrView.IsNavigating) {
-            ApplicationLogger.LogMessage("Not navigating anymore");
+            ApplicationLogger.LogMessage(Properties.Resources.NotNavigatingAnymore);
             return true;
         }
 

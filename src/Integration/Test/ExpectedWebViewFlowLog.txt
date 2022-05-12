@@ -1,7 +1,7 @@
 ﻿ App navigating to 'http://localhost/'
  Wait until not navigating anymore
  Not navigating anymore
- Reset model url and sync
+ Reset model URL and sync
  Calling webView2.CoreWebView2.Navigate with 'about:blank'
  Wait until not navigating anymore
  Web view source changes to 'about:blank'
@@ -10,7 +10,7 @@
  Not navigating anymore
  Wait until not navigating anymore
  Not navigating anymore
- Set model url and sync
+ Set model URL and sync
  Calling webView2.CoreWebView2.Navigate with 'http://localhost/'
  Wait until not navigating anymore
  Web view source changes to 'http://localhost/'

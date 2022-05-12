@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces;
 
@@ -20,10 +22,16 @@ public class RunJsCommand : ICommand {
             return;
         }
 
-        Model.WebView.ToExecute.AppendStatement("alert('A script has been run: ' + document.head.children[document.head.children.length - 1].outerHTML);");
-
-        await GuiAndAppHandler.SyncGuiAndAppAsync();
-
+        var scriptCallResponse = new ScriptCallResponseBase {
+            Success = new YesNoInconclusive { Inconclusive = false, YesNo = true }
+        };
+        var statement = "(function() { "
+                                 + "alert('A script has been run: ' + document.head.children[document.head.children.length - 1].outerHTML); "
+                                 + "return " + JsonSerializer.Serialize(scriptCallResponse)
+                                 + "})();";
+        const string inconclusiveErrorMessage = "Script result is inconclusive";
+        const string noSuccessErrorMessage = "Script call failed";
+        await GuiAndAppHandler.RunScriptAsync<ScriptCallResponseBase>(new ScriptStatement { Statement = statement, InconclusiveErrorMessage = inconclusiveErrorMessage, NoSuccessErrorMessage = noSuccessErrorMessage });
     }
 
     public async Task<bool> ShouldBeEnabledAsync() {

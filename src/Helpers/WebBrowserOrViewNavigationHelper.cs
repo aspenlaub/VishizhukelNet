@@ -26,7 +26,7 @@ public class WebBrowserOrViewNavigationHelper<TApplicationModel> : IWebBrowserOr
             return false;
         }
 
-        ApplicationLogger.LogMessage("Reset model url and sync");
+        ApplicationLogger.LogMessage(Properties.Resources.ResetModelUrlAndSync);
         Model.WebBrowserOrView.Url = Urls.AboutBlank;
         var minLastUpdateTime = DateTime.Now;
         await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
@@ -37,7 +37,7 @@ public class WebBrowserOrViewNavigationHelper<TApplicationModel> : IWebBrowserOr
             }
         }
 
-        ApplicationLogger.LogMessage("Set model url and sync");
+        ApplicationLogger.LogMessage(Properties.Resources.SetModelUrlAndAsync);
         Model.WebBrowserOrView.Url = url;
         minLastUpdateTime = DateTime.Now;
         await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
@@ -55,7 +55,7 @@ public class WebBrowserOrViewNavigationHelper<TApplicationModel> : IWebBrowserOr
                 return true;
             }
 
-            ApplicationLogger.LogMessage("App failed");
+            ApplicationLogger.LogMessage(Properties.Resources.AppFailed);
             Model.Status.Text = Properties.Resources.CouldNotLoadUrl;
             Model.Status.Type = StatusType.Error;
             return false;

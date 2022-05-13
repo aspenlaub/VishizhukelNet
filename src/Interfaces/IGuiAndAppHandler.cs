@@ -12,5 +12,5 @@ public interface IGuiAndAppHandler {
 
     Task OnWebViewSourceChangedAsync(string uri);
     Task OnWebViewNavigationCompletedAsync(string contentSource, bool isSuccess);
-    Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement, bool mayFail) where TResult : IScriptCallResponse, new();
+    Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement, bool mayFail, bool maySucceed) where TResult : IScriptCallResponse, new();
 }

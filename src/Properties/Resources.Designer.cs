@@ -151,6 +151,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Script call failure expected.
+        /// </summary>
+        internal static string ScriptCallFailureExpected {
+            get {
+                return ResourceManager.GetString("ScriptCallFailureExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Script call JSON result is null or empty.
         /// </summary>
         internal static string ScriptCallJsonResultIsEmpty {

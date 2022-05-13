@@ -147,6 +147,9 @@
   <data name="ScriptCallFailed" xml:space="preserve">
     <value>Script call failed</value>
   </data>
+  <data name="ScriptCallFailureExpected" xml:space="preserve">
+    <value>Script call failure expected</value>
+  </data>
   <data name="ScriptCallJsonResultIsEmpty" xml:space="preserve">
     <value>Script call JSON result is null or empty</value>
   </data>

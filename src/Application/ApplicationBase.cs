@@ -120,6 +120,7 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel> : 
         if (scriptCallResponse.Success.Inconclusive) {
             Model.Status.Text = string.IsNullOrEmpty(scriptStatement.InconclusiveErrorMessage) ? scriptStatement.NoSuccessErrorMessage : scriptStatement.InconclusiveErrorMessage;
             Model.Status.Type = StatusType.Error;
+            await SyncGuiAndAppAsync();
             return scriptCallResponse;
         }
 
@@ -129,6 +130,7 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel> : 
 
         Model.Status.Text = scriptStatement.NoSuccessErrorMessage;
         Model.Status.Type = StatusType.Error;
+        await SyncGuiAndAppAsync();
         return scriptCallResponse;
     }
 }

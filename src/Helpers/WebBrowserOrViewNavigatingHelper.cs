@@ -52,9 +52,21 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
 
     private async Task WaitUntilNotNavigatingAnymoreAsync(DateTime minLastUpdateTime, int seconds, int intervalInMilliseconds) {
         var attempts = seconds * 1000 / intervalInMilliseconds;
-        while ((Model.WebBrowserOrView.LastNavigationStartedAt < minLastUpdateTime || Model.WebBrowserOrView.IsNavigating) && attempts > 0) {
-            await Task.Delay(TimeSpan.FromMilliseconds(intervalInMilliseconds));
-            attempts--;
-        }
+        bool again;
+        do {
+            while ((Model.WebBrowserOrView.LastNavigationStartedAt < minLastUpdateTime || Model.WebBrowserOrView.IsNavigating) && attempts > 0) {
+                await Task.Delay(TimeSpan.FromMilliseconds(intervalInMilliseconds));
+                attempts--;
+            }
+
+            again = false;
+            do {
+                for (var i = 0; !again && i < 5; i++) {
+                    await Task.Delay(TimeSpan.FromMilliseconds(intervalInMilliseconds));
+                    attempts--;
+                    again = Model.WebBrowserOrView.IsNavigating;
+                }
+            } while (!again && attempts > 0);
+        } while (again && attempts > 0);
     }
 }

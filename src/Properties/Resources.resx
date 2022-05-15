@@ -162,6 +162,9 @@
   <data name="UiDoesNotContainAWebView" xml:space="preserve">
     <value>User interface does not contain a WebView</value>
   </data>
+  <data name="WaitLongerUntilNotNavigatingAnymore" xml:space="preserve">
+    <value>Navigation takes longer, waiting until not navigating anymore</value>
+  </data>
   <data name="WaitUntilNotNavigatingAnymore" xml:space="preserve">
     <value>Wait until not navigating anymore</value>
   </data>

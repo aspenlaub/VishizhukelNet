@@ -196,6 +196,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigation takes longer, waiting until not navigating anymore.
+        /// </summary>
+        internal static string WaitLongerUntilNotNavigatingAnymore {
+            get {
+                return ResourceManager.GetString("WaitLongerUntilNotNavigatingAnymore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wait until not navigating anymore.
         /// </summary>
         internal static string WaitUntilNotNavigatingAnymore {

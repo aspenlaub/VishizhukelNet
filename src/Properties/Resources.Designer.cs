@@ -115,6 +115,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigating again.
+        /// </summary>
+        internal static string NavigatingAgain {
+            get {
+                return ResourceManager.GetString("NavigatingAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not navigating anymore.
         /// </summary>
         internal static string NotNavigatingAnymore {

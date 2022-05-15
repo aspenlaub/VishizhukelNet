@@ -9,6 +9,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelper {
     public const int QuickSeconds = 5, MaxSeconds = 600;
     private const int IntervalInMilliseconds = 500, LargeIntervalInMilliseconds = 5000;
+    private const int DoubleCheckIntervalInMilliseconds = 200, DoubleCheckLargeIntervalInMilliseconds = 1000;
 
     private readonly IApplicationModelBase Model;
     private readonly IApplicationLogger ApplicationLogger;
@@ -31,11 +32,11 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
         }
 
         ApplicationLogger.LogMessage(Properties.Resources.WaitUntilNotNavigatingAnymore);
-        await WaitUntilNotNavigatingAnymoreAsync(minLastUpdateTime, QuickSeconds, IntervalInMilliseconds);
+        await WaitUntilNotNavigatingAnymoreAsync(minLastUpdateTime, QuickSeconds, IntervalInMilliseconds, DoubleCheckIntervalInMilliseconds);
 
         if (Model.WebBrowserOrView.IsNavigating) {
             ApplicationLogger.LogMessage(Properties.Resources.WaitLongerUntilNotNavigatingAnymore);
-            await WaitUntilNotNavigatingAnymoreAsync(minLastUpdateTime, MaxSeconds - QuickSeconds, LargeIntervalInMilliseconds);
+            await WaitUntilNotNavigatingAnymoreAsync(minLastUpdateTime, MaxSeconds - QuickSeconds, LargeIntervalInMilliseconds, DoubleCheckLargeIntervalInMilliseconds);
         }
 
         if (!Model.WebBrowserOrView.IsNavigating) {
@@ -50,23 +51,30 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
 
     }
 
-    private async Task WaitUntilNotNavigatingAnymoreAsync(DateTime minLastUpdateTime, int seconds, int intervalInMilliseconds) {
+    private async Task WaitUntilNotNavigatingAnymoreAsync(DateTime minLastUpdateTime, int seconds, int intervalInMilliseconds, int doubleCheckIntervalInMilliseconds) {
         var attempts = seconds * 1000 / intervalInMilliseconds;
         bool again;
         do {
             while ((Model.WebBrowserOrView.LastNavigationStartedAt < minLastUpdateTime || Model.WebBrowserOrView.IsNavigating) && attempts > 0) {
                 await Task.Delay(TimeSpan.FromMilliseconds(intervalInMilliseconds));
                 attempts--;
+                if (attempts == 0) {
+                    ApplicationLogger.LogMessage($"Still navigating after {seconds} seconds");
+                }
             }
 
             again = false;
-            do {
-                for (var i = 0; !again && i < 5; i++) {
-                    await Task.Delay(TimeSpan.FromMilliseconds(intervalInMilliseconds));
-                    attempts--;
-                    again = Model.WebBrowserOrView.IsNavigating;
+            for (var i = 0; !again && i < 5; i ++) {
+                await Task.Delay(TimeSpan.FromMilliseconds(doubleCheckIntervalInMilliseconds));
+                attempts--;
+                if (attempts == 0) {
+                    ApplicationLogger.LogMessage($"Still navigating after {seconds} seconds");
                 }
-            } while (!again && attempts > 0);
+                again = Model.WebBrowserOrView.IsNavigating;
+                if (again) {
+                    ApplicationLogger.LogMessage(Properties.Resources.NavigatingAgain);
+                }
+            }
         } while (again && attempts > 0);
     }
 }

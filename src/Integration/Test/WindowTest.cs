@@ -76,7 +76,12 @@ public class WindowTest : IntegrationTestBase {
         };
         await sut.RemotelyProcessTaskListAsync(process, tasks);
         Assert.IsTrue(File.Exists(logFileName));
-        var actualLines = File.ReadLines(logFileName).Select(s => s.Substring(s.IndexOf(' '))).ToList();
+        var actualLines = File.ReadLines(logFileName).ToList();
+        Assert.IsTrue(actualLines.Count > 2, $"Got only {actualLines.Count} actual log line/-s");
+        var startTime = DateTime.Parse(actualLines[0].Substring(0, actualLines[0].IndexOf(' ')));
+        var endTime = DateTime.Parse(actualLines[actualLines.Count - 1].Substring(0, actualLines[actualLines.Count - 1].IndexOf(' ')));
+        var elapsedSeconds = (endTime - startTime).TotalSeconds;
+        actualLines = actualLines.Select(s => s.Substring(s.IndexOf(' '))).ToList();
         var folderName = GetType().Assembly.Location;
         folderName = folderName.Substring(0, folderName.LastIndexOf('\\'));
         var masterLogFileName = new Folder(folderName).FullName + @"\ExpectedWebViewFlowLog.txt";
@@ -85,5 +90,7 @@ public class WindowTest : IntegrationTestBase {
         for (var i = 0; i < expectedLines.Count; i++) {
             Assert.AreEqual(expectedLines[i], actualLines[i], $"Difference in log line {i + 1}: expected '{expectedLines[i]}', got '{actualLines[i]}'");
         }
+        var maxSeconds = 7;
+        Assert.IsTrue(elapsedSeconds < maxSeconds, $"Expected navigation to take less than {maxSeconds} seconds, it was {elapsedSeconds}");
     }
 }

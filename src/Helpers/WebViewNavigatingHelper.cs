@@ -6,7 +6,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 
-public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelper {
+public class WebViewNavigatingHelper : IWebViewNavigatingHelper {
     public const int QuickSeconds = 5, MaxSeconds = 600;
     private const int IntervalInMilliseconds = 500, LargeIntervalInMilliseconds = 5000;
     private const int DoubleCheckIntervalInMilliseconds = 200, DoubleCheckLargeIntervalInMilliseconds = 1000;
@@ -14,7 +14,7 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
     private readonly IApplicationModelBase Model;
     private readonly IApplicationLogger ApplicationLogger;
 
-    public WebBrowserOrViewNavigatingHelper(IApplicationModelBase model, IApplicationLogger applicationLogger) {
+    public WebViewNavigatingHelper(IApplicationModelBase model, IApplicationLogger applicationLogger) {
         Model = model;
         ApplicationLogger = applicationLogger;
     }
@@ -34,17 +34,17 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
         ApplicationLogger.LogMessage(Properties.Resources.WaitUntilNotNavigatingAnymore);
         await WaitUntilNotNavigatingAnymoreAsync(minLastUpdateTime, QuickSeconds, IntervalInMilliseconds, DoubleCheckIntervalInMilliseconds);
 
-        if (Model.WebBrowserOrView.IsNavigating) {
+        if (Model.WebView.IsNavigating) {
             ApplicationLogger.LogMessage(Properties.Resources.WaitLongerUntilNotNavigatingAnymore);
             await WaitUntilNotNavigatingAnymoreAsync(minLastUpdateTime, MaxSeconds - QuickSeconds, LargeIntervalInMilliseconds, DoubleCheckLargeIntervalInMilliseconds);
         }
 
-        if (!Model.WebBrowserOrView.IsNavigating) {
+        if (!Model.WebView.IsNavigating) {
             ApplicationLogger.LogMessage(Properties.Resources.NotNavigatingAnymore);
             return true;
         }
 
-        Model.Status.Text = string.Format(Properties.Resources.WebBrowserStillBusyAfter, MaxSeconds);
+        Model.Status.Text = string.Format(Properties.Resources.WebViewStillBusyAfter, MaxSeconds);
         Model.Status.Type = StatusType.Error;
         ApplicationLogger.LogMessage($"Problem when navigating to '{url}'");
         return false;
@@ -55,7 +55,7 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
         var attempts = seconds * 1000 / intervalInMilliseconds;
         bool again;
         do {
-            while ((Model.WebBrowserOrView.LastNavigationStartedAt < minLastUpdateTime || Model.WebBrowserOrView.IsNavigating) && attempts > 0) {
+            while ((Model.WebView.LastNavigationStartedAt < minLastUpdateTime || Model.WebView.IsNavigating) && attempts > 0) {
                 await Task.Delay(TimeSpan.FromMilliseconds(intervalInMilliseconds));
                 attempts--;
                 if (attempts == 0) {
@@ -70,7 +70,7 @@ public class WebBrowserOrViewNavigatingHelper : IWebBrowserOrViewNavigatingHelpe
                 if (attempts == 0) {
                     ApplicationLogger.LogMessage($"Still navigating after {seconds} seconds");
                 }
-                again = Model.WebBrowserOrView.IsNavigating;
+                again = Model.WebView.IsNavigating;
                 if (again) {
                     ApplicationLogger.LogMessage(Properties.Resources.NavigatingAgain);
                 }

@@ -38,7 +38,7 @@ public abstract class GuiToApplicationGateBase<TApplication> : IGuiToApplication
     }
 
     public void RegisterAsyncButtonCallback(Button button, Func<Task> action) {
-        button.Click += async (_, _) => await CallbackAsync(() => action());
+        button.Click += async (_, _) => await CallbackAsync(action);
     }
 
     public void RegisterAsyncTextBoxCallback(TextBox textBox, Func<string, Task> action) {

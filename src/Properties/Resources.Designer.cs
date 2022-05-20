@@ -223,20 +223,20 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web browser still is busy with a preceding request after {0} second/-s.
-        /// </summary>
-        internal static string WebBrowserStillBusyAfter {
-            get {
-                return ResourceManager.GetString("WebBrowserStillBusyAfter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Web view must be wired before this method can be used.
         /// </summary>
         internal static string WebViewMustBeWired {
             get {
                 return ResourceManager.GetString("WebViewMustBeWired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web view still is busy with a preceding request after {0} second/-s.
+        /// </summary>
+        internal static string WebViewStillBusyAfter {
+            get {
+                return ResourceManager.GetString("WebViewStillBusyAfter", resourceCulture);
             }
         }
     }

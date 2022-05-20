@@ -17,7 +17,7 @@ public class IotaCommand : ICommand {
             return;
         }
 
-        await Task.Run(() => { throw new NotImplementedException(); });
+        await Task.Run(() => throw new NotImplementedException());
     }
 
     public async Task<bool> ShouldBeEnabledAsync() {

@@ -27,10 +27,9 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IAppl
     private readonly ILogConfiguration LogConfiguration;
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-        IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model,
-        ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
-        IBasicHtmlHelper basicHtmlHelper, IApplicationLogger applicationLogger)
-        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, basicHtmlHelper, applicationLogger) {
+        IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model, ITashAccessor tashAccessor,
+        ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger)
+        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, applicationLogger) {
         TashAccessor = tashAccessor;
         SimpleLogger = simpleLogger;
         LogConfiguration = logConfiguration;

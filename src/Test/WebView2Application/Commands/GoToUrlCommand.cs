@@ -7,11 +7,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Co
 
 public class GoToUrlCommand : ICommand {
     private readonly IApplicationModel Model;
-    private readonly IWebBrowserOrViewNavigationHelper WebBrowserOrViewNavigationHelper;
+    private readonly IWebViewNavigationHelper WebViewNavigationHelper;
 
-    public GoToUrlCommand(IApplicationModel model, IWebBrowserOrViewNavigationHelper webBrowserOrViewNavigationHelper) {
+    public GoToUrlCommand(IApplicationModel model, IWebViewNavigationHelper webViewNavigationHelper) {
         Model = model;
-        WebBrowserOrViewNavigationHelper = webBrowserOrViewNavigationHelper;
+        WebViewNavigationHelper = webViewNavigationHelper;
     }
 
     public async Task ExecuteAsync() {
@@ -19,11 +19,11 @@ public class GoToUrlCommand : ICommand {
             return;
         }
 
-        await WebBrowserOrViewNavigationHelper.NavigateToUrlAsync(Model.WebBrowserOrViewUrl.Text);
+        await WebViewNavigationHelper.NavigateToUrlAsync(Model.WebViewUrl.Text);
     }
 
     public async Task<bool> ShouldBeEnabledAsync() {
-        var enabled = Model.WebBrowserOrViewUrl.Text.StartsWith("http", StringComparison.InvariantCulture);
+        var enabled = Model.WebViewUrl.Text.StartsWith("http", StringComparison.InvariantCulture);
         return await Task.FromResult(enabled);
     }
 }

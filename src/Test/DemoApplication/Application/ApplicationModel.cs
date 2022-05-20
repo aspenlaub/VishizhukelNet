@@ -3,14 +3,13 @@ using System.Windows.Media;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 
-public class ApplicationModel : ApplicationModelBase<FakeWebBrowserOrView>, IApplicationModel {
+public class ApplicationModel : ApplicationModelBase, IApplicationModel {
     public ITextBox Alpha { get; } = new TextBox();
     public ISelector Beta { get; } = new ComboBox();
     public Button Gamma { get; } = new();

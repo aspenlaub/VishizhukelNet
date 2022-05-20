@@ -59,8 +59,8 @@ public partial class VishizhukelNetWebView2Window : IAsyncDisposable, IVishizhuk
         var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
         var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
 
-        guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserOrViewUrl, t => Application.Handlers.WebBrowserUrlTextHandler.TextChangedAsync(t));
-        guiToAppGate.RegisterAsyncTextBoxCallback(WebBrowserOrViewContentSource, t => Application.Handlers.WebBrowserContentSourceTextHandler.TextChangedAsync(t));
+        guiToAppGate.RegisterAsyncTextBoxCallback(WebViewUrl, t => Application.Handlers.WebViewUrlTextHandler.TextChangedAsync(t));
+        guiToAppGate.RegisterAsyncTextBoxCallback(WebViewContentSource, t => Application.Handlers.WebViewContentSourceTextHandler.TextChangedAsync(t));
 
         guiToAppGate.WireButtonAndCommand(GoToUrl, commands.GoToUrlCommand, buttonNameToCommandMapper);
         guiToAppGate.WireButtonAndCommand(RunJs, commands.RunJsCommand, buttonNameToCommandMapper);
@@ -69,7 +69,7 @@ public partial class VishizhukelNetWebView2Window : IAsyncDisposable, IVishizhuk
 
         if (IsWindowUnderTest) {
             TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
-            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.WebBrowserWindowTitle)) {
+            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.WebViewWindowTitle)) {
                 Close();
             }
 

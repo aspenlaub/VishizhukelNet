@@ -8,6 +8,5 @@ public interface IGuiAndApplicationSynchronizer<out TApplicationModel> where TAp
     Task OnModelDataChangedAsync();
     void IndicateBusy(bool force);
 
-    void OnWebBrowserLoadCompleted();
     Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new();
 }

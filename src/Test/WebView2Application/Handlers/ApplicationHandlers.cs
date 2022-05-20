@@ -4,6 +4,6 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interf
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Handlers;
 
 public class ApplicationHandlers : IApplicationHandlers {
-    public ISimpleTextHandler WebBrowserUrlTextHandler { get; set; }
-    public ISimpleTextHandler WebBrowserContentSourceTextHandler { get; set; }
+    public ISimpleTextHandler WebViewUrlTextHandler { get; set; }
+    public ISimpleTextHandler WebViewContentSourceTextHandler { get; set; }
 }

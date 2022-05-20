@@ -27,9 +27,6 @@ public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer 
     public void IndicateBusy(bool force) {
     }
 
-    public void OnWebBrowserLoadCompleted() {
-    }
-
     public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {
         return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = true, YesNo = false } });
     }

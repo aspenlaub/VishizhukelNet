@@ -4,7 +4,6 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GUI;
-using VishizhukelNetWebBrowserWindow = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebBrowserApplication.GUI.VishizhukelNetWebBrowserWindow;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication;
 
@@ -25,7 +24,6 @@ public partial class App {
 
         LaunchWindowIfNeeded<VishizhukelNetDemoWindow>(windowUnderTestClassName);
         LaunchWindowIfNeeded<VishizhukelNetEmptyWindow>(windowUnderTestClassName);
-        LaunchWindowIfNeeded<VishizhukelNetWebBrowserWindow>(windowUnderTestClassName);
         LaunchWindowIfNeeded<VishizhukelNetWebView2Window>(windowUnderTestClassName);
     }
 

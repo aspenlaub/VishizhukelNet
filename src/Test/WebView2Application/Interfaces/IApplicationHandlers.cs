@@ -3,6 +3,6 @@
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces;
 
 public interface IApplicationHandlers {
-    ISimpleTextHandler WebBrowserUrlTextHandler { get; set; }
-    ISimpleTextHandler WebBrowserContentSourceTextHandler { get; set; }
+    ISimpleTextHandler WebViewUrlTextHandler { get; set; }
+    ISimpleTextHandler WebViewContentSourceTextHandler { get; set; }
 }

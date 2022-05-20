@@ -59,11 +59,6 @@
 		<ProjectReference Include="..\VishizhukelNet.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Reference Include="Interop.MSHTML">
-	    <HintPath>..\Interop\Interop.MSHTML.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>

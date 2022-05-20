@@ -11,14 +11,14 @@
         <DockPanel DockPanel.Dock="Top">
             <Button Name="RunJs" DockPanel.Dock="Right" Padding="20,5,20,5">_Script</Button>
             <Button Name="GoToUrl" DockPanel.Dock="Right" Padding="20,5,20,5">_Go</Button>
-            <TextBox Name="WebBrowserOrViewUrl" Padding="5"/>
+            <TextBox Name="WebViewUrl" Padding="5"/>
         </DockPanel>
         <TabControl>
             <TabItem Header="Browser" Padding="60,5,60,5">
                 <wv2:WebView2 Name="WebView" Source="http://localhost" />
             </TabItem>
             <TabItem Header="Source" Padding="60,5,60,5">
-                <TextBox Name="WebBrowserOrViewContentSource" Padding="5" FontFamily="Courier New"/>
+                <TextBox Name="WebViewContentSource" Padding="5" FontFamily="Courier New"/>
             </TabItem>
             <TabItem Header="Status" Padding="60,5,60,5">
                 <TextBox Name="Status" Padding="5"/>

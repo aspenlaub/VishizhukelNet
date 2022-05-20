@@ -3,6 +3,6 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-public interface IWebBrowserOrViewNavigationHelper {
+public interface IWebViewNavigationHelper {
     Task<bool> NavigateToUrlAsync(string url);
 }

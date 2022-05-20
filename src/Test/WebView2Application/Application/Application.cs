@@ -23,17 +23,16 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IAppl
     private readonly ITashAccessor TashAccessor;
     private readonly ISimpleLogger SimpleLogger;
     private readonly ILogConfiguration LogConfiguration;
-    private readonly IWebBrowserOrViewNavigationHelper WebBrowserOrViewNavigationHelper;
+    private readonly IWebViewNavigationHelper WebViewNavigationHelper;
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
         IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model,
-        ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger,
-        IBasicHtmlHelper basicHtmlHelper)
-        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, basicHtmlHelper, applicationLogger) {
+        ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger)
+        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, applicationLogger) {
         TashAccessor = tashAccessor;
         SimpleLogger = simpleLogger;
         LogConfiguration = logConfiguration;
-        WebBrowserOrViewNavigationHelper = new WebBrowserOrViewNavigationHelper<IApplicationModel>(model, applicationLogger, this, WebBrowserOrViewNavigatingHelper);
+        WebViewNavigationHelper = new WebViewNavigationHelper<IApplicationModel>(model, applicationLogger, this, WebViewNavigatingHelper);
     }
 
     protected override async Task EnableOrDisableButtonsAsync() {
@@ -43,11 +42,11 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IAppl
 
     protected override void CreateCommandsAndHandlers() {
         Handlers = new ApplicationHandlers {
-            WebBrowserUrlTextHandler = new WebBrowserUrlTextHandler(Model, this),
-            WebBrowserContentSourceTextHandler = new WebBrowserContentSourceTextHandler(Model, this)
+            WebViewUrlTextHandler = new WebViewUrlTextHandler(Model, this),
+            WebViewContentSourceTextHandler = new WebViewContentSourceTextHandler(Model, this)
         };
         Commands = new ApplicationCommands {
-            GoToUrlCommand = new GoToUrlCommand(Model, WebBrowserOrViewNavigationHelper),
+            GoToUrlCommand = new GoToUrlCommand(Model, WebViewNavigationHelper),
             RunJsCommand = new RunJsCommand(Model, this)
         };
         var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);

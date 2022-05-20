@@ -36,7 +36,7 @@ public class RunJsCommand : ICommand {
     }
 
     public async Task<bool> ShouldBeEnabledAsync() {
-        var enabled = Model.WebBrowserOrViewUrl.Text.StartsWith("http", StringComparison.InvariantCulture);
+        var enabled = Model.WebViewUrl.Text.StartsWith("http", StringComparison.InvariantCulture);
         return await Task.FromResult(enabled);
     }
 }

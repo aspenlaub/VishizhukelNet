@@ -20,13 +20,13 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationM
 
     protected override Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new() {
-            { nameof(status.Model.WebBrowserOrViewUrl), status.Model.WebBrowserOrViewUrl }
+            { nameof(status.Model.WebViewUrl), status.Model.WebViewUrl }
         };
     }
 
     protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new() {
-            { nameof(status.Model.WebBrowserOrViewUrl), ApplicationHandlers.WebBrowserUrlTextHandler }
+            { nameof(status.Model.WebViewUrl), ApplicationHandlers.WebViewUrlTextHandler }
         };
     }
 

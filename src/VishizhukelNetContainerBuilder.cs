@@ -29,7 +29,6 @@ public static class VishizhukelNetContainerBuilder {
         services.AddTransient<IButtonNameToCommandMapper, ButtonNameToCommandMapper>();
         services.AddTransient<IToggleButtonNameToHandlerMapper, ToggleButtonNameToHandlerMapper>();
         services.AddTransient<ITashAccessor, TashAccessor>();
-        services.AddTransient<IBasicHtmlHelper, BasicHtmlHelper>();
         return services;
     }
 
@@ -53,7 +52,6 @@ public static class VishizhukelNetContainerBuilder {
         builder.RegisterType<ToggleButtonNameToHandlerMapper>().As<IToggleButtonNameToHandlerMapper>().SingleInstance();
         builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();
         builder.RegisterType<TashAccessor>().As<ITashAccessor>();
-        builder.RegisterType<BasicHtmlHelper>().As<IBasicHtmlHelper>();
         return builder;
     }
 }

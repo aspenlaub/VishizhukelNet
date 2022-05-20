@@ -71,7 +71,7 @@ public class WindowTest : IntegrationTestBase {
             File.Delete(logFileName);
         }
         var tasks = new List<ControllableProcessTask> {
-            sut.CreateSetValueTask(process, nameof(VishizhukelNetWebView2ApplicationModel.WebBrowserOrViewUrl), "http://localhost/"),
+            sut.CreateSetValueTask(process, nameof(VishizhukelNetWebView2ApplicationModel.WebViewUrl), "http://localhost/"),
             sut.CreatePressButtonTask(process, nameof(VishizhukelNetWebView2ApplicationModel.GoToUrl))
         };
         await sut.RemotelyProcessTaskListAsync(process, tasks);
@@ -79,7 +79,7 @@ public class WindowTest : IntegrationTestBase {
         var actualLines = File.ReadLines(logFileName).ToList();
         Assert.IsTrue(actualLines.Count > 2, $"Got only {actualLines.Count} actual log line/-s");
         var startTime = DateTime.Parse(actualLines[0].Substring(0, actualLines[0].IndexOf(' ')));
-        var endTime = DateTime.Parse(actualLines[actualLines.Count - 1].Substring(0, actualLines[actualLines.Count - 1].IndexOf(' ')));
+        var endTime = DateTime.Parse(actualLines[^1].Substring(0, actualLines[^1].IndexOf(' ')));
         var elapsedSeconds = (endTime - startTime).TotalSeconds;
         actualLines = actualLines.Select(s => s.Substring(s.IndexOf(' '))).ToList();
         var folderName = GetType().Assembly.Location;

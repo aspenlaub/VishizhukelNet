@@ -24,7 +24,6 @@ using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.Button;
 using ToggleButton = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.ToggleButton;
 using WindowsTextBox = System.Windows.Controls.TextBox;
 using WindowsButton = System.Windows.Controls.Button;
-using WindowsWebBrowser = System.Windows.Controls.WebBrowser;
 using WindowsSelector = System.Windows.Controls.Primitives.Selector;
 using WindowsImage = System.Windows.Controls.Image;
 using WindowsToggleButton = System.Windows.Controls.Primitives.ToggleButton;
@@ -41,7 +40,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
     protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
     protected readonly Dictionary<PropertyInfo, WindowsCollectionViewSource> ModelPropertyToCollectionViewSourceMapping;
     protected readonly IApplicationLogger ApplicationLogger;
-    protected readonly IWebBrowserOrViewNavigatingHelper WebBrowserOrViewNavigatingHelper;
+    protected readonly IWebViewNavigatingHelper WebViewNavigatingHelper;
 
     public TApplicationModel Model { get; }
 
@@ -49,7 +48,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
         Model = model;
         Window = window;
         ApplicationLogger = applicationLogger;
-        WebBrowserOrViewNavigatingHelper = new WebBrowserOrViewNavigatingHelper(Model, ApplicationLogger);
+        WebViewNavigatingHelper = new WebViewNavigatingHelper(Model, ApplicationLogger);
         ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();
@@ -114,9 +113,6 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
                     break;
                 case "Button":
                     UpdateButtonIfNecessary((Button)modelProperty.GetValue(Model), (WindowsButton)windowField.GetValue(Window));
-                    break;
-                case "WebBrowser":
-                    UpdateWebBrowserIfNecessary((IWebBrowser)modelProperty.GetValue(Model), (WindowsWebBrowser)windowField.GetValue(Window));
                     break;
                 case "Image":
                     UpdateImageIfNecessary((IImage) modelProperty.GetValue(Model), (WindowsImage) windowField.GetValue(Window));
@@ -230,21 +226,6 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
         label.Content = modelSelector.LabelText;
     }
 
-    private void UpdateWebBrowserIfNecessary(IWebBrowser modelWebBrowserOrView, WindowsWebBrowser webBrowser) {
-        if (modelWebBrowserOrView == null) {
-            throw new ArgumentNullException(nameof(modelWebBrowserOrView));
-        }
-
-        if (modelWebBrowserOrView.Url == modelWebBrowserOrView.LastUrl) { return; }
-
-        if (string.IsNullOrWhiteSpace(modelWebBrowserOrView.Url)) {
-            modelWebBrowserOrView.Url = Urls.AboutBlank;
-        }
-
-        modelWebBrowserOrView.LastUrl = modelWebBrowserOrView.Url;
-        webBrowser.Navigate(modelWebBrowserOrView.Url);
-    }
-
     private async Task UpdateWebViewIfNecessaryAsync(IWebView modelWebView, WebView2 webView2) {
         if (modelWebView == null) {
             throw new ArgumentNullException(nameof(modelWebView));
@@ -259,7 +240,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
         var minLastUpdateTime = DateTime.Now;
         webView2.CoreWebView2?.Navigate(modelWebView.Url);
 
-        await WebBrowserOrViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(modelWebView.LastUrl, minLastUpdateTime);
+        await WebViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(modelWebView.LastUrl, minLastUpdateTime);
     }
 
     private void UpdateButtonIfNecessary(Button modelButton, UIElement windowsButton) {
@@ -361,31 +342,11 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
 
         var sortedNewItems = newItems.OrderBy(item => item.Guid).ToList();
 
-        if (Enumerable.SequenceEqual(sortedOldItems, sortedNewItems)) {
+        if (sortedOldItems.SequenceEqual(sortedNewItems)) {
             return;
         }
 
         windowCollectionViewSource.Source = newItems;
-    }
-
-    public void OnWebBrowserLoadCompleted() {
-        foreach (var modelToWindowPropertyMapping in ModelPropertyToWindowFieldMapping) {
-            var modelProperty = modelToWindowPropertyMapping.Key;
-            var windowField = modelToWindowPropertyMapping.Value;
-            if (windowField.FieldType.Name != "WebBrowser") { continue; }
-
-            var webBrowser = (WindowsWebBrowser)windowField.GetValue(Window);
-            if (webBrowser == null) { continue; }
-
-            var modelWebBrowser = (IWebBrowser)modelProperty.GetValue(Model);
-            if (modelWebBrowser == null) { continue; }
-
-            if (webBrowser.Source != null && modelWebBrowser.Url == webBrowser.Source.OriginalString) { continue; }
-            if (webBrowser.Source == null && string.IsNullOrWhiteSpace(modelWebBrowser.Url)) { continue; }
-
-            modelWebBrowser.Url = string.IsNullOrWhiteSpace(webBrowser.Source?.OriginalString) ? "" : webBrowser.Source.OriginalString;
-            modelWebBrowser.LastUrl = modelWebBrowser.Url;
-        }
     }
 
     public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {

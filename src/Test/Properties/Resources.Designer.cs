@@ -117,11 +117,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web Browser Window.
+        ///   Looks up a localized string similar to Web View Window.
         /// </summary>
-        internal static string WebBrowserWindowTitle {
+        internal static string WebViewWindowTitle {
             get {
-                return ResourceManager.GetString("WebBrowserWindowTitle", resourceCulture);
+                return ResourceManager.GetString("WebViewWindowTitle", resourceCulture);
             }
         }
     }

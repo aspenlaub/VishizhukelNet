@@ -19,7 +19,7 @@ public class KappaCommand : ICommand {
 
         // Not awaited -> throws unobserved task exception
 #pragma warning disable CS4014
-        Task.Run(() => { throw new NotImplementedException(); });
+        Task.Run(() => throw new NotImplementedException());
 #pragma warning restore CS4014
     }
 

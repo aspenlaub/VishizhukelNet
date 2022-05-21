@@ -20,14 +20,10 @@ public class WebViewNavigatingHelper : IWebViewNavigatingHelper {
     }
 
     public async Task<bool> WaitUntilNotNavigatingAnymoreAsync(string url, DateTime minLastUpdateTime) {
-        if (!Model.UsesRealBrowserOrView) {
-            return true;
-        }
-
         if (Model.WebView is { IsWired: false }) {
             Model.Status.Text = string.Format(Properties.Resources.WebViewMustBeWired, MaxSeconds);
             Model.Status.Type = StatusType.Error;
-            ApplicationLogger.LogMessage($"Problem when navigating to '{url}'");
+            ApplicationLogger.LogMessage(url == "" ? Properties.Resources.ProblemWaitingForPotentialNavigationEnd : $"Problem when navigating to '{url}'");
             return false;
         }
 
@@ -46,7 +42,7 @@ public class WebViewNavigatingHelper : IWebViewNavigatingHelper {
 
         Model.Status.Text = string.Format(Properties.Resources.WebViewStillBusyAfter, MaxSeconds);
         Model.Status.Type = StatusType.Error;
-        ApplicationLogger.LogMessage($"Problem when navigating to '{url}'");
+        ApplicationLogger.LogMessage(url == "" ? Properties.Resources.ProblemWaitingForPotentialNavigationEnd : $"Problem when navigating to '{url}'");
         return false;
 
     }

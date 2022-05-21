@@ -9,4 +9,5 @@ public interface IGuiAndApplicationSynchronizer<out TApplicationModel> where TAp
     void IndicateBusy(bool force);
 
     Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new();
+    Task WaitUntilNotNavigatingAnymoreAsync();
 }

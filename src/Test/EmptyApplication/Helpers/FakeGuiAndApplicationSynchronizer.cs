@@ -1,33 +1,17 @@
 ﻿using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Entities;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Helpers;
 
-public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
+public class FakeGuiAndApplicationSynchronizer : FakeGuiAndApplicationSynchronizerBase, IGuiAndApplicationSynchronizer {
     public IApplicationModel Model { get; }
-    public ApplicationModel LastModelKnownToMe { get; }
 
     public FakeGuiAndApplicationSynchronizer(IApplicationModel model) {
         Model = model;
-        LastModelKnownToMe = new ApplicationModel();
-        SetLastModelKnownToMeGreeks();
     }
 
     public async Task OnModelDataChangedAsync() {
-        SetLastModelKnownToMeGreeks();
         await Task.CompletedTask;
-    }
-
-    public void SetLastModelKnownToMeGreeks() {
-    }
-
-    public void IndicateBusy(bool force) {
-    }
-
-    public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {
-        return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = true, YesNo = false } });
     }
 }

@@ -380,4 +380,8 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
         ApplicationLogger.LogMessage(Properties.Resources.CouldNotDeserializeScriptCallJsonResult);
         return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = false, YesNo = false }, ErrorMessage = Properties.Resources.CouldNotDeserializeScriptCallJsonResult });
     }
+
+    public async Task WaitUntilNotNavigatingAnymoreAsync() {
+        await WebViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync("", DateTime.MinValue);
+    }
 }

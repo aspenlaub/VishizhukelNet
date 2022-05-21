@@ -31,10 +31,8 @@ public class WebViewNavigationHelper<TApplicationModel> : IWebViewNavigationHelp
         var minLastUpdateTime = DateTime.Now;
         await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
-        if (Model.UsesRealBrowserOrView) {
-            if (!await WebViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url, minLastUpdateTime)) {
-                return false;
-            }
+        if (!await WebViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url, minLastUpdateTime)) {
+            return false;
         }
 
         ApplicationLogger.LogMessage(Properties.Resources.SetModelUrlAndAsync);
@@ -42,20 +40,7 @@ public class WebViewNavigationHelper<TApplicationModel> : IWebViewNavigationHelp
         minLastUpdateTime = DateTime.Now;
         await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
-        if (Model.UsesRealBrowserOrView) {
-            if (!await WebViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url, minLastUpdateTime)) {
-                return false;
-            }
-        } else {
-            if (Model.WebView.HasValidDocument) {
-                Model.Status.Text = "";
-                Model.Status.Type = StatusType.None;
-                return true;
-            }
-
-            ApplicationLogger.LogMessage(Properties.Resources.AppFailed);
-            Model.Status.Text = Properties.Resources.CouldNotLoadUrl;
-            Model.Status.Type = StatusType.Error;
+        if (!await WebViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(url, minLastUpdateTime)) {
             return false;
         }
 

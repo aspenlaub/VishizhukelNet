@@ -133,6 +133,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error while waiting for potential end of navigation.
+        /// </summary>
+        internal static string ProblemWaitingForPotentialNavigationEnd {
+            get {
+                return ResourceManager.GetString("ProblemWaitingForPotentialNavigationEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request timed out after {0} second/-s.
         /// </summary>
         internal static string RequestTimedOutAfter {

@@ -12,8 +12,6 @@ public class ApplicationModelBase : IApplicationModelBase {
 
     public WindowState WindowState { get; set; }
 
-    public bool UsesRealBrowserOrView { get; set; }
-
     public IWebView WebView { get; } = new WebView();
 
     public ITextBox WebViewUrl { get; } = new TextBox();

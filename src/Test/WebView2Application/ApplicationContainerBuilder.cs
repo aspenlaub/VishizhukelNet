@@ -23,8 +23,7 @@ public static class ApplicationContainerBuilder {
         }
 
         builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
-        builder.RegisterType<ApplicationModel>().OnActivated(e => e.Instance.UsesRealBrowserOrView = true)
-            .As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
+        builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
         builder.RegisterType<GuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
         builder.RegisterType<ApplicationLogger>().As<IApplicationLogger>().SingleInstance();
         return builder;

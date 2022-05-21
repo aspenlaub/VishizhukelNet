@@ -7,7 +7,6 @@ public interface IApplicationModelBase : IBusy {
 
     WindowState WindowState { get; set; }
 
-    bool UsesRealBrowserOrView { get; set; }
     IWebView WebView { get; }
     ITextBox WebViewUrl { get; }
     ITextBox WebViewContentSource { get; }

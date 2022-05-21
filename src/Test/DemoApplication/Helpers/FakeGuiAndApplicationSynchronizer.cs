@@ -1,12 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers;
 
-public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer {
+public class FakeGuiAndApplicationSynchronizer : FakeGuiAndApplicationSynchronizerBase, IGuiAndApplicationSynchronizer {
     public IApplicationModel Model { get; }
     public ApplicationModel LastModelKnownToMe { get; }
 
@@ -26,12 +24,5 @@ public class FakeGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer 
         LastModelKnownToMe.Beta.UpdateSelectables(Model.Beta.Selectables);
         LastModelKnownToMe.Beta.SelectedIndex = Model.Beta.SelectedIndex;
         LastModelKnownToMe.Delta.Text = Model.Delta.Text;
-    }
-
-    public void IndicateBusy(bool force) {
-    }
-
-    public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {
-        return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = true, YesNo = false } });
     }
 }

@@ -101,4 +101,8 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel> : 
         Model.Status.Type = StatusType.Error;
         return scriptCallResponse;
     }
+
+    public async Task WaitUntilNotNavigatingAnymoreAsync() {
+        await GuiAndApplicationSynchronizer.WaitUntilNotNavigatingAnymoreAsync();
+    }
 }

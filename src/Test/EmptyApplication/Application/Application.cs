@@ -9,22 +9,23 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Commands;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Application;
 
-public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IApplicationModel> {
+public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<ApplicationModel>, ApplicationModel> {
     public IApplicationHandlers Handlers { get; private set; }
     public IApplicationCommands Commands { get; private set; }
 
-    public ITashHandler<IApplicationModel> TashHandler { get; private set; }
+    public ITashHandler<ApplicationModel> TashHandler { get; private set; }
     private readonly ITashAccessor TashAccessor;
     private readonly ISimpleLogger SimpleLogger;
     private readonly ILogConfiguration LogConfiguration;
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-        IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model, ITashAccessor tashAccessor,
+        IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
         ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger)
         : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, applicationLogger) {
         TashAccessor = tashAccessor;
@@ -46,7 +47,7 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IAppl
         TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
     }
 
-    public ITashTaskHandlingStatus<IApplicationModel> CreateTashTaskHandlingStatus() {
-        return new TashTaskHandlingStatus<IApplicationModel>(Model, Process.GetCurrentProcess().Id);
+    public ITashTaskHandlingStatus<ApplicationModel> CreateTashTaskHandlingStatus() {
+        return new TashTaskHandlingStatus<ApplicationModel>(Model, Process.GetCurrentProcess().Id);
     }
 }

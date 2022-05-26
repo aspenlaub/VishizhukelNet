@@ -3,16 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
 public class BetaSelectorHandler : ISimpleSelectorHandler {
     private readonly IApplicationModel Model;
-    private readonly IGuiAndAppHandler GuiAndAppHandler;
+    private readonly IGuiAndAppHandler<ApplicationModel> GuiAndAppHandler;
     private readonly DeltaTextHandler DeltaTextHandler;
 
-    public BetaSelectorHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler, DeltaTextHandler deltaTextHandler) {
+    public BetaSelectorHandler(IApplicationModel model, IGuiAndAppHandler<ApplicationModel> guiAndAppHandler, DeltaTextHandler deltaTextHandler) {
         Model = model;
         GuiAndAppHandler = guiAndAppHandler;
         DeltaTextHandler = deltaTextHandler;

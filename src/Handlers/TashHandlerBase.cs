@@ -23,13 +23,13 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     protected readonly string LogId;
     protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
     protected readonly IToggleButtonNameToHandlerMapper ToggleButtonNameToHandlerMapper;
-    protected readonly IGuiAndAppHandler GuiAndAppHandler;
+    protected readonly IGuiAndAppHandler<TModel> GuiAndAppHandler;
     protected readonly ITashVerifyAndSetHandler<TModel> TashVerifyAndSetHandler;
     protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
     protected readonly ITashCommunicator<TModel> TashCommunicator;
 
     public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
-        IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler guiAndAppHandler,
+        IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler<TModel> guiAndAppHandler,
         ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
         TashAccessor = tashAccessor;
         SimpleLogger = simpleLogger;

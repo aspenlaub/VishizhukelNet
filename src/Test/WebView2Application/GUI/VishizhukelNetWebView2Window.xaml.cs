@@ -9,9 +9,9 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Entities;
 using Autofac;
 using Moq;
-using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces.IApplicationModel;
 using IContainer = Autofac.IContainer;
 using WindowsApplication = System.Windows.Application;
 
@@ -22,8 +22,8 @@ public partial class VishizhukelNetWebView2Window : IAsyncDisposable, IVishizhuk
     private static IContainer Container { get; set; }
 
     private Application.Application Application;
-    private IApplicationModel ApplicationModel;
-    private ITashTimer<IApplicationModel> TashTimer;
+    private ApplicationModel ApplicationModel;
+    private ITashTimer<ApplicationModel> TashTimer;
 
     public bool IsWindowUnderTest { get; set; }
 
@@ -46,7 +46,7 @@ public partial class VishizhukelNetWebView2Window : IAsyncDisposable, IVishizhuk
         await BuildContainerIfNecessaryAsync();
 
         Application = Container.Resolve<Application.Application>();
-        ApplicationModel = Container.Resolve<IApplicationModel>();
+        ApplicationModel = Container.Resolve<ApplicationModel>();
 
         const string url = "https://www.viperfisch.de/js/bootstrap.min-v24070.js";
         ApplicationModel.WebView
@@ -56,7 +56,7 @@ public partial class VishizhukelNetWebView2Window : IAsyncDisposable, IVishizhuk
 
         var commands = Application.Commands;
 
-        var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
+        var guiToAppGate = Container.Resolve<IGuiToWebViewApplicationGate>();
         var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
 
         guiToAppGate.RegisterAsyncTextBoxCallback(WebViewUrl, t => Application.Handlers.WebViewUrlTextHandler.TextChangedAsync(t));
@@ -68,7 +68,7 @@ public partial class VishizhukelNetWebView2Window : IAsyncDisposable, IVishizhuk
         guiToAppGate.WireWebView(WebView);
 
         if (IsWindowUnderTest) {
-            TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
+            TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
             if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.WebViewWindowTitle)) {
                 Close();
             }

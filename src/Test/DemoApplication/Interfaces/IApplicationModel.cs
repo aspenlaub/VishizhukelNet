@@ -4,7 +4,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
-public interface IApplicationModel : IApplicationModelBase {
+public interface IApplicationModel : IWebViewApplicationModelBase {
     ITextBox Alpha { get; }
     ISelector Beta { get; }
     Button Gamma { get; }

@@ -11,10 +11,10 @@ public class WebViewNavigatingHelper : IWebViewNavigatingHelper {
     private const int IntervalInMilliseconds = 500, LargeIntervalInMilliseconds = 5000;
     private const int DoubleCheckIntervalInMilliseconds = 200, DoubleCheckLargeIntervalInMilliseconds = 1000;
 
-    private readonly IApplicationModelBase Model;
+    private readonly IWebViewApplicationModelBase Model;
     private readonly IApplicationLogger ApplicationLogger;
 
-    public WebViewNavigatingHelper(IApplicationModelBase model, IApplicationLogger applicationLogger) {
+    public WebViewNavigatingHelper(IWebViewApplicationModelBase model, IApplicationLogger applicationLogger) {
         Model = model;
         ApplicationLogger = applicationLogger;
     }

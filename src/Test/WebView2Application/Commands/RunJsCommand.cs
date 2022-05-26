@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Entities;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Commands;
 
 public class RunJsCommand : ICommand {
-    private readonly IApplicationModel Model;
-    private readonly IGuiAndAppHandler GuiAndAppHandler;
+    private readonly ApplicationModel Model;
+    private readonly IGuiAndWebViewAppHandler<ApplicationModel> GuiAndAppHandler;
 
-    public RunJsCommand(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+    public RunJsCommand(ApplicationModel model, IGuiAndWebViewAppHandler<ApplicationModel> guiAndAppHandler) {
         Model = model;
         GuiAndAppHandler = guiAndAppHandler;
     }

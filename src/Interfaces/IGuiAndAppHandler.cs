@@ -2,16 +2,11 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-public interface IGuiAndAppHandler {
+public interface IGuiAndAppHandler<out TModel> where TModel : IApplicationModelBase {
     Task EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     Task SyncGuiAndAppAsync();
     // ReSharper disable once UnusedMemberInSuper.Global
     void IndicateBusy(bool force);
 
-    IApplicationModelBase GetModel();
-
-    Task OnWebViewSourceChangedAsync(string uri);
-    Task OnWebViewNavigationCompletedAsync(string contentSource, bool isSuccess);
-    Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement, bool mayFail, bool maySucceed) where TResult : IScriptCallResponse, new();
-    Task WaitUntilNotNavigatingAnymoreAsync();
+    TModel GetModel();
 }

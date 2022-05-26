@@ -1,14 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.Handlers;
 
 public class WebViewUrlTextHandler : ISimpleTextHandler {
     private readonly IApplicationModel Model;
-    private readonly IGuiAndAppHandler GuiAndAppHandler;
+    private readonly IGuiAndAppHandler<ApplicationModel> GuiAndAppHandler;
 
-    public WebViewUrlTextHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+    public WebViewUrlTextHandler(ApplicationModel model, IGuiAndAppHandler<ApplicationModel> guiAndAppHandler) {
         Model = model;
         GuiAndAppHandler = guiAndAppHandler;
     }

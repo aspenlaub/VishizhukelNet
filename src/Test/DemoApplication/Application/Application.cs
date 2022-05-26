@@ -17,17 +17,17 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 
-public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IApplicationModel> {
+public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<ApplicationModel>, ApplicationModel> {
     public IApplicationHandlers Handlers { get; private set; }
     public IApplicationCommands Commands { get; private set; }
 
-    public ITashHandler<IApplicationModel> TashHandler { get; private set; }
+    public ITashHandler<ApplicationModel> TashHandler { get; private set; }
     private readonly ITashAccessor TashAccessor;
     private readonly ISimpleLogger SimpleLogger;
     private readonly ILogConfiguration LogConfiguration;
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-        IGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, IApplicationModel model, ITashAccessor tashAccessor,
+        IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
         ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger)
         : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, applicationLogger) {
         TashAccessor = tashAccessor;
@@ -49,7 +49,7 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IAppl
             AlphaTextHandler = alphaTextHandler,
             BetaSelectorHandler = betaSelectorHandler,
             DeltaTextHandler = deltaTextHandler,
-            ThetaHandler = new ThetaHandler(Model, this),
+            ThetaHandler = new ThetaHandler<ApplicationModel>(Model, this),
             MethodAddHandler = new MethodAddHandler(Model, deltaTextHandler),
             MethodMultiplyHandler = new MethodMultiplyHandler(Model, deltaTextHandler)
         };
@@ -83,7 +83,7 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer, IAppl
         await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();
     }
 
-    public ITashTaskHandlingStatus<IApplicationModel> CreateTashTaskHandlingStatus() {
-        return new TashTaskHandlingStatus<IApplicationModel>(Model, Process.GetCurrentProcess().Id);
+    public ITashTaskHandlingStatus<ApplicationModel> CreateTashTaskHandlingStatus() {
+        return new TashTaskHandlingStatus<ApplicationModel>(Model, Process.GetCurrentProcess().Id);
     }
 }

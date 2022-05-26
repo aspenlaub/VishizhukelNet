@@ -2,12 +2,9 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-public interface IGuiAndApplicationSynchronizer<out TApplicationModel> where TApplicationModel : IApplicationModelBase {
+public interface IGuiAndApplicationSynchronizer<out TModel> where TModel : IApplicationModelBase {
     // ReSharper disable once UnusedMemberInSuper.Global
-    TApplicationModel Model { get; }
+    TModel Model { get; }
     Task OnModelDataChangedAsync();
     void IndicateBusy(bool force);
-
-    Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new();
-    Task WaitUntilNotNavigatingAnymoreAsync();
 }

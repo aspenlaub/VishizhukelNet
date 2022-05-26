@@ -6,13 +6,13 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 
-public class WebViewNavigationHelper<TApplicationModel> : IWebViewNavigationHelper where TApplicationModel : IApplicationModelBase {
-    private readonly TApplicationModel Model;
+public class WebViewNavigationHelper<TModel> : IWebViewNavigationHelper where TModel : IWebViewApplicationModelBase {
+    private readonly TModel Model;
     private readonly IApplicationLogger ApplicationLogger;
-    private readonly IGuiAndAppHandler GuiAndAppHandler;
+    private readonly IGuiAndAppHandler<TModel> GuiAndAppHandler;
     private readonly IWebViewNavigatingHelper WebViewNavigatingHelper;
 
-    public WebViewNavigationHelper(TApplicationModel model, IApplicationLogger applicationLogger, IGuiAndAppHandler guiAndAppHandler, IWebViewNavigatingHelper webViewNavigatingHelper) {
+    public WebViewNavigationHelper(TModel model, IApplicationLogger applicationLogger, IGuiAndAppHandler<TModel> guiAndAppHandler, IWebViewNavigatingHelper webViewNavigatingHelper) {
         Model = model;
         ApplicationLogger = applicationLogger;
         GuiAndAppHandler = guiAndAppHandler;

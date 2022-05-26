@@ -1,17 +1,18 @@
 ﻿using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
 public class AlphaTextHandler : ISimpleTextHandler {
     private readonly IApplicationModel Model;
-    private readonly IGuiAndAppHandler GuiAndAppHandler;
+    private readonly IGuiAndAppHandler<ApplicationModel> GuiAndAppHandler;
     private readonly ISimpleSelectorHandler BetaSelectorHandler;
     private readonly ISimpleTextHandler DeltaTextHandler;
 
-    public AlphaTextHandler(IApplicationModel model, IGuiAndAppHandler guiAndAppHandler, ISimpleSelectorHandler betaSelectorHandler, ISimpleTextHandler deltaTextHandler) {
+    public AlphaTextHandler(IApplicationModel model, IGuiAndAppHandler<ApplicationModel> guiAndAppHandler, ISimpleSelectorHandler betaSelectorHandler, ISimpleTextHandler deltaTextHandler) {
         Model = model;
         GuiAndAppHandler = guiAndAppHandler;
         BetaSelectorHandler = betaSelectorHandler;

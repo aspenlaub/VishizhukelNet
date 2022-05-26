@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Helpers;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Entities;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Helpers;
 
-public class FakeGuiAndApplicationSynchronizer : FakeGuiAndApplicationSynchronizerBase, IGuiAndApplicationSynchronizer {
-    public IApplicationModel Model { get; }
+public class FakeGuiAndApplicationSynchronizer : FakeGuiAndApplicationSynchronizerBase, IGuiAndApplicationSynchronizer<ApplicationModel> {
+    public ApplicationModel Model { get; }
 
-    public FakeGuiAndApplicationSynchronizer(IApplicationModel model) {
+    public FakeGuiAndApplicationSynchronizer(ApplicationModel model) {
         Model = model;
     }
 

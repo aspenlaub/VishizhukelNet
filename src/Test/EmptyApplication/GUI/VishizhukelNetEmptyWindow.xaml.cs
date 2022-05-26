@@ -8,9 +8,9 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Entities;
 using Autofac;
 using Moq;
-using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces.IApplicationModel;
 using IContainer = Autofac.IContainer;
 using WindowsApplication = System.Windows.Application;
 
@@ -21,7 +21,7 @@ public partial class VishizhukelNetEmptyWindow : IAsyncDisposable, IVishizhukelN
     private static IContainer Container { get; set; }
 
     private Application.Application Application;
-    private ITashTimer<IApplicationModel> TashTimer;
+    private ITashTimer<ApplicationModel> TashTimer;
 
     public bool IsWindowUnderTest { get; set; }
 
@@ -48,7 +48,7 @@ public partial class VishizhukelNetEmptyWindow : IAsyncDisposable, IVishizhukelN
 
         if (IsWindowUnderTest) {
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
+            TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
             if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.EmptyWindowTitle)) {
                 Close();
             }

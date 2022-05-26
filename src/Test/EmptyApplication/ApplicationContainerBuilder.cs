@@ -16,10 +16,10 @@ public static class ApplicationContainerBuilder {
     public static async Task<ContainerBuilder> UseApplicationAsync(this ContainerBuilder builder, VishizhukelNetEmptyWindow vishizhukelNetEmptyWindow, ILogConfiguration logConfiguration) {
         await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
         if (vishizhukelNetEmptyWindow == null) {
-            builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
+            builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As(typeof(IGuiAndApplicationSynchronizer<ApplicationModel>)).SingleInstance();
         } else {
             builder.RegisterInstance(vishizhukelNetEmptyWindow);
-            builder.RegisterType<GuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer>().SingleInstance();
+            builder.RegisterType<GuiAndApplicationSynchronizer>().As(typeof(IGuiAndApplicationSynchronizer<ApplicationModel>)).SingleInstance();
         }
 
         builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();

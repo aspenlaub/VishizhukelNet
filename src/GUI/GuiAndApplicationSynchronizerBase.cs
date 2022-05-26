@@ -17,7 +17,6 @@ using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Microsoft.Web.WebView2.Wpf;
 using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.Button;
@@ -32,28 +31,26 @@ using WindowsCollectionViewSource = System.Windows.Data.CollectionViewSource;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 
-public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWindow>
-    : IGuiAndApplicationSynchronizer<TApplicationModel>
-    where TApplicationModel : class, IApplicationModelBase {
+public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow> 
+        : IGuiAndApplicationSynchronizer<TModel>
+            where TModel : class, IApplicationModelBase {
     protected readonly TWindow Window;
     protected readonly Dictionary<PropertyInfo, FieldInfo> ModelPropertyToWindowFieldMapping, ModelPropertyToWindowLabelMapping;
     protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
     protected readonly Dictionary<PropertyInfo, WindowsCollectionViewSource> ModelPropertyToCollectionViewSourceMapping;
     protected readonly IApplicationLogger ApplicationLogger;
-    protected readonly IWebViewNavigatingHelper WebViewNavigatingHelper;
 
-    public TApplicationModel Model { get; }
+    public TModel Model { get; }
 
-    protected GuiAndApplicationSynchronizerBase(TApplicationModel model, TWindow window, IApplicationLogger applicationLogger) {
+    protected GuiAndApplicationSynchronizerBase(TModel model, TWindow window, IApplicationLogger applicationLogger) {
         Model = model;
         Window = window;
         ApplicationLogger = applicationLogger;
-        WebViewNavigatingHelper = new WebViewNavigatingHelper(Model, ApplicationLogger);
         ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();
         ModelPropertyToCollectionViewSourceMapping = new Dictionary<PropertyInfo, WindowsCollectionViewSource>();
-        var modelProperties = typeof(TApplicationModel).GetPropertiesAndInterfaceProperties();
+        var modelProperties = typeof(TModel).GetPropertiesAndInterfaceProperties();
         var windowFields = typeof(TWindow).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
         var windowProperties = typeof(TWindow).GetProperties(BindingFlags.Public | BindingFlags.Instance ).Where(p => p.CanRead && p.CanWrite).ToList();
         var windowAsFrameworkElement = window as FrameworkElement;
@@ -101,37 +98,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
         foreach (var modelPropertyToWindowFieldMapping in ModelPropertyToWindowFieldMapping) {
             var modelProperty = modelPropertyToWindowFieldMapping.Key;
             var windowField = modelPropertyToWindowFieldMapping.Value;
-            switch (windowField.FieldType.Name) {
-                case "ComboBox":
-                    UpdateSelectorIfNecessary((ISelector)modelProperty.GetValue(Model), (WindowsSelector)windowField.GetValue(Window));
-                    break;
-                case "ListBox":
-                    UpdateSelectorIfNecessary((ISelector)modelProperty.GetValue(Model), (WindowsSelector)windowField.GetValue(Window));
-                    break;
-                case "TextBox":
-                    UpdateTextBoxIfNecessary((ITextBox)modelProperty.GetValue(Model), (WindowsTextBox)windowField.GetValue(Window));
-                    break;
-                case "Button":
-                    UpdateButtonIfNecessary((Button)modelProperty.GetValue(Model), (WindowsButton)windowField.GetValue(Window));
-                    break;
-                case "Image":
-                    UpdateImageIfNecessary((IImage) modelProperty.GetValue(Model), (WindowsImage) windowField.GetValue(Window));
-                    break;
-                case "RadioButton":
-                    UpdateToggleButtonIfNecessary((ToggleButton)modelProperty.GetValue(Model), (WindowsToggleButton)windowField.GetValue(Window));
-                    break;
-                case "Rectangle":
-                    UpdateRectangleIfNecessary((IRectangle)modelProperty.GetValue(Model), (WindowsRectangle)windowField.GetValue(Window));
-                    break;
-                case "DataGrid":
-                case "EnvironmentType":
-                    continue;
-                case "WebView2":
-                    await UpdateWebViewIfNecessaryAsync((IWebView)modelProperty.GetValue(Model), (WebView2)windowField.GetValue(Window));
-                    break;
-                default:
-                    throw new NotImplementedException($"Field type name {windowField.FieldType.Name} is not implemented yet.");
-            }
+            await UpdateFieldIfNecessaryAsync(windowField, modelProperty);
         }
 
         foreach (var modelPropertyToWindowLabelMapping in ModelPropertyToWindowLabelMapping) {
@@ -171,6 +138,43 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
         }
 
         await Task.CompletedTask;
+    }
+
+    protected virtual async Task UpdateFieldIfNecessaryAsync(FieldInfo windowField, PropertyInfo modelProperty) {
+        switch (windowField.FieldType.Name) {
+            case "ComboBox":
+                UpdateSelectorIfNecessary((ISelector)modelProperty.GetValue(Model),
+                    (WindowsSelector)windowField.GetValue(Window));
+                break;
+            case "ListBox":
+                UpdateSelectorIfNecessary((ISelector)modelProperty.GetValue(Model),
+                    (WindowsSelector)windowField.GetValue(Window));
+                break;
+            case "TextBox":
+                UpdateTextBoxIfNecessary((ITextBox)modelProperty.GetValue(Model),
+                    (WindowsTextBox)windowField.GetValue(Window));
+                break;
+            case "Button":
+                UpdateButtonIfNecessary((Button)modelProperty.GetValue(Model), (WindowsButton)windowField.GetValue(Window));
+                break;
+            case "Image":
+                UpdateImageIfNecessary((IImage)modelProperty.GetValue(Model), (WindowsImage)windowField.GetValue(Window));
+                break;
+            case "RadioButton":
+                UpdateToggleButtonIfNecessary((ToggleButton)modelProperty.GetValue(Model),
+                    (WindowsToggleButton)windowField.GetValue(Window));
+                break;
+            case "Rectangle":
+                UpdateRectangleIfNecessary((IRectangle)modelProperty.GetValue(Model),
+                    (WindowsRectangle)windowField.GetValue(Window));
+                break;
+            case "DataGrid":
+            case "EnvironmentType":
+                await Task.CompletedTask;
+                return;
+            default:
+                throw new NotImplementedException($"Field type name {windowField.FieldType.Name} is not implemented yet.");
+        }
     }
 
     private void UpdateRectangleIfNecessary(IRectangle modelRectangle, Shape rectangle) {
@@ -224,23 +228,6 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
         if (string.IsNullOrWhiteSpace(modelSelector.LabelText) || label.Content.ToString() == modelSelector.LabelText) { return; }
 
         label.Content = modelSelector.LabelText;
-    }
-
-    private async Task UpdateWebViewIfNecessaryAsync(IWebView modelWebView, WebView2 webView2) {
-        if (modelWebView == null) {
-            throw new ArgumentNullException(nameof(modelWebView));
-        }
-
-        if (!modelWebView.IsWired || modelWebView.Url == modelWebView.LastUrl) {
-            return;
-        }
-
-        modelWebView.LastUrl = modelWebView.Url;
-        ApplicationLogger.LogMessage($"Calling webView2.CoreWebView2.Navigate with '{modelWebView.Url}'");
-        var minLastUpdateTime = DateTime.Now;
-        webView2.CoreWebView2?.Navigate(modelWebView.Url);
-
-        await WebViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync(modelWebView.LastUrl, minLastUpdateTime);
     }
 
     private void UpdateButtonIfNecessary(Button modelButton, UIElement windowsButton) {
@@ -351,7 +338,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
 
     public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {
         ApplicationLogger.LogMessage(Properties.Resources.ExecutingScript);
-        var webView2Property = typeof(TApplicationModel).GetPropertiesAndInterfaceProperties().FirstOrDefault(p => p.Name == nameof(IApplicationModelBase.WebView));
+        var webView2Property = typeof(TModel).GetPropertiesAndInterfaceProperties().FirstOrDefault(p => p.Name == nameof(IWebViewApplicationModelBase.WebView));
         var webView2 = webView2Property == null || !ModelPropertyToWindowFieldMapping.ContainsKey(webView2Property)
             ? null
             : (WebView2)ModelPropertyToWindowFieldMapping[webView2Property].GetValue(Window);
@@ -379,9 +366,5 @@ public abstract class GuiAndApplicationSynchronizerBase<TApplicationModel, TWind
 
         ApplicationLogger.LogMessage(Properties.Resources.CouldNotDeserializeScriptCallJsonResult);
         return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = false, YesNo = false }, ErrorMessage = Properties.Resources.CouldNotDeserializeScriptCallJsonResult });
-    }
-
-    public async Task WaitUntilNotNavigatingAnymoreAsync() {
-        await WebViewNavigatingHelper.WaitUntilNotNavigatingAnymoreAsync("", DateTime.MinValue);
     }
 }

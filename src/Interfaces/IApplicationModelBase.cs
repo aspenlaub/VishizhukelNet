@@ -6,8 +6,4 @@ public interface IApplicationModelBase : IBusy {
     ITextBox Status { get; }
 
     WindowState WindowState { get; set; }
-
-    IWebView WebView { get; }
-    ITextBox WebViewUrl { get; }
-    ITextBox WebViewContentSource { get; }
 }

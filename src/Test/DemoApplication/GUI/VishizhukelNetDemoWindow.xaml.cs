@@ -7,6 +7,7 @@ using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Autofac;
 using Moq;
@@ -24,7 +25,7 @@ public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNe
     private static IContainer Container { get; set; }
 
     private VishizhukelDemoApplication DemoApp;
-    private ITashTimer<IApplicationModel> TashTimer;
+    private ITashTimer<ApplicationModel> TashTimer;
 
     public bool IsWindowUnderTest { get; set; }
 
@@ -68,7 +69,7 @@ public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNe
         guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
 
         if (IsWindowUnderTest) {
-            TashTimer = new TashTimer<IApplicationModel>(Container.Resolve<ITashAccessor>(), DemoApp.TashHandler, guiToAppGate);
+            TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), DemoApp.TashHandler, guiToAppGate);
             if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {
                 Close();
             }

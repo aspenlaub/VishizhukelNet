@@ -19,7 +19,7 @@ public class OucidLogAccessor : IOucidLogAccessor {
     }
 
     protected async Task<bool> SetOucidLogFolderIfNecessaryAsync(IErrorsAndInfos errorsAndInfos) {
-        if (OucidLogFolder != null) { return false; }
+        if (OucidLogFolder != null) { return true; }
 
         OucidLogFolder = await FolderResolver.ResolveAsync(@"$(OucidLog)", errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) { return false; }

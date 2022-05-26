@@ -133,6 +133,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Oucid already is present in the URL, this should not happen.
+        /// </summary>
+        internal static string OucidAlreadyPresentInUrl {
+            get {
+                return ResourceManager.GetString("OucidAlreadyPresentInUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error while waiting for potential end of navigation.
         /// </summary>
         internal static string ProblemWaitingForPotentialNavigationEnd {

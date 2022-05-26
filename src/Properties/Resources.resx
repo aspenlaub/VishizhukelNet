@@ -141,6 +141,9 @@
   <data name="NotNavigatingAnymore" xml:space="preserve">
     <value>Not navigating anymore</value>
   </data>
+  <data name="OucidAlreadyPresentInUrl" xml:space="preserve">
+    <value>Oucid already is present in the URL, this should not happen</value>
+  </data>
   <data name="ProblemWaitingForPotentialNavigationEnd" xml:space="preserve">
     <value>Error while waiting for potential end of navigation</value>
   </data>

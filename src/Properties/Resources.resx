@@ -123,64 +123,10 @@
   <data name="CouldNotConnectToTash" xml:space="preserve">
     <value>Could not connect to Tash, please start Tash Host</value>
   </data>
-  <data name="CouldNotDeserializeScriptCallJsonResult" xml:space="preserve">
-    <value>Could not deserialize script call JSON result</value>
-  </data>
-  <data name="CouldNotLoadUrl" xml:space="preserve">
-    <value>Could not load URL</value>
-  </data>
   <data name="CouldNotMakeTashRegistration" xml:space="preserve">
     <value>Could not make Tash registration (error code: {0})</value>
   </data>
-  <data name="ExecutingScript" xml:space="preserve">
-    <value>Executing script</value>
-  </data>
-  <data name="NavigatingAgain" xml:space="preserve">
-    <value>Navigating again</value>
-  </data>
-  <data name="NotNavigatingAnymore" xml:space="preserve">
-    <value>Not navigating anymore</value>
-  </data>
-  <data name="OucidAlreadyPresentInUrl" xml:space="preserve">
-    <value>Oucid already is present in the URL, this should not happen</value>
-  </data>
-  <data name="ProblemWaitingForPotentialNavigationEnd" xml:space="preserve">
-    <value>Error while waiting for potential end of navigation</value>
-  </data>
   <data name="RequestTimedOutAfter" xml:space="preserve">
     <value>Request timed out after {0} second/-s</value>
-  </data>
-  <data name="ResetModelUrlAndSync" xml:space="preserve">
-    <value>Reset model URL and sync</value>
-  </data>
-  <data name="ScriptCallFailed" xml:space="preserve">
-    <value>Script call failed</value>
-  </data>
-  <data name="ScriptCallFailureExpected" xml:space="preserve">
-    <value>Script call failure expected</value>
-  </data>
-  <data name="ScriptCallJsonResultIsEmpty" xml:space="preserve">
-    <value>Script call JSON result is null or empty</value>
-  </data>
-  <data name="ScriptExecutedDeserializingResult" xml:space="preserve">
-    <value>Script executed, deserializing result</value>
-  </data>
-  <data name="SetModelUrlAndAsync" xml:space="preserve">
-    <value>Set model URL and sync</value>
-  </data>
-  <data name="UiDoesNotContainAWebView" xml:space="preserve">
-    <value>User interface does not contain a WebView</value>
-  </data>
-  <data name="WaitLongerUntilNotNavigatingAnymore" xml:space="preserve">
-    <value>Navigation takes longer, waiting until not navigating anymore</value>
-  </data>
-  <data name="WaitUntilNotNavigatingAnymore" xml:space="preserve">
-    <value>Wait until not navigating anymore</value>
-  </data>
-  <data name="WebViewMustBeWired" xml:space="preserve">
-    <value>Web view must be wired before this method can be used</value>
-  </data>
-  <data name="WebViewStillBusyAfter" xml:space="preserve">
-    <value>Web view still is busy with a preceding request after {0} second/-s</value>
   </data>
 </root>

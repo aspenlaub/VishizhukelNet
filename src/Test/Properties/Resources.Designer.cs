@@ -115,14 +115,5 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Properties {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Web View Window.
-        /// </summary>
-        internal static string WebViewWindowTitle {
-            get {
-                return ResourceManager.GetString("WebViewWindowTitle", resourceCulture);
-            }
-        }
     }
 }

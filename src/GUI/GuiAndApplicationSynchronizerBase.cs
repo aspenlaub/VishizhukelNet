@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,13 +11,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Microsoft.Web.WebView2.Wpf;
 using Button = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.Button;
 using ToggleButton = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.ToggleButton;
 using WindowsTextBox = System.Windows.Controls.TextBox;
@@ -334,37 +331,5 @@ public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow>
         }
 
         windowCollectionViewSource.Source = newItems;
-    }
-
-    public async Task<TResult> RunScriptAsync<TResult>(IScriptStatement scriptStatement) where TResult : IScriptCallResponse, new() {
-        ApplicationLogger.LogMessage(Properties.Resources.ExecutingScript);
-        var webView2Property = typeof(TModel).GetPropertiesAndInterfaceProperties().FirstOrDefault(p => p.Name == nameof(IWebViewApplicationModelBase.WebView));
-        var webView2 = webView2Property == null || !ModelPropertyToWindowFieldMapping.ContainsKey(webView2Property)
-            ? null
-            : (WebView2)ModelPropertyToWindowFieldMapping[webView2Property].GetValue(Window);
-        if (webView2 == null) {
-            ApplicationLogger.LogMessage(Properties.Resources.UiDoesNotContainAWebView);
-            return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = false, YesNo = false }, ErrorMessage = Properties.Resources.UiDoesNotContainAWebView });
-        }
-
-        var json = await webView2.CoreWebView2.ExecuteScriptAsync(scriptStatement.Statement);
-        ApplicationLogger.LogMessage(Properties.Resources.ScriptExecutedDeserializingResult);
-        if (string.IsNullOrEmpty(json)) {
-            ApplicationLogger.LogMessage(Properties.Resources.ScriptCallJsonResultIsEmpty);
-            return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = false, YesNo = false }, ErrorMessage = Properties.Resources.ScriptCallJsonResultIsEmpty });
-        }
-
-        try {
-            var scriptCallResult = JsonSerializer.Deserialize<TResult>(json);
-            if (scriptCallResult is { }) {
-                return scriptCallResult;
-
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-        } catch {
-        }
-
-        ApplicationLogger.LogMessage(Properties.Resources.CouldNotDeserializeScriptCallJsonResult);
-        return await Task.FromResult(new TResult { Success = new YesNoInconclusive { Inconclusive = false, YesNo = false }, ErrorMessage = Properties.Resources.CouldNotDeserializeScriptCallJsonResult });
     }
 }

@@ -3,7 +3,6 @@ using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.GUI;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.WebView2Application.GUI;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication;
 
@@ -24,7 +23,6 @@ public partial class App {
 
         LaunchWindowIfNeeded<VishizhukelNetDemoWindow>(windowUnderTestClassName);
         LaunchWindowIfNeeded<VishizhukelNetEmptyWindow>(windowUnderTestClassName);
-        LaunchWindowIfNeeded<VishizhukelNetWebView2Window>(windowUnderTestClassName);
     }
 
     private void LaunchWindowIfNeeded<TWindow>(string windowUnderTestClassName) where TWindow : Window, IVishizhukelNetWindowUnderTest, new() {

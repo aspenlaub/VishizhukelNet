@@ -16,10 +16,10 @@ public static class ApplicationContainerBuilder {
             VishizhukelNetDemoWindow vishizhukelNetDemoWindow, ILogConfiguration logConfiguration) {
         await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
         if (vishizhukelNetDemoWindow == null) {
-            builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As(typeof(IGuiAndApplicationSynchronizer<ApplicationModel>)).SingleInstance();
+            builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer<ApplicationModel>>().SingleInstance();
         } else {
             builder.RegisterInstance(vishizhukelNetDemoWindow);
-            builder.RegisterType<GuiAndApplicationSynchronizer>().As(typeof(IGuiAndApplicationSynchronizer<ApplicationModel>)).SingleInstance();
+            builder.RegisterType<GuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer<ApplicationModel>>().SingleInstance();
         }
         builder.RegisterType<Application.Application>().As<Application.Application>().SingleInstance();
         builder.RegisterType<ApplicationModel>().As<ApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();

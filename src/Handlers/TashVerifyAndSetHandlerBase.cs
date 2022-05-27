@@ -21,10 +21,10 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
 
     protected TashVerifyAndSetHandlerBase(ISimpleLogger simpleLogger, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator,
         Dictionary<string, ISelector> selectors) {
-        SimpleLogger = simpleLogger;
-        TashSelectorHandler = tashSelectorHandler;
-        TashCommunicator = tashCommunicator;
-        Selectors = selectors;
+        SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
+        TashSelectorHandler = tashSelectorHandler ?? throw new ArgumentNullException(nameof(tashSelectorHandler));
+        TashCommunicator = tashCommunicator ?? throw new ArgumentNullException(nameof(tashCommunicator));
+        Selectors = selectors ?? throw new ArgumentNullException(nameof(selectors));
     }
 
     protected abstract Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<TModel> status);

@@ -31,17 +31,17 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
         IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler<TModel> guiAndAppHandler,
         ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
-        TashAccessor = tashAccessor;
-        SimpleLogger = simpleLogger;
+        TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
+        SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
         LogConfiguration = logConfiguration;
         SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
         LogId = logConfiguration.LogId;
         ButtonNameToCommandMapper = buttonNameToCommandMapper;
         ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
         GuiAndAppHandler = guiAndAppHandler;
-        TashVerifyAndSetHandler = tashVerifyAndSetHandler;
-        TashSelectorHandler = tashSelectorHandler;
-        TashCommunicator = tashCommunicator;
+        TashVerifyAndSetHandler = tashVerifyAndSetHandler ?? throw new ArgumentNullException(nameof(tashVerifyAndSetHandler));
+        TashSelectorHandler = tashSelectorHandler ?? throw new ArgumentNullException(nameof(tashSelectorHandler));
+        TashCommunicator = tashCommunicator ?? throw new ArgumentNullException(nameof(tashCommunicator));
     }
 
     public async Task<bool> UpdateTashStatusAndReturnIfIsWorkAsync(ITashTaskHandlingStatus<TModel> status) {

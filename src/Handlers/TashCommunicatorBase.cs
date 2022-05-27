@@ -17,8 +17,8 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
     protected readonly string LogId;
 
     public TashCommunicatorBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration) {
-        TashAccessor = tashAccessor;
-        SimpleLogger = simpleLogger;
+        TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
+        SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
         SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
         LogId = logConfiguration.LogId;
     }

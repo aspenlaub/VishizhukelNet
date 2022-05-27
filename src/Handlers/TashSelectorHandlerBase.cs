@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
@@ -13,9 +14,9 @@ public abstract class TashSelectorHandlerBase<TModel> : ITashSelectorHandler<TMo
     protected readonly Dictionary<string, ISelector> Selectors;
 
     protected TashSelectorHandlerBase(ISimpleLogger simpleLogger, ITashCommunicator<TModel> tashCommunicator, Dictionary<string, ISelector> selectors) {
-        SimpleLogger = simpleLogger;
-        TashCommunicator = tashCommunicator;
-        Selectors = selectors;
+        SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
+        TashCommunicator = tashCommunicator ?? throw new ArgumentNullException(nameof(tashCommunicator));
+        Selectors = selectors ?? throw new ArgumentNullException(nameof(selectors));
     }
 
     protected abstract Task SelectedIndexChangedAsync(ITashTaskHandlingStatus<TModel> status, string controlName, int selectedIndex, bool selectablesChanged);

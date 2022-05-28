@@ -37,7 +37,7 @@ public class ExceptionHandler {
 
             if (Exception == null) { continue; }
 
-            await ExceptionSaverAndSender.SaveUnhandledExceptionAsync(folder, Exception, nameof(application.DispatcherUnhandledException));
+            await ExceptionSaverAndSender.SaveUnhandledExceptionAsync(application.GetType().Name, folder, Exception, nameof(application.DispatcherUnhandledException));
             TryAndExit();
         }
     }

@@ -19,7 +19,6 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
     public TashCommunicatorBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory) {
         TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
-        logConfigurationFactory.InitializeIfNecessary("VishizhukelNet", true);
         var logConfiguration = logConfigurationFactory.Create();
         SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
         LogId = logConfiguration.LogId;

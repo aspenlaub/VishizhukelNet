@@ -13,7 +13,7 @@ public class ContainerBuilderTest {
     [TestMethod]
     public async Task CanUseContainerBuilder() {
         var logConfigurationFactoryMock = new Mock<ILogConfigurationFactory>();
-        var container = (await new ContainerBuilder().UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfigurationFactoryMock.Object)).Build();
+        var container = (await new ContainerBuilder().UseVishizhukelNetDvinAndPeghAsync("VishizhukelNet", new DummyCsArgumentPrompter(), logConfigurationFactoryMock.Object)).Build();
         var httpGate = container.Resolve<ISecuredHttpGate>();
         Assert.IsNotNull(httpGate);
     }

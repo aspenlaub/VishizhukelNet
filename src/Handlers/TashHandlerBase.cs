@@ -33,7 +33,6 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
         ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
         TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
-        logConfigurationFactory.InitializeIfNecessary("VishizhukelNet", true);
         LogConfiguration = logConfigurationFactory.Create();
         SimpleLogger.LogSubFolder = LogConfiguration.LogSubFolder;
         LogId = LogConfiguration.LogId;

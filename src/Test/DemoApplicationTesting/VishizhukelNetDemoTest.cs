@@ -22,14 +22,7 @@ public class VishizhukelNetDemoTest {
 
     [TestInitialize]
     public async Task Initialize() {
-        var logConfigurationMock = new Mock<ILogConfiguration>();
-        logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoTest));
-        logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
-        var logConfigurationFactoryMock = new Mock<ILogConfigurationFactory>();
-        logConfigurationFactoryMock.Setup(f => f.Create()).Returns(logConfigurationMock.Object);
-        var container = (await new ContainerBuilder()
-                .UseDemoApplicationAsync(null, logConfigurationFactoryMock.Object))
-            .Build();
+        var container = (await new ContainerBuilder().UseDemoApplicationAsync(null)) .Build();
         Application = container.Resolve<VishizhukelDemoApplication>();
         Assert.IsNotNull(Application);
         Model = container.Resolve<IApplicationModel>();

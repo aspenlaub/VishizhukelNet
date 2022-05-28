@@ -12,8 +12,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication;
 
 public static class ApplicationContainerBuilder {
     public static async Task<ContainerBuilder> UseDemoApplicationAsync(this ContainerBuilder builder,
-            VishizhukelNetDemoWindow vishizhukelNetDemoWindow, ILogConfigurationFactory logConfigurationFactory) {
-        await builder.UseVishizhukelNetDvinAndPeghAsync("VishizhukelNet", new DummyCsArgumentPrompter(), logConfigurationFactory);
+            VishizhukelNetDemoWindow vishizhukelNetDemoWindow) {
+        await builder.UseVishizhukelNetDvinAndPeghAsync("VishizhukelNet", new DummyCsArgumentPrompter());
         if (vishizhukelNetDemoWindow == null) {
             builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer<ApplicationModel>>().SingleInstance();
         } else {

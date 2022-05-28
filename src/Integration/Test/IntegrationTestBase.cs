@@ -13,13 +13,7 @@ public class IntegrationTestBase {
     protected readonly IContainer Container;
 
     public IntegrationTestBase() {
-        var logConfigurationMock = new Mock<ILogConfiguration>();
-        logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(IntegrationTestBase));
-        logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
-        logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
-        var logConfigurationFactoryMock = new Mock<ILogConfigurationFactory>();
-        logConfigurationFactoryMock.Setup(f => f.Create()).Returns(logConfigurationMock.Object);
-        Container = new ContainerBuilder().RegisterForIntegrationTest(logConfigurationFactoryMock.Object).Build();
+        Container = new ContainerBuilder().RegisterForIntegrationTest().Build();
     }
 
     protected async Task<WindowUnderTest> CreateWindowUnderTestAsync(string windowUnderTestClassName) {

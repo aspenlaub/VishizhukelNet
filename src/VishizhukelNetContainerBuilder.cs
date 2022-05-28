@@ -32,22 +32,21 @@ public static class VishizhukelNetContainerBuilder {
         return services;
     }
 
-    public static async Task<ContainerBuilder> UseVishizhukelNetAndPeghAsync(this ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter, ILogConfigurationFactory logConfigurationFactory) {
-        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, applicationName, csArgumentPrompter, false, logConfigurationFactory);
+    public static async Task<ContainerBuilder> UseVishizhukelNetAndPeghAsync(this ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter) {
+        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, applicationName, csArgumentPrompter, false);
     }
 
-    public static async Task<ContainerBuilder> UseVishizhukelNetDvinAndPeghAsync(this ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter, ILogConfigurationFactory logConfigurationFactory) {
-        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, applicationName, csArgumentPrompter, true, logConfigurationFactory);
+    public static async Task<ContainerBuilder> UseVishizhukelNetDvinAndPeghAsync(this ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter) {
+        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, applicationName, csArgumentPrompter, true);
     }
 
-    private static async Task<ContainerBuilder> UseVishizhukelNetAndPeghOptionallyDvinAsync(ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter, bool useDvin, ILogConfigurationFactory logConfigurationFactory) {
+    private static async Task<ContainerBuilder> UseVishizhukelNetAndPeghOptionallyDvinAsync(ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter, bool useDvin) {
         if (useDvin) {
             await builder.UseVishizhukelDvinAndPeghAsync(applicationName, csArgumentPrompter);
         } else {
             await builder.UseVishizhukelAndPeghAsync(applicationName, csArgumentPrompter);
         }
 
-        builder.RegisterInstance(logConfigurationFactory);
         builder.RegisterType<ButtonNameToCommandMapper>().As<IButtonNameToCommandMapper>().SingleInstance();
         builder.RegisterType<ToggleButtonNameToHandlerMapper>().As<IToggleButtonNameToHandlerMapper>().SingleInstance();
         builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();

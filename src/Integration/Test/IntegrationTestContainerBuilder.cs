@@ -11,9 +11,8 @@ using Autofac;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test;
 
 public static class IntegrationTestContainerBuilder {
-    public static ContainerBuilder RegisterForIntegrationTest(this ContainerBuilder builder, ILogConfigurationFactory logConfigurationFactory) {
+    public static ContainerBuilder RegisterForIntegrationTest(this ContainerBuilder builder) {
         builder.UseDvinAndPegh("VishizhukelNet", new DummyCsArgumentPrompter());
-        builder.RegisterInstance(logConfigurationFactory);
         builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();
         builder.RegisterType<StarterAndStopper>().As<IStarterAndStopper>();
         builder.RegisterType<WindowUnderTest>();

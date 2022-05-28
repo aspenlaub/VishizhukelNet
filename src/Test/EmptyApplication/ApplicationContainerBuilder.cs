@@ -11,8 +11,8 @@ using FakeGuiAndApplicationSynchronizer = Aspenlaub.Net.GitHub.CSharp.Vishizhuke
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication;
 
 public static class ApplicationContainerBuilder {
-    public static async Task<ContainerBuilder> UseApplicationAsync(this ContainerBuilder builder, VishizhukelNetEmptyWindow vishizhukelNetEmptyWindow, ILogConfigurationFactory logConfigurationFactory) {
-        await builder.UseVishizhukelNetDvinAndPeghAsync("VishizhukelNet", new DummyCsArgumentPrompter(), logConfigurationFactory);
+    public static async Task<ContainerBuilder> UseApplicationAsync(this ContainerBuilder builder, VishizhukelNetEmptyWindow vishizhukelNetEmptyWindow) {
+        await builder.UseVishizhukelNetDvinAndPeghAsync("VishizhukelNet", new DummyCsArgumentPrompter());
         if (vishizhukelNetEmptyWindow == null) {
             builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer<ApplicationModel>>().SingleInstance();
         } else {

@@ -37,13 +37,7 @@ public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNe
     private async Task BuildContainerIfNecessaryAsync() {
         if (Container != null) { return; }
 
-        var logConfigurationMock = new Mock<ILogConfiguration>();
-        logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoWindow));
-        logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
-        logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
-        var logConfigurationFactoryMock = new Mock<ILogConfigurationFactory>();
-        logConfigurationFactoryMock.Setup(f => f.Create()).Returns(logConfigurationMock.Object);
-        var builder = await new ContainerBuilder().UseDemoApplicationAsync(this, logConfigurationFactoryMock.Object);
+        var builder = await new ContainerBuilder().UseDemoApplicationAsync(this);
         Container = builder.Build();
     }
 

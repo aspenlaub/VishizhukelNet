@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
@@ -21,16 +20,14 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
 
     public ITashHandler<ApplicationModel> TashHandler { get; private set; }
     private readonly ITashAccessor TashAccessor;
-    private readonly ISimpleLogger SimpleLogger;
-    private readonly ILogConfiguration LogConfiguration;
+    private readonly ILogConfigurationFactory LogConfigurationFactory;
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
         IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
-        ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger)
-        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, applicationLogger) {
+        ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory)
+        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
         TashAccessor = tashAccessor;
-        SimpleLogger = simpleLogger;
-        LogConfiguration = logConfiguration;
+        LogConfigurationFactory = logConfigurationFactory;
     }
 
     protected override async Task EnableOrDisableButtonsAsync() {
@@ -40,11 +37,11 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
     protected override void CreateCommandsAndHandlers() {
         Handlers = new ApplicationHandlers();
         Commands = new ApplicationCommands();
-        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
+        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfigurationFactory);
         var selectors = new Dictionary<string, ISelector>();
         var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
         var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors);
-        TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+        TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfigurationFactory, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
     }
 
     public ITashTaskHandlingStatus<ApplicationModel> CreateTashTaskHandlingStatus() {

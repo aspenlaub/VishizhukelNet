@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Extensions;
@@ -28,21 +28,21 @@ using WindowsCollectionViewSource = System.Windows.Data.CollectionViewSource;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 
-public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow> 
+public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow>
         : IGuiAndApplicationSynchronizer<TModel>
             where TModel : class, IApplicationModelBase {
     protected readonly TWindow Window;
     protected readonly Dictionary<PropertyInfo, FieldInfo> ModelPropertyToWindowFieldMapping, ModelPropertyToWindowLabelMapping;
     protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
     protected readonly Dictionary<PropertyInfo, WindowsCollectionViewSource> ModelPropertyToCollectionViewSourceMapping;
-    protected readonly IApplicationLogger ApplicationLogger;
+    protected readonly ISimpleLogger SimpleLogger;
 
     public TModel Model { get; }
 
-    protected GuiAndApplicationSynchronizerBase(TModel model, TWindow window, IApplicationLogger applicationLogger) {
+    protected GuiAndApplicationSynchronizerBase(TModel model, TWindow window, ISimpleLogger simpleLogger) {
         Model = model;
         Window = window;
-        ApplicationLogger = applicationLogger;
+        SimpleLogger = simpleLogger;
         ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();

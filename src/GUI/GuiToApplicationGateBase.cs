@@ -13,8 +13,8 @@ using ToggleButton = System.Windows.Controls.Primitives.ToggleButton;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 
-public abstract class GuiToApplicationGateBase<TApplication, TModel> 
-        : IGuiToApplicationGate 
+public abstract class GuiToApplicationGateBase<TApplication, TModel>
+        : IGuiToApplicationGate
             where TApplication : class, IGuiAndAppHandler<TModel>
             where TModel : IApplicationModelBase {
     protected readonly IBusy Busy;

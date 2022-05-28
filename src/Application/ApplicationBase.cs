@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
-using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application;
 
-public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel> 
+public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
         : IGuiAndAppHandler<TModel>
             where TModel : class, IApplicationModelBase
             where TGuiAndApplicationSynchronizer : IGuiAndApplicationSynchronizer<TModel> {
@@ -13,15 +13,15 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
     protected readonly IToggleButtonNameToHandlerMapper ToggleButtonNameToHandlerMapper;
     protected readonly TGuiAndApplicationSynchronizer GuiAndApplicationSynchronizer;
     protected readonly TModel Model;
-    protected readonly IApplicationLogger ApplicationLogger;
+    protected readonly ISimpleLogger SimpleLogger;
 
     protected ApplicationBase(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-        TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model, IApplicationLogger applicationLogger) {
+        TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model, ISimpleLogger simpleLogger) {
         ButtonNameToCommandMapper = buttonNameToCommandMapper;
         ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
         GuiAndApplicationSynchronizer = guiAndApplicationSynchronizer;
         Model = model;
-        ApplicationLogger = applicationLogger;
+        SimpleLogger = simpleLogger;
     }
 
     protected abstract Task EnableOrDisableButtonsAsync();

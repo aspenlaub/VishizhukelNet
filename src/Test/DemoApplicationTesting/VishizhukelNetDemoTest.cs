@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
@@ -25,8 +25,10 @@ public class VishizhukelNetDemoTest {
         var logConfigurationMock = new Mock<ILogConfiguration>();
         logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetDemoTest));
         logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
+        var logConfigurationFactoryMock = new Mock<ILogConfigurationFactory>();
+        logConfigurationFactoryMock.Setup(f => f.Create()).Returns(logConfigurationMock.Object);
         var container = (await new ContainerBuilder()
-                .UseDemoApplicationAsync(null, logConfigurationMock.Object))
+                .UseDemoApplicationAsync(null, logConfigurationFactoryMock.Object))
             .Build();
         Application = container.Resolve<VishizhukelDemoApplication>();
         Assert.IsNotNull(Application);

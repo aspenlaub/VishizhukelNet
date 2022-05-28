@@ -28,14 +28,15 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
     protected readonly ITashCommunicator<TModel> TashCommunicator;
 
-    public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
+    public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory,
         IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler<TModel> guiAndAppHandler,
         ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
         TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
-        LogConfiguration = logConfiguration;
-        SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
-        LogId = logConfiguration.LogId;
+        logConfigurationFactory.InitializeIfNecessary("VishizhukelNet", true);
+        LogConfiguration = logConfigurationFactory.Create();
+        SimpleLogger.LogSubFolder = LogConfiguration.LogSubFolder;
+        LogId = LogConfiguration.LogId;
         ButtonNameToCommandMapper = buttonNameToCommandMapper;
         ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
         GuiAndAppHandler = guiAndAppHandler;

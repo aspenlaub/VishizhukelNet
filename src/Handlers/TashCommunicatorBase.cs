@@ -16,9 +16,11 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
     protected readonly ISimpleLogger SimpleLogger;
     protected readonly string LogId;
 
-    public TashCommunicatorBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration) {
+    public TashCommunicatorBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory) {
         TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
+        logConfigurationFactory.InitializeIfNecessary("VishizhukelNet", true);
+        var logConfiguration = logConfigurationFactory.Create();
         SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
         LogId = logConfiguration.LogId;
     }

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
@@ -36,7 +37,9 @@ public partial class VishizhukelNetEmptyWindow : IAsyncDisposable, IVishizhukelN
         logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(VishizhukelNetEmptyWindow));
         logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
         logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
-        var builder = await new ContainerBuilder().UseApplicationAsync(this, logConfigurationMock.Object);
+        var logConfigurationFactoryMock = new Mock<ILogConfigurationFactory>();
+        logConfigurationFactoryMock.Setup(f => f.Create()).Returns(logConfigurationMock.Object);
+        var builder = await new ContainerBuilder().UseApplicationAsync(this, logConfigurationFactoryMock.Object);
         Container = builder.Build();
     }
 

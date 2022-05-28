@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
-using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Autofac;
 using Moq;
 
@@ -17,7 +17,9 @@ public class IntegrationTestBase {
         logConfigurationMock.SetupGet(lc => lc.LogSubFolder).Returns(@"AspenlaubLogs\" + nameof(IntegrationTestBase));
         logConfigurationMock.SetupGet(lc => lc.LogId).Returns($"{DateTime.Today:yyyy-MM-dd}-{Process.GetCurrentProcess().Id}");
         logConfigurationMock.SetupGet(lc => lc.DetailedLogging).Returns(true);
-        Container = new ContainerBuilder().RegisterForIntegrationTest(logConfigurationMock.Object).Build();
+        var logConfigurationFactoryMock = new Mock<ILogConfigurationFactory>();
+        logConfigurationFactoryMock.Setup(f => f.Create()).Returns(logConfigurationMock.Object);
+        Container = new ContainerBuilder().RegisterForIntegrationTest(logConfigurationFactoryMock.Object).Build();
     }
 
     protected async Task<WindowUnderTest> CreateWindowUnderTestAsync(string windowUnderTestClassName) {

@@ -32,22 +32,22 @@ public static class VishizhukelNetContainerBuilder {
         return services;
     }
 
-    public static async Task<ContainerBuilder> UseVishizhukelNetAndPeghAsync(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, ILogConfiguration logConfiguration) {
-        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, csArgumentPrompter, false, logConfiguration);
+    public static async Task<ContainerBuilder> UseVishizhukelNetAndPeghAsync(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, ILogConfigurationFactory logConfigurationFactory) {
+        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, csArgumentPrompter, false, logConfigurationFactory);
     }
 
-    public static async Task<ContainerBuilder> UseVishizhukelNetDvinAndPeghAsync(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, ILogConfiguration logConfiguration) {
-        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, csArgumentPrompter, true, logConfiguration);
+    public static async Task<ContainerBuilder> UseVishizhukelNetDvinAndPeghAsync(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, ILogConfigurationFactory logConfigurationFactory) {
+        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, csArgumentPrompter, true, logConfigurationFactory);
     }
 
-    private static async Task<ContainerBuilder> UseVishizhukelNetAndPeghOptionallyDvinAsync(ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, bool useDvin, ILogConfiguration logConfiguration) {
+    private static async Task<ContainerBuilder> UseVishizhukelNetAndPeghOptionallyDvinAsync(ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter, bool useDvin, ILogConfigurationFactory logConfigurationFactory) {
         if (useDvin) {
             await builder.UseVishizhukelDvinAndPeghAsync(csArgumentPrompter);
         } else {
             await builder.UseVishizhukelAndPeghAsync(csArgumentPrompter);
         }
 
-        builder.RegisterInstance(logConfiguration);
+        builder.RegisterInstance(logConfigurationFactory);
         builder.RegisterType<ButtonNameToCommandMapper>().As<IButtonNameToCommandMapper>().SingleInstance();
         builder.RegisterType<ToggleButtonNameToHandlerMapper>().As<IToggleButtonNameToHandlerMapper>().SingleInstance();
         builder.RegisterType<CanvasAndImageAndImageSizeAdjuster>().As<ICanvasAndImageSizeAdjuster>().SingleInstance();

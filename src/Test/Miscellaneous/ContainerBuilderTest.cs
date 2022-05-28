@@ -1,10 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Web;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.Miscellaneous;
 

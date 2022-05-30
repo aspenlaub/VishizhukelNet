@@ -24,9 +24,9 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
     private readonly ITashAccessor TashAccessor;
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-        IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
-        ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory)
-        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger, logConfigurationFactory) {
+            IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
+            ISimpleLogger simpleLogger)
+        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
         TashAccessor = tashAccessor;
     }
 
@@ -53,13 +53,13 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
             IotaCommand = new IotaCommand(Model),
             KappaCommand = new KappaCommand(Model)
         };
-        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfigurationFactory);
+        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger);
         var selectors = new Dictionary<string, ISelector> {
             { nameof(IApplicationModel.Beta), Model.Beta }
         };
         var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
         var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors);
-        TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfigurationFactory, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+        TashHandler = new TashHandler(TashAccessor, SimpleLogger, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
     }
 
     public override async Task OnLoadedAsync() {

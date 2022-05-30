@@ -6,7 +6,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.GUI;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication;
 
 public class GuiAndApplicationSynchronizer : GuiAndApplicationSynchronizerBase<ApplicationModel, VishizhukelNetEmptyWindow> {
-    public GuiAndApplicationSynchronizer(ApplicationModel model, VishizhukelNetEmptyWindow window, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory)
-            : base(model, window, simpleLogger, logConfigurationFactory) {
+    public GuiAndApplicationSynchronizer(ApplicationModel model, VishizhukelNetEmptyWindow window, ISimpleLogger simpleLogger)
+            : base(model, window, simpleLogger) {
     }
 }

@@ -37,15 +37,13 @@ public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow>
     protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
     protected readonly Dictionary<PropertyInfo, WindowsCollectionViewSource> ModelPropertyToCollectionViewSourceMapping;
     protected readonly ISimpleLogger SimpleLogger;
-    protected readonly ILogConfigurationFactory LogConfigurationFactory;
 
     public TModel Model { get; }
 
-    protected GuiAndApplicationSynchronizerBase(TModel model, TWindow window, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory) {
+    protected GuiAndApplicationSynchronizerBase(TModel model, TWindow window, ISimpleLogger simpleLogger) {
         Model = model;
         Window = window;
         SimpleLogger = simpleLogger;
-        LogConfigurationFactory = logConfigurationFactory;
         ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();
@@ -93,8 +91,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow>
     }
 
     public async Task OnModelDataChangedAsync() {
-        var logConfiguration = LogConfigurationFactory.Create();
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(OnModelDataChangedAsync) + "Base", logConfiguration.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(OnModelDataChangedAsync) + "Base", SimpleLogger.LogId))) {
             IndicateBusy(false);
 
             foreach (var modelPropertyToWindowFieldMapping in ModelPropertyToWindowFieldMapping) {

@@ -14,18 +14,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TModel : IApplicationModelBase {
     protected readonly ITashAccessor TashAccessor;
     protected readonly ISimpleLogger SimpleLogger;
-    protected readonly string LogId;
 
-    public TashCommunicatorBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory) {
+    public TashCommunicatorBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger) {
         TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
-        var logConfiguration = logConfigurationFactory.Create();
-        SimpleLogger.LogSubFolder = logConfiguration.LogSubFolder;
-        LogId = logConfiguration.LogId;
     }
 
     public virtual async Task CommunicateAndShowCompletedOrFailedAsync(ITashTaskHandlingStatus<TModel> status, bool setText, string text) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
             if (status.Model.Status.Type == StatusType.Error) {
                 var errorMessage = status.Model.Status.Text;
                 SimpleLogger.LogInformation($"Communicating 'Failed' with text {errorMessage} to remote controlling process");
@@ -44,7 +40,7 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
 
     public async Task ChangeCommunicateAndShowProcessTaskStatusAsync(ITashTaskHandlingStatus<TModel> status,
         ControllableProcessTaskStatus newStatus, bool setText, string text, string errorMessage) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
             status.TaskBeingProcessed.Status = newStatus;
             if (newStatus == ControllableProcessTaskStatus.Failed || newStatus == ControllableProcessTaskStatus.BadRequest) {
                 status.TaskBeingProcessed.ErrorMessage = errorMessage;

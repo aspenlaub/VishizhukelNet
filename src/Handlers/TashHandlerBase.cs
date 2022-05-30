@@ -19,8 +19,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class, IApplicationModelBase {
     protected readonly ITashAccessor TashAccessor;
     protected readonly ISimpleLogger SimpleLogger;
-    protected readonly ILogConfiguration LogConfiguration;
-    protected readonly string LogId;
     protected readonly IButtonNameToCommandMapper ButtonNameToCommandMapper;
     protected readonly IToggleButtonNameToHandlerMapper ToggleButtonNameToHandlerMapper;
     protected readonly IGuiAndAppHandler<TModel> GuiAndAppHandler;
@@ -28,14 +26,12 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
     protected readonly ITashCommunicator<TModel> TashCommunicator;
 
-    public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory,
-        IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler<TModel> guiAndAppHandler,
-        ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator) {
+    public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, IButtonNameToCommandMapper buttonNameToCommandMapper,
+            IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler<TModel> guiAndAppHandler,
+            ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler,
+            ITashCommunicator<TModel> tashCommunicator) {
         TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
-        LogConfiguration = logConfigurationFactory.Create();
-        SimpleLogger.LogSubFolder = LogConfiguration.LogSubFolder;
-        LogId = LogConfiguration.LogId;
         ButtonNameToCommandMapper = buttonNameToCommandMapper;
         ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
         GuiAndAppHandler = guiAndAppHandler;
@@ -68,7 +64,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     }
 
     public async Task ProcessTashAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
             status.TaskBeingProcessed = status.ControllableProcessTasks.FirstOrDefault(t => t.Status == ControllableProcessTaskStatus.Requested);
             if (status.TaskBeingProcessed == null) {
                 return;
@@ -94,7 +90,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     protected virtual void OnStatusChangedToProcessingCommunicated(ITashTaskHandlingStatus<TModel> status) { }
 
     protected virtual async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
             SimpleLogger.LogInformation($"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandlerBase<TModel>)}");
 
             switch (status.TaskBeingProcessed.Type) {
@@ -169,7 +165,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     }
 
     protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
             var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);
             if (command != null) {
                 await command.ExecuteAsync();

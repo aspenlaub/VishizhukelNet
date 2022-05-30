@@ -23,8 +23,8 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
         IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
-        ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory)
-        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger, logConfigurationFactory) {
+        ISimpleLogger simpleLogger)
+        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
         TashAccessor = tashAccessor;
     }
 
@@ -35,11 +35,11 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
     protected override void CreateCommandsAndHandlers() {
         Handlers = new ApplicationHandlers();
         Commands = new ApplicationCommands();
-        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, LogConfigurationFactory);
+        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger);
         var selectors = new Dictionary<string, ISelector>();
         var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
         var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors);
-        TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfigurationFactory, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+        TashHandler = new TashHandler(TashAccessor, SimpleLogger, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
     }
 
     public ITashTaskHandlingStatus<ApplicationModel> CreateTashTaskHandlingStatus() {

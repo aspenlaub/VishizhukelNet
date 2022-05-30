@@ -15,16 +15,14 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
     protected readonly TGuiAndApplicationSynchronizer GuiAndApplicationSynchronizer;
     protected readonly TModel Model;
     protected readonly ISimpleLogger SimpleLogger;
-    protected readonly ILogConfigurationFactory LogConfigurationFactory;
 
     protected ApplicationBase(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-        TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory) {
+        TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model, ISimpleLogger simpleLogger) {
         ButtonNameToCommandMapper = buttonNameToCommandMapper;
         ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
         GuiAndApplicationSynchronizer = guiAndApplicationSynchronizer;
         Model = model;
         SimpleLogger = simpleLogger;
-        LogConfigurationFactory = logConfigurationFactory;
     }
 
     protected abstract Task EnableOrDisableButtonsAsync();
@@ -35,24 +33,21 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
     }
 
     public virtual async Task OnLoadedAsync() {
-        var logConfiguration = LogConfigurationFactory.Create();
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(OnLoadedAsync) + "Base", logConfiguration.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(OnLoadedAsync) + "Base", SimpleLogger.LogId))) {
             CreateCommandsAndHandlers();
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }
 
     public async Task EnableOrDisableButtonsThenSyncGuiAndAppAsync() {
-        var logConfiguration = LogConfigurationFactory.Create();
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(EnableOrDisableButtonsThenSyncGuiAndAppAsync), logConfiguration.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(EnableOrDisableButtonsThenSyncGuiAndAppAsync), SimpleLogger.LogId))) {
             await EnableOrDisableButtonsAsync();
             await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
         }
     }
 
     public async Task SyncGuiAndAppAsync() {
-        var logConfiguration = LogConfigurationFactory.Create();
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(SyncGuiAndAppAsync), logConfiguration.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(SyncGuiAndAppAsync), SimpleLogger.LogId))) {
             await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
         }
     }

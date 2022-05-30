@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
@@ -14,14 +15,16 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
     protected readonly TGuiAndApplicationSynchronizer GuiAndApplicationSynchronizer;
     protected readonly TModel Model;
     protected readonly ISimpleLogger SimpleLogger;
+    protected readonly ILogConfigurationFactory LogConfigurationFactory;
 
     protected ApplicationBase(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-        TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model, ISimpleLogger simpleLogger) {
+        TGuiAndApplicationSynchronizer guiAndApplicationSynchronizer, TModel model, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory) {
         ButtonNameToCommandMapper = buttonNameToCommandMapper;
         ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
         GuiAndApplicationSynchronizer = guiAndApplicationSynchronizer;
         Model = model;
         SimpleLogger = simpleLogger;
+        LogConfigurationFactory = logConfigurationFactory;
     }
 
     protected abstract Task EnableOrDisableButtonsAsync();
@@ -32,17 +35,26 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
     }
 
     public virtual async Task OnLoadedAsync() {
-        CreateCommandsAndHandlers();
-        await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+        var logConfiguration = LogConfigurationFactory.Create();
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(OnLoadedAsync) + "Base", logConfiguration.LogId))) {
+            CreateCommandsAndHandlers();
+            await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+        }
     }
 
     public async Task EnableOrDisableButtonsThenSyncGuiAndAppAsync() {
-        await EnableOrDisableButtonsAsync();
-        await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
+        var logConfiguration = LogConfigurationFactory.Create();
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(EnableOrDisableButtonsThenSyncGuiAndAppAsync), logConfiguration.LogId))) {
+            await EnableOrDisableButtonsAsync();
+            await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
+        }
     }
 
     public async Task SyncGuiAndAppAsync() {
-        await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
+        var logConfiguration = LogConfigurationFactory.Create();
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(SyncGuiAndAppAsync), logConfiguration.LogId))) {
+            await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
+        }
     }
 
     public void IndicateBusy(bool force) {

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
@@ -36,13 +37,15 @@ public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow>
     protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
     protected readonly Dictionary<PropertyInfo, WindowsCollectionViewSource> ModelPropertyToCollectionViewSourceMapping;
     protected readonly ISimpleLogger SimpleLogger;
+    protected readonly ILogConfigurationFactory LogConfigurationFactory;
 
     public TModel Model { get; }
 
-    protected GuiAndApplicationSynchronizerBase(TModel model, TWindow window, ISimpleLogger simpleLogger) {
+    protected GuiAndApplicationSynchronizerBase(TModel model, TWindow window, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory) {
         Model = model;
         Window = window;
         SimpleLogger = simpleLogger;
+        LogConfigurationFactory = logConfigurationFactory;
         ModelPropertyToWindowFieldMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowLabelMapping = new Dictionary<PropertyInfo, FieldInfo>();
         ModelPropertyToWindowPropertyMapping = new Dictionary<PropertyInfo, PropertyInfo>();
@@ -90,51 +93,57 @@ public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow>
     }
 
     public async Task OnModelDataChangedAsync() {
-        IndicateBusy(false);
+        var logConfiguration = LogConfigurationFactory.Create();
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(OnModelDataChangedAsync) + "Base", logConfiguration.LogId))) {
+            IndicateBusy(false);
 
-        foreach (var modelPropertyToWindowFieldMapping in ModelPropertyToWindowFieldMapping) {
-            var modelProperty = modelPropertyToWindowFieldMapping.Key;
-            var windowField = modelPropertyToWindowFieldMapping.Value;
-            await UpdateFieldIfNecessaryAsync(windowField, modelProperty);
-        }
+            foreach (var modelPropertyToWindowFieldMapping in ModelPropertyToWindowFieldMapping) {
+                var modelProperty = modelPropertyToWindowFieldMapping.Key;
+                var windowField = modelPropertyToWindowFieldMapping.Value;
+                await UpdateFieldIfNecessaryAsync(windowField, modelProperty);
+            }
 
-        foreach (var modelPropertyToWindowLabelMapping in ModelPropertyToWindowLabelMapping) {
-            var modelProperty = modelPropertyToWindowLabelMapping.Key;
-            var labelField = modelPropertyToWindowLabelMapping.Value;
+            foreach (var modelPropertyToWindowLabelMapping in ModelPropertyToWindowLabelMapping) {
+                var modelProperty = modelPropertyToWindowLabelMapping.Key;
+                var labelField = modelPropertyToWindowLabelMapping.Value;
 
-            if (labelField.FieldType.Name == "Label") {
-                if (modelProperty.GetValue(Model) is ISelector) {
-                    UpdateLabelIfNecessary((ISelector)modelProperty.GetValue(Model), (ContentControl)labelField.GetValue(Window));
-                } else if (modelProperty.GetValue(Model) is ITextBox) {
-                    UpdateLabelIfNecessary((ITextBox)modelProperty.GetValue(Model), (ContentControl)labelField.GetValue(Window));
-                } else {
-                    throw new NotImplementedException($"{nameof(labelField)} is neither a selector nor a text box");
+                if (labelField.FieldType.Name == "Label") {
+                    if (modelProperty.GetValue(Model) is ISelector) {
+                        UpdateLabelIfNecessary((ISelector)modelProperty.GetValue(Model), (ContentControl)labelField.GetValue(Window));
+                    }
+                    else if (modelProperty.GetValue(Model) is ITextBox) {
+                        UpdateLabelIfNecessary((ITextBox)modelProperty.GetValue(Model), (ContentControl)labelField.GetValue(Window));
+                    }
+                    else {
+                        throw new NotImplementedException($"{nameof(labelField)} is neither a selector nor a text box");
+                    }
                 }
-            } else {
-                throw new NotImplementedException($"{labelField.FieldType.Name} is not implemented yet");
+                else {
+                    throw new NotImplementedException($"{labelField.FieldType.Name} is not implemented yet");
+                }
             }
-        }
 
-        foreach (var modelPropertyToWindowPropertyMapping in ModelPropertyToWindowPropertyMapping) {
-            var modelProperty = modelPropertyToWindowPropertyMapping.Key;
-            var windowProperty = modelPropertyToWindowPropertyMapping.Value;
-            switch (windowProperty.PropertyType.Name) {
-                case "WindowState":
-                    // ReSharper disable once PossibleNullReferenceException
-                    UpdateWindowStateIfNecessary((WindowState) modelProperty.GetValue(Model), Window as Window);
-                    break;
-                default:
-                    throw new NotImplementedException($"Window property type {windowProperty.PropertyType.Name} is not implemented yet");
+            foreach (var modelPropertyToWindowPropertyMapping in ModelPropertyToWindowPropertyMapping) {
+                var modelProperty = modelPropertyToWindowPropertyMapping.Key;
+                var windowProperty = modelPropertyToWindowPropertyMapping.Value;
+                switch (windowProperty.PropertyType.Name) {
+                    case "WindowState":
+                        // ReSharper disable once PossibleNullReferenceException
+                        UpdateWindowStateIfNecessary((WindowState)modelProperty.GetValue(Model), Window as Window);
+                        break;
+                    default:
+                        throw new NotImplementedException($"Window property type {windowProperty.PropertyType.Name} is not implemented yet");
+                }
             }
-        }
 
-        foreach (var modelPropertyToCollectionViewSourceMapping in ModelPropertyToCollectionViewSourceMapping) {
-            var modelProperty = modelPropertyToCollectionViewSourceMapping.Key;
-            var collectionViewSource = modelPropertyToCollectionViewSourceMapping.Value;
-            UpdateCollectionViewSourceIfNecessary((ICollectionViewSource)modelProperty.GetValue(Model), collectionViewSource);
-        }
+            foreach (var modelPropertyToCollectionViewSourceMapping in ModelPropertyToCollectionViewSourceMapping) {
+                var modelProperty = modelPropertyToCollectionViewSourceMapping.Key;
+                var collectionViewSource = modelPropertyToCollectionViewSourceMapping.Value;
+                UpdateCollectionViewSourceIfNecessary((ICollectionViewSource)modelProperty.GetValue(Model), collectionViewSource);
+            }
 
-        await Task.CompletedTask;
+            await Task.CompletedTask;
+        }
     }
 
     protected virtual async Task UpdateFieldIfNecessaryAsync(FieldInfo windowField, PropertyInfo modelProperty) {

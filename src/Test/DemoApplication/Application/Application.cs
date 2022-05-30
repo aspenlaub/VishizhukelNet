@@ -22,14 +22,12 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
 
     public ITashHandler<ApplicationModel> TashHandler { get; private set; }
     private readonly ITashAccessor TashAccessor;
-    private readonly ILogConfigurationFactory LogConfigurationFactory;
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
         IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
         ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory)
-        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
+        : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger, logConfigurationFactory) {
         TashAccessor = tashAccessor;
-        LogConfigurationFactory = logConfigurationFactory;
     }
 
     protected override async Task EnableOrDisableButtonsAsync() {

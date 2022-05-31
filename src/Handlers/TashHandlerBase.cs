@@ -104,7 +104,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
                     var tasks = JsonConvert.DeserializeObject<List<ControllableProcessTask>>(status.TaskBeingProcessed.Text);
                     if (tasks == null) {
                         var deserializationErrorMessage = $"Could not deserialize {status.TaskBeingProcessed.Text}";
-                        SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({deserializationErrorMessage}");
+                        SimpleLogger.LogErrorWithCallStack($"Communicating 'BadRequest' to remote controlling process ({deserializationErrorMessage}", methodNamesFromStack);
                         await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", deserializationErrorMessage);
                         return;
                     }
@@ -118,7 +118,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
                             continue;
                         }
 
-                        SimpleLogger.LogError($"Processing of {tasks.Count} tasks ended incomplete");
+                        SimpleLogger.LogErrorWithCallStack($"Processing of {tasks.Count} tasks ended incomplete", methodNamesFromStack);
                         taskListTask.Status = task.Status;
                         taskListTask.ErrorMessage = task.ErrorMessage;
                         await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, task.Status, false, "", task.ErrorMessage);
@@ -162,7 +162,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
                     break;
                 default:
                     var unknownTaskTypeErrorMessage = $"Unknown task type {status.TaskBeingProcessed.Type}";
-                    SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}");
+                    SimpleLogger.LogErrorWithCallStack($"Communicating 'BadRequest' to remote controlling process ({unknownTaskTypeErrorMessage}", methodNamesFromStack);
                     await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", unknownTaskTypeErrorMessage);
                     break;
             }
@@ -171,6 +171,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
 
     protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
         using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessPressButtonTaskAsync), SimpleLogger.LogId))) {
+            var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);
             if (command != null) {
                 await command.ExecuteAsync();
@@ -186,7 +187,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
             }
 
             var errorMessage = $"Unknown control/button {status.TaskBeingProcessed.ControlName}";
-            SimpleLogger.LogError($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
+            SimpleLogger.LogErrorWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage}", methodNamesFromStack);
             await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
         }
     }

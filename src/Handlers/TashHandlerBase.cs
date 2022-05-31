@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Enums;
@@ -25,13 +26,15 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     protected readonly ITashVerifyAndSetHandler<TModel> TashVerifyAndSetHandler;
     protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
     protected readonly ITashCommunicator<TModel> TashCommunicator;
+    protected readonly IMethodNamesFromStackFramesExtractor MethodNamesFromStackFramesExtractor;
 
     public TashHandlerBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, IButtonNameToCommandMapper buttonNameToCommandMapper,
             IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler<TModel> guiAndAppHandler,
             ITashVerifyAndSetHandler<TModel> tashVerifyAndSetHandler, ITashSelectorHandler<TModel> tashSelectorHandler,
-            ITashCommunicator<TModel> tashCommunicator) {
+            ITashCommunicator<TModel> tashCommunicator, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor) {
         TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
+        MethodNamesFromStackFramesExtractor = methodNamesFromStackFramesExtractor ?? throw new ArgumentNullException(nameof(methodNamesFromStackFramesExtractor));
         ButtonNameToCommandMapper = buttonNameToCommandMapper;
         ToggleButtonNameToHandlerMapper = toggleButtonNameToHandlerMapper;
         GuiAndAppHandler = guiAndAppHandler;
@@ -64,7 +67,8 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     }
 
     public async Task ProcessTashAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessTashAsync), SimpleLogger.LogId))) {
+            var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             status.TaskBeingProcessed = status.ControllableProcessTasks.FirstOrDefault(t => t.Status == ControllableProcessTaskStatus.Requested);
             if (status.TaskBeingProcessed == null) {
                 return;
@@ -80,7 +84,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
 
             await TashCommunicator.ShowStatusAsync(status);
 
-            SimpleLogger.LogInformation($"{status.TaskBeingProcessed.Type} requested via remote control");
+            SimpleLogger.LogInformationWithCallStack($"{status.TaskBeingProcessed.Type} requested via remote control", methodNamesFromStack);
             await ProcessSingleTaskAsync(status);
 
             status.TaskBeingProcessed = null;
@@ -90,8 +94,9 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     protected virtual void OnStatusChangedToProcessingCommunicated(ITashTaskHandlingStatus<TModel> status) { }
 
     protected virtual async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
-            SimpleLogger.LogInformation($"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandlerBase<TModel>)}");
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessSingleTaskAsync), SimpleLogger.LogId))) {
+            var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
+            SimpleLogger.LogInformationWithCallStack($"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandlerBase<TModel>)}", methodNamesFromStack);
 
             switch (status.TaskBeingProcessed.Type) {
                 case ControllableProcessTaskType.ProcessTaskList:
@@ -103,10 +108,10 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
                         await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", deserializationErrorMessage);
                         return;
                     }
-                    SimpleLogger.LogInformation($"Processing a list of {tasks.Count} tasks in {nameof(TashHandlerBase<TModel>)}");
+                    SimpleLogger.LogInformationWithCallStack($"Processing a list of {tasks.Count} tasks in {nameof(TashHandlerBase<TModel>)}", methodNamesFromStack);
                     foreach (var task in tasks) {
                         status.TaskBeingProcessed = task;
-                        SimpleLogger.LogInformation($"Request processing a task of type {task.Type}");
+                        SimpleLogger.LogInformationWithCallStack($"Request processing a task of type {task.Type}", methodNamesFromStack);
                         await ProcessSingleTaskAsync(status);
                         status.TaskBeingProcessed = taskListTask;
                         if (task.Status == ControllableProcessTaskStatus.Completed) {
@@ -120,7 +125,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
                         return;
                     }
 
-                    SimpleLogger.LogInformation($"List of {tasks.Count} tasks processed successfully");
+                    SimpleLogger.LogInformationWithCallStack($"List of {tasks.Count} tasks processed successfully", methodNamesFromStack);
                     await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, false, "");
                     break;
                 case ControllableProcessTaskType.Maximize:
@@ -165,7 +170,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     }
 
     protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessPressButtonTaskAsync), SimpleLogger.LogId))) {
             var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);
             if (command != null) {
                 await command.ExecuteAsync();

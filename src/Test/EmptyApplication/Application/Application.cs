@@ -20,12 +20,14 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
 
     public ITashHandler<ApplicationModel> TashHandler { get; private set; }
     private readonly ITashAccessor TashAccessor;
+    private readonly IMethodNamesFromStackFramesExtractor MethodNamesFromStackFramesExtractor;
 
     public Application(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-        IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
-        ISimpleLogger simpleLogger)
+            IGuiAndApplicationSynchronizer<ApplicationModel> guiAndApplicationSynchronizer, ApplicationModel model, ITashAccessor tashAccessor,
+            ISimpleLogger simpleLogger, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
         : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
         TashAccessor = tashAccessor;
+        MethodNamesFromStackFramesExtractor = methodNamesFromStackFramesExtractor;
     }
 
     protected override async Task EnableOrDisableButtonsAsync() {
@@ -35,11 +37,11 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
     protected override void CreateCommandsAndHandlers() {
         Handlers = new ApplicationHandlers();
         Commands = new ApplicationCommands();
-        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger);
+        var communicator = new TashCommunicatorBase<IApplicationModel>(TashAccessor, SimpleLogger, MethodNamesFromStackFramesExtractor);
         var selectors = new Dictionary<string, ISelector>();
-        var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
-        var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors);
-        TashHandler = new TashHandler(TashAccessor, SimpleLogger, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+        var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors, MethodNamesFromStackFramesExtractor);
+        var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors, MethodNamesFromStackFramesExtractor);
+        TashHandler = new TashHandler(TashAccessor, SimpleLogger, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator, MethodNamesFromStackFramesExtractor);
     }
 
     public ITashTaskHandlingStatus<ApplicationModel> CreateTashTaskHandlingStatus() {

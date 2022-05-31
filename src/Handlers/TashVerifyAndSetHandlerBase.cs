@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
@@ -18,13 +18,15 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
     protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
     protected readonly ITashCommunicator<TModel> TashCommunicator;
     protected readonly Dictionary<string, ISelector> Selectors;
+    protected readonly IMethodNamesFromStackFramesExtractor MethodNamesFromStackFramesExtractor;
 
     protected TashVerifyAndSetHandlerBase(ISimpleLogger simpleLogger, ITashSelectorHandler<TModel> tashSelectorHandler, ITashCommunicator<TModel> tashCommunicator,
-        Dictionary<string, ISelector> selectors) {
+            Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor) {
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
         TashSelectorHandler = tashSelectorHandler ?? throw new ArgumentNullException(nameof(tashSelectorHandler));
         TashCommunicator = tashCommunicator ?? throw new ArgumentNullException(nameof(tashCommunicator));
         Selectors = selectors ?? throw new ArgumentNullException(nameof(selectors));
+        MethodNamesFromStackFramesExtractor = methodNamesFromStackFramesExtractor ?? throw new ArgumentNullException(nameof(methodNamesFromStackFramesExtractor));
     }
 
     protected abstract Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<TModel> status);
@@ -34,12 +36,14 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
     protected abstract Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
 
     protected virtual void OnValueTaskProcessed(ITashTaskHandlingStatus<TModel> status, bool verify, bool set, string actualValue) {
+        var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
         if (!verify || actualValue == status.TaskBeingProcessed.Text) {
-            SimpleLogger.LogInformation($"{status.TaskBeingProcessed.ControlName} as set to {actualValue}");
+            SimpleLogger.LogInformationWithCallStack($"{status.TaskBeingProcessed.ControlName} as set to {actualValue}", methodNamesFromStack);
         } else {
-            SimpleLogger.LogInformation(set
+            SimpleLogger.LogInformationWithCallStack(set
                 ? $"Could not set {status.TaskBeingProcessed.ControlName} to \"{status.TaskBeingProcessed.Text}\", it is \"{actualValue}\""
                 : $"Expected {status.TaskBeingProcessed.ControlName} to be \"{status.TaskBeingProcessed.Text}\", got \"{actualValue}\""
+                , methodNamesFromStack
             );
         }
     }
@@ -47,20 +51,21 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
     public async Task ProcessVerifyGetOrSetValueOrLabelTaskAsync(ITashTaskHandlingStatus<TModel> status, bool verify, bool set, bool label, bool combined) {
         string actualValue;
         var controlName = status.TaskBeingProcessed.ControlName;
+        var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
         if (Selectors.ContainsKey(controlName)) {
             if (set) {
                 if (combined) {
                     var errorMessage = $"Cannot set items for {controlName}, that has not been implemented";
-                    SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
+                    SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage}", methodNamesFromStack);
                     await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
                     return;
                 }
-                SimpleLogger.LogInformation($"Setting value for {controlName} via SelectComboOrResetTask");
+                SimpleLogger.LogInformationWithCallStack($"Setting value for {controlName} via SelectComboOrResetTask", methodNamesFromStack);
                 await TashSelectorHandler.ProcessSelectComboOrResetTaskAsync(status);
                 if (status.TaskBeingProcessed.Status != ControllableProcessTaskStatus.Completed) {
                     return;
                 }
-                SimpleLogger.LogInformation($"Value for {controlName} set (via SelectComboOrResetTask)");
+                SimpleLogger.LogInformationWithCallStack($"Value for {controlName} set (via SelectComboOrResetTask)", methodNamesFromStack);
             }
 
             var selector = Selectors[controlName];
@@ -69,7 +74,7 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
                 : label ? selector.LabelText : selector.SelectedItem.Name;
         } else if (combined) {
             var errorMessage = $"{controlName} is not a selector control";
-            SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
+            SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage}", methodNamesFromStack);
             await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
             return;
         } else {
@@ -88,7 +93,7 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
                     actualValue = await GetOrSetCollectionViewSourceAsync(collectionViewSources[controlName], collectionViewSourceHandler, set, status.TaskBeingProcessed.Text);
                 } else {
                     var errorMessage = $"Unknown text or selector control {controlName}";
-                    SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage}");
+                    SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage}", methodNamesFromStack);
                     await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
                     return;
                 }
@@ -130,11 +135,12 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
 
     public async Task ProcessVerifyWhetherEnabledTaskAsync(ITashTaskHandlingStatus<TModel> status) {
         bool actualEnabled;
+        var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
         var properties = typeof(TModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         var property = properties.FirstOrDefault(p => p.Name == status.TaskBeingProcessed.ControlName);
         if (property == null) {
             var errorMessage = $"Unknown enabled/disabled control {status.TaskBeingProcessed.ControlName}";
-            SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage})");
+            SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage})", methodNamesFromStack);
             await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
             return;
         }
@@ -155,7 +161,7 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
                 break;
             default: {
                 var errorMessage = $"Unknown enabled/disabled control {status.TaskBeingProcessed.ControlName}";
-                SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage})");
+                SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage})", methodNamesFromStack);
                 await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
                 return;
             }
@@ -180,16 +186,17 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
     }
 
     public async Task ProcessVerifyNumberOfItemsTaskAsync(ITashTaskHandlingStatus<TModel> status) {
+        var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
         if (string.IsNullOrWhiteSpace(status.TaskBeingProcessed.Text)) {
             var errorMessage = $"No number of items specified for {status.TaskBeingProcessed.ControlName}";
-            SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process {errorMessage}");
+            SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process {errorMessage}", methodNamesFromStack);
             await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
             return;
         }
 
         if (!Selectors.ContainsKey(status.TaskBeingProcessed.ControlName)) {
             var errorMessage = $"Unknown control {status.TaskBeingProcessed.ControlName} with number of items";
-            SimpleLogger.LogInformation($"Communicating 'BadRequest' to remote controlling process ({errorMessage})");
+            SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage})", methodNamesFromStack);
             await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
             return;
         }

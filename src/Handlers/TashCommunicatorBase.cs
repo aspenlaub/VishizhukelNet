@@ -2,32 +2,35 @@
 using System.Net;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 
 public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TModel : IApplicationModelBase {
     protected readonly ITashAccessor TashAccessor;
     protected readonly ISimpleLogger SimpleLogger;
+    protected readonly IMethodNamesFromStackFramesExtractor MethodNamesFromStackFramesExtractor;
 
-    public TashCommunicatorBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger) {
+    public TashCommunicatorBase(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor) {
         TashAccessor = tashAccessor ?? throw new ArgumentNullException(nameof(tashAccessor));
         SimpleLogger = simpleLogger ?? throw new ArgumentNullException(nameof(simpleLogger));
+        MethodNamesFromStackFramesExtractor = methodNamesFromStackFramesExtractor ?? throw new ArgumentNullException(nameof(methodNamesFromStackFramesExtractor));
     }
 
     public virtual async Task CommunicateAndShowCompletedOrFailedAsync(ITashTaskHandlingStatus<TModel> status, bool setText, string text) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(CommunicateAndShowCompletedOrFailedAsync), SimpleLogger.LogId))) {
+            var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             if (status.Model.Status.Type == StatusType.Error) {
                 var errorMessage = status.Model.Status.Text;
-                SimpleLogger.LogInformation($"Communicating 'Failed' with text {errorMessage} to remote controlling process");
+                SimpleLogger.LogInformationWithCallStack($"Communicating 'Failed' with text {errorMessage} to remote controlling process", methodNamesFromStack);
                 await ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.Failed, false, "", errorMessage);
             } else {
-                SimpleLogger.LogInformation("Communicating 'Completed' to remote controlling process");
+                SimpleLogger.LogInformationWithCallStack("Communicating 'Completed' to remote controlling process", methodNamesFromStack);
                 await ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.Completed, setText, text, "");
             }
         }
@@ -40,7 +43,8 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
 
     public async Task ChangeCommunicateAndShowProcessTaskStatusAsync(ITashTaskHandlingStatus<TModel> status,
         ControllableProcessTaskStatus newStatus, bool setText, string text, string errorMessage) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ChangeCommunicateAndShowProcessTaskStatusAsync), SimpleLogger.LogId))) {
+            var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             status.TaskBeingProcessed.Status = newStatus;
             if (newStatus == ControllableProcessTaskStatus.Failed || newStatus == ControllableProcessTaskStatus.BadRequest) {
                 status.TaskBeingProcessed.ErrorMessage = errorMessage;
@@ -50,11 +54,11 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
                 status.TaskBeingProcessed.Text = text;
             }
 
-            SimpleLogger.LogInformation($"Confirm new status of task with id={status.TaskBeingProcessed.Id}");
+            SimpleLogger.LogInformationWithCallStack($"Confirm new status of task with id={status.TaskBeingProcessed.Id}", methodNamesFromStack);
             await ConfirmStatusOfTaskBeingProcessedAsync(status);
-            SimpleLogger.LogInformation($"Confirm that process with id={status.ProcessId} is alive");
+            SimpleLogger.LogInformationWithCallStack($"Confirm that process with id={status.ProcessId} is alive", methodNamesFromStack);
             await ConfirmAliveAsync(status, ControllableProcessStatus.Idle, DateTime.Now);
-            SimpleLogger.LogInformation("Show status");
+            SimpleLogger.LogInformationWithCallStack("Show status", methodNamesFromStack);
             await ShowStatusAsync(status);
         }
     }

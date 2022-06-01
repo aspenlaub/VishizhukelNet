@@ -23,7 +23,7 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
     }
 
     public virtual async Task CommunicateAndShowCompletedOrFailedAsync(ITashTaskHandlingStatus<TModel> status, bool setText, string text) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(CommunicateAndShowCompletedOrFailedAsync), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(CommunicateAndShowCompletedOrFailedAsync)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             if (status.Model.Status.Type == StatusType.Error) {
                 var errorMessage = status.Model.Status.Text;
@@ -43,7 +43,7 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
 
     public async Task ChangeCommunicateAndShowProcessTaskStatusAsync(ITashTaskHandlingStatus<TModel> status,
         ControllableProcessTaskStatus newStatus, bool setText, string text, string errorMessage) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ChangeCommunicateAndShowProcessTaskStatusAsync), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(ChangeCommunicateAndShowProcessTaskStatusAsync)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             status.TaskBeingProcessed.Status = newStatus;
             if (newStatus == ControllableProcessTaskStatus.Failed || newStatus == ControllableProcessTaskStatus.BadRequest) {

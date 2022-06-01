@@ -11,7 +11,6 @@ using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Enums;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 // ReSharper disable UnusedMember.Global
 
@@ -67,7 +66,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     }
 
     public async Task ProcessTashAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessTashAsync), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(ProcessTashAsync)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             status.TaskBeingProcessed = status.ControllableProcessTasks.FirstOrDefault(t => t.Status == ControllableProcessTaskStatus.Requested);
             if (status.TaskBeingProcessed == null) {
@@ -94,7 +93,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     protected virtual void OnStatusChangedToProcessingCommunicated(ITashTaskHandlingStatus<TModel> status) { }
 
     protected virtual async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessSingleTaskAsync), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(ProcessSingleTaskAsync)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             SimpleLogger.LogInformationWithCallStack($"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandlerBase<TModel>)}", methodNamesFromStack);
 
@@ -170,7 +169,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     }
 
     protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessPressButtonTaskAsync), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(ProcessPressButtonTaskAsync)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);
             if (command != null) {

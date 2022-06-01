@@ -33,21 +33,21 @@ public abstract class ApplicationBase<TGuiAndApplicationSynchronizer, TModel>
     }
 
     public virtual async Task OnLoadedAsync() {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(OnLoadedAsync) + "Base", SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(OnLoadedAsync) + "Base"))) {
             CreateCommandsAndHandlers();
             await EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }
 
     public async Task EnableOrDisableButtonsThenSyncGuiAndAppAsync() {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(EnableOrDisableButtonsThenSyncGuiAndAppAsync), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(EnableOrDisableButtonsThenSyncGuiAndAppAsync)))) {
             await EnableOrDisableButtonsAsync();
             await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
         }
     }
 
     public async Task SyncGuiAndAppAsync() {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(SyncGuiAndAppAsync), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(SyncGuiAndAppAsync)))) {
             await GuiAndApplicationSynchronizer.OnModelDataChangedAsync();
         }
     }

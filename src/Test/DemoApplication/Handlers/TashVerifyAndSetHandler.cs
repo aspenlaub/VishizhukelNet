@@ -8,12 +8,12 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
 public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationModel> {
-    private readonly IApplicationHandlers DemoApplicationHandlers;
+    private readonly IApplicationHandlers _DemoApplicationHandlers;
 
     public TashVerifyAndSetHandler(IApplicationHandlers demoApplicationHandlers, ISimpleLogger simpleLogger, ITashSelectorHandler<IApplicationModel> tashSelectorHandler,
         ITashCommunicator<IApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
         : base(simpleLogger, tashSelectorHandler, tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
-        DemoApplicationHandlers = demoApplicationHandlers;
+        _DemoApplicationHandlers = demoApplicationHandlers;
     }
 
     protected override Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
@@ -24,7 +24,7 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationM
 
     protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new() {
-            { nameof(status.Model.Alpha), DemoApplicationHandlers.AlphaTextHandler }
+            { nameof(status.Model.Alpha), _DemoApplicationHandlers.AlphaTextHandler }
         };
     }
 
@@ -36,7 +36,7 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationM
 
     protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new() {
-            { nameof(status.Model.Theta), DemoApplicationHandlers.ThetaHandler }
+            { nameof(status.Model.Theta), _DemoApplicationHandlers.ThetaHandler }
         };
     }
 

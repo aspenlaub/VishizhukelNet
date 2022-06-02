@@ -13,28 +13,28 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 
 public class TashTimer<TModel> : IAsyncDisposable, ITashTimer<TModel> where TModel : IApplicationModelBase {
-    private DispatcherTimer DispatcherTimer;
-    private readonly int ProcessId;
-    private readonly ITashAccessor TashAccessor;
-    private readonly ITashHandler<TModel> TashHandler;
-    private readonly IGuiToApplicationGate GuiToApplicationGate;
+    private DispatcherTimer _DispatcherTimer;
+    private readonly int _ProcessId;
+    private readonly ITashAccessor _TashAccessor;
+    private readonly ITashHandler<TModel> _TashHandler;
+    private readonly IGuiToApplicationGate _GuiToApplicationGate;
 
     public TashTimer(ITashAccessor tashAccessor, ITashHandler<TModel> tashHandler, IGuiToApplicationGate guiToApplicationGate) {
-        ProcessId = Process.GetCurrentProcess().Id;
-        TashAccessor = tashAccessor;
-        TashHandler = tashHandler;
-        GuiToApplicationGate = guiToApplicationGate;
+        _ProcessId = Process.GetCurrentProcess().Id;
+        _TashAccessor = tashAccessor;
+        _TashHandler = tashHandler;
+        _GuiToApplicationGate = guiToApplicationGate;
     }
 
     public async ValueTask DisposeAsync() {
-        if (DispatcherTimer == null) { return; }
+        if (_DispatcherTimer == null) { return; }
         await StopTimerAndConfirmDeadAsync(true);
     }
 
     public async Task<bool> ConnectAndMakeTashRegistrationReturnSuccessAsync(string windowTitle) {
         IEnumerable<ControllableProcess> processes = null;
         try {
-            processes = await TashAccessor.GetControllableProcessesAsync();
+            processes = await _TashAccessor.GetControllableProcessesAsync();
             // ReSharper disable once EmptyGeneralCatchClause
         } catch {
         }
@@ -43,7 +43,7 @@ public class TashTimer<TModel> : IAsyncDisposable, ITashTimer<TModel> where TMod
             return false;
         }
 
-        var statusCode = await TashAccessor.PutControllableProcessAsync(Process.GetCurrentProcess());
+        var statusCode = await _TashAccessor.PutControllableProcessAsync(Process.GetCurrentProcess());
         if (statusCode == HttpStatusCode.Created || statusCode == HttpStatusCode.NoContent) {
             return true;
         }
@@ -53,29 +53,29 @@ public class TashTimer<TModel> : IAsyncDisposable, ITashTimer<TModel> where TMod
     }
 
     public void CreateAndStartTimer(ITashTaskHandlingStatus<TModel> status) {
-        DispatcherTimer = new DispatcherTimer();
-        DispatcherTimer.Tick += async (_, _) => await TimerCallbackAsync(status);
-        DispatcherTimer.Interval = TimeSpan.FromSeconds(7);
-        DispatcherTimer.Start();
+        _DispatcherTimer = new DispatcherTimer();
+        _DispatcherTimer.Tick += async (_, _) => await TimerCallbackAsync(status);
+        _DispatcherTimer.Interval = TimeSpan.FromSeconds(7);
+        _DispatcherTimer.Start();
     }
 
     private async Task TimerCallbackAsync(ITashTaskHandlingStatus<TModel> status) {
-        if (await TashHandler.UpdateTashStatusAndReturnIfIsWorkAsync(status)) {
-            await GuiToApplicationGate.CallbackAsync(() => TashHandler.ProcessTashAsync(status));
+        if (await _TashHandler.UpdateTashStatusAndReturnIfIsWorkAsync(status)) {
+            await _GuiToApplicationGate.CallbackAsync(() => _TashHandler.ProcessTashAsync(status));
         }
     }
 
     public async Task StopTimerAndConfirmDeadAsync(bool ignoreSocketException) {
-        DispatcherTimer?.Stop();
-        DispatcherTimer = null;
+        _DispatcherTimer?.Stop();
+        _DispatcherTimer = null;
 
         if (ignoreSocketException) {
             try {
-                await TashAccessor.ConfirmDeadWhileClosingAsync(ProcessId);
+                await _TashAccessor.ConfirmDeadWhileClosingAsync(_ProcessId);
             } catch (SocketException) {
             }
         } else {
-            await TashAccessor.ConfirmDeadWhileClosingAsync(ProcessId);
+            await _TashAccessor.ConfirmDeadWhileClosingAsync(_ProcessId);
         }
     }
 }

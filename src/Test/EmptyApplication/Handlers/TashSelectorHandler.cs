@@ -12,11 +12,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Handl
 
 public class TashSelectorHandler : TashSelectorHandlerBase<IApplicationModel> {
     // ReSharper disable once NotAccessedField.Local
-    private readonly IApplicationHandlers ApplicationHandlers;
+    private readonly IApplicationHandlers _ApplicationHandlers;
 
     public TashSelectorHandler(IApplicationHandlers applicationHandlers, ISimpleLogger simpleLogger, ITashCommunicator<IApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
         : base(simpleLogger, tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
-        ApplicationHandlers = applicationHandlers;
+        _ApplicationHandlers = applicationHandlers;
     }
 
     protected override async Task SelectedIndexChangedAsync(ITashTaskHandlingStatus<IApplicationModel> status, string controlName, int selectedIndex, bool selectablesChanged) {

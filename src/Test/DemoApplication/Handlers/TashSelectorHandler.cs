@@ -10,11 +10,11 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
 public class TashSelectorHandler : TashSelectorHandlerBase<IApplicationModel> {
-    private readonly IApplicationHandlers DemoApplicationHandlers;
+    private readonly IApplicationHandlers _DemoApplicationHandlers;
 
     public TashSelectorHandler(IApplicationHandlers demoApplicationHandlers, ISimpleLogger simpleLogger, ITashCommunicator<IApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
         : base(simpleLogger, tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
-        DemoApplicationHandlers = demoApplicationHandlers;
+        _DemoApplicationHandlers = demoApplicationHandlers;
     }
 
     protected override async Task SelectedIndexChangedAsync(ITashTaskHandlingStatus<IApplicationModel> status, string controlName, int selectedIndex, bool selectablesChanged) {
@@ -23,7 +23,7 @@ public class TashSelectorHandler : TashSelectorHandlerBase<IApplicationModel> {
             SimpleLogger.LogInformationWithCallStack($"Changing selected index for {controlName} to {selectedIndex}", methodNamesFromStack);
             switch (controlName) {
                 case nameof(status.Model.Beta):
-                    await DemoApplicationHandlers.BetaSelectorHandler.SelectedIndexChangedAsync(selectedIndex);
+                    await _DemoApplicationHandlers.BetaSelectorHandler.SelectedIndexChangedAsync(selectedIndex);
                     break;
                 default:
                     var errorMessage = $"Do not know how to select for {status.TaskBeingProcessed.ControlName}";

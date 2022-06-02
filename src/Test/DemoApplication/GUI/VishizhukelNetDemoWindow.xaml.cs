@@ -22,8 +22,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI;
 public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNetWindowUnderTest {
     private static IContainer Container { get; set; }
 
-    private VishizhukelDemoApplication DemoApp;
-    private ITashTimer<ApplicationModel> TashTimer;
+    private VishizhukelDemoApplication _DemoApp;
+    private ITashTimer<ApplicationModel> _TashTimer;
 
     public bool IsWindowUnderTest { get; set; }
 
@@ -41,34 +41,34 @@ public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNe
     private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
         await BuildContainerIfNecessaryAsync();
 
-        DemoApp = Container.Resolve<VishizhukelDemoApplication>();
-        await DemoApp.OnLoadedAsync();
+        _DemoApp = Container.Resolve<VishizhukelDemoApplication>();
+        await _DemoApp.OnLoadedAsync();
 
         var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
         var buttonNameToCommandMapper = Container.Resolve<IButtonNameToCommandMapper>();
         var toggleButtonNameToHandlerMapper = Container.Resolve<IToggleButtonNameToHandlerMapper>();
 
-        var commands = DemoApp.Commands;
+        var commands = _DemoApp.Commands;
         guiToAppGate.WireButtonAndCommand(Gamma, commands.GammaCommand, buttonNameToCommandMapper);
         guiToAppGate.WireButtonAndCommand(Iota, commands.IotaCommand, buttonNameToCommandMapper);
         guiToAppGate.WireButtonAndCommand(Kappa, commands.KappaCommand, buttonNameToCommandMapper);
 
-        var handlers = DemoApp.Handlers;
-        guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => DemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));
+        var handlers = _DemoApp.Handlers;
+        guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => _DemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));
         guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i));
 
-        guiToAppGate.WireToggleButtonAndHandler(MethodAdd, DemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
-        guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, DemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
+        guiToAppGate.WireToggleButtonAndHandler(MethodAdd, _DemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
+        guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, _DemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
 
-        guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
+        guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => _DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
 
         if (IsWindowUnderTest) {
-            TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), DemoApp.TashHandler, guiToAppGate);
-            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {
+            _TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), _DemoApp.TashHandler, guiToAppGate);
+            if (!await _TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.DemoWindowTitle)) {
                 Close();
             }
 
-            TashTimer.CreateAndStartTimer(DemoApp.CreateTashTaskHandlingStatus());
+            _TashTimer.CreateAndStartTimer(_DemoApp.CreateTashTaskHandlingStatus());
         }
 
         AdjustZetaAndItsCanvas();
@@ -77,23 +77,23 @@ public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNe
     }
 
     public async ValueTask DisposeAsync() {
-        if (TashTimer == null) { return; }
+        if (_TashTimer == null) { return; }
 
-        await TashTimer.StopTimerAndConfirmDeadAsync(false);
+        await _TashTimer.StopTimerAndConfirmDeadAsync(false);
     }
 
     private async void OnClosing(object sender, CancelEventArgs e) {
-        if (TashTimer == null) { return; }
+        if (_TashTimer == null) { return; }
 
         e.Cancel = true;
 
-        await TashTimer.StopTimerAndConfirmDeadAsync(false);
+        await _TashTimer.StopTimerAndConfirmDeadAsync(false);
 
         WindowsApplication.Current.Shutdown();
     }
 
     private void OnStateChanged(object sender, EventArgs e) {
-        DemoApp.OnWindowStateChanged(WindowState);
+        _DemoApp.OnWindowStateChanged(WindowState);
     }
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e) {

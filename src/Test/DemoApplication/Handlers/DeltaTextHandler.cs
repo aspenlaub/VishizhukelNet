@@ -6,18 +6,18 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
 public class DeltaTextHandler : ISimpleTextHandler {
-    private readonly IApplicationModel Model;
-    private readonly IGuiAndAppHandler<ApplicationModel> GuiAndAppHandler;
+    private readonly IApplicationModel _Model;
+    private readonly IGuiAndAppHandler<ApplicationModel> _GuiAndAppHandler;
 
     public DeltaTextHandler(IApplicationModel model, IGuiAndAppHandler<ApplicationModel> guiAndAppHandler) {
-        Model = model;
-        GuiAndAppHandler = guiAndAppHandler;
+        _Model = model;
+        _GuiAndAppHandler = guiAndAppHandler;
     }
 
     public async Task TextChangedAsync(string text) {
-        if (Model.Delta.Text == text) { return; }
+        if (_Model.Delta.Text == text) { return; }
 
-        Model.Delta.Text = text;
-        await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+        _Model.Delta.Text = text;
+        await _GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 }

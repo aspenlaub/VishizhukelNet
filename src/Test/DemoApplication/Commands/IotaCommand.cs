@@ -6,14 +6,14 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands;
 
 public class IotaCommand : ICommand {
-    private readonly IApplicationModel Model;
+    private readonly IApplicationModel _Model;
 
     public IotaCommand(IApplicationModel model) {
-        Model = model;
+        _Model = model;
     }
 
     public async Task ExecuteAsync() {
-        if (!Model.Gamma.Enabled) {
+        if (!_Model.Gamma.Enabled) {
             return;
         }
 

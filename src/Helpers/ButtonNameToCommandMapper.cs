@@ -4,13 +4,13 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 
 public class ButtonNameToCommandMapper : IButtonNameToCommandMapper {
-    private readonly IDictionary<string, ICommand> ButtonNameToCommandDictionary = new Dictionary<string, ICommand>();
+    private readonly IDictionary<string, ICommand> _ButtonNameToCommandDictionary = new Dictionary<string, ICommand>();
 
     public void Register(string name, ICommand command) {
-        ButtonNameToCommandDictionary[name] = command;
+        _ButtonNameToCommandDictionary[name] = command;
     }
 
     public ICommand CommandForButton(string name) {
-        return !ButtonNameToCommandDictionary.ContainsKey(name) ? null : ButtonNameToCommandDictionary[name];
+        return !_ButtonNameToCommandDictionary.ContainsKey(name) ? null : _ButtonNameToCommandDictionary[name];
     }
 }

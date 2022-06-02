@@ -18,8 +18,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.GUI;
 public partial class VishizhukelNetEmptyWindow : IAsyncDisposable, IVishizhukelNetWindowUnderTest {
     private static IContainer Container { get; set; }
 
-    private Application.Application Application;
-    private ITashTimer<ApplicationModel> TashTimer;
+    private Application.Application _Application;
+    private ITashTimer<ApplicationModel> _TashTimer;
 
     public bool IsWindowUnderTest { get; set; }
 
@@ -37,39 +37,39 @@ public partial class VishizhukelNetEmptyWindow : IAsyncDisposable, IVishizhukelN
     private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
         await BuildContainerIfNecessaryAsync();
 
-        Application = Container.Resolve<Application.Application>();
-        await Application.OnLoadedAsync();
+        _Application = Container.Resolve<Application.Application>();
+        await _Application.OnLoadedAsync();
 
         if (IsWindowUnderTest) {
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), Application.TashHandler, guiToAppGate);
-            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.EmptyWindowTitle)) {
+            _TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), _Application.TashHandler, guiToAppGate);
+            if (!await _TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.EmptyWindowTitle)) {
                 Close();
             }
 
-            TashTimer.CreateAndStartTimer(Application.CreateTashTaskHandlingStatus());
+            _TashTimer.CreateAndStartTimer(_Application.CreateTashTaskHandlingStatus());
         }
 
         await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(5));
     }
 
     public async ValueTask DisposeAsync() {
-        if (TashTimer == null) { return; }
+        if (_TashTimer == null) { return; }
 
-        await TashTimer.StopTimerAndConfirmDeadAsync(false);
+        await _TashTimer.StopTimerAndConfirmDeadAsync(false);
     }
 
     private async void OnClosing(object sender, CancelEventArgs e) {
-        if (TashTimer == null) { return; }
+        if (_TashTimer == null) { return; }
 
         e.Cancel = true;
 
-        await TashTimer.StopTimerAndConfirmDeadAsync(false);
+        await _TashTimer.StopTimerAndConfirmDeadAsync(false);
 
         WindowsApplication.Current.Shutdown();
     }
 
     private void OnStateChanged(object sender, EventArgs e) {
-        Application.OnWindowStateChanged(WindowState);
+        _Application.OnWindowStateChanged(WindowState);
     }
 }

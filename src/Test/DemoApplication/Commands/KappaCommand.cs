@@ -6,14 +6,14 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Commands;
 
 public class KappaCommand : ICommand {
-    private readonly IApplicationModel Model;
+    private readonly IApplicationModel _Model;
 
     public KappaCommand(IApplicationModel model) {
-        Model = model;
+        _Model = model;
     }
 
     public async Task ExecuteAsync() {
-        if (!await Task.FromResult(Model.Kappa.Enabled)) {
+        if (!await Task.FromResult(_Model.Kappa.Enabled)) {
             return;
         }
 

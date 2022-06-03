@@ -91,7 +91,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow>
     }
 
     public async Task OnModelDataChangedAsync() {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(OnModelDataChangedAsync) + "Base"))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(OnModelDataChangedAsync) + "Base"))) {
             IndicateBusy(false);
 
             foreach (var modelPropertyToWindowFieldMapping in ModelPropertyToWindowFieldMapping) {

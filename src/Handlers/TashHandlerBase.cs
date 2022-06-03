@@ -66,7 +66,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     }
 
     public async Task ProcessTashAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(ProcessTashAsync)))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessTashAsync)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             status.TaskBeingProcessed = status.ControllableProcessTasks.FirstOrDefault(t => t.Status == ControllableProcessTaskStatus.Requested);
             if (status.TaskBeingProcessed == null) {
@@ -93,7 +93,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     protected virtual void OnStatusChangedToProcessingCommunicated(ITashTaskHandlingStatus<TModel> status) { }
 
     protected virtual async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(ProcessSingleTaskAsync)))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessSingleTaskAsync)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             SimpleLogger.LogInformationWithCallStack($"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandlerBase<TModel>)}", methodNamesFromStack);
 
@@ -169,7 +169,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
     }
 
     protected async Task ProcessPressButtonTaskAsync(ITashTaskHandlingStatus<TModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.CreateWithRandomId(nameof(ProcessPressButtonTaskAsync)))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(ProcessPressButtonTaskAsync)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             var command = ButtonNameToCommandMapper.CommandForButton(status.TaskBeingProcessed.ControlName);
             if (command != null) {

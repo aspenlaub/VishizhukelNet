@@ -19,7 +19,7 @@ public class WindowTest : IntegrationTestBase {
         var tasks = new List<ControllableProcessTask> {
             sut.CreateMaximizeTask(process)
         };
-        await sut.RemotelyProcessTaskListAsync(process, tasks);
+        await sut.RemotelyProcessTaskListAsync(process, tasks, false, (_, _) => Task.CompletedTask);
     }
 
     [TestMethod]
@@ -33,7 +33,7 @@ public class WindowTest : IntegrationTestBase {
             sut.CreateVerifyNumberOfItemsTask(process, nameof(VishizhukelNetDemoApplicationModel.Beta), 5),
             sut.CreateSelectBetaTask(process, "49")
         };
-        await sut.RemotelyProcessTaskListAsync(process, tasks);
+        await sut.RemotelyProcessTaskListAsync(process, tasks, false, (_, _) => Task.CompletedTask);
     }
 
     [TestMethod]
@@ -55,6 +55,6 @@ public class WindowTest : IntegrationTestBase {
             sut.CreateSetValueTask(process, nameof(VishizhukelNetDemoApplicationModel.Theta), nonEmptyListJson),
             sut.CreateVerifyValueTask(process, nameof(VishizhukelNetDemoApplicationModel.Theta), nonEmptyListJson),
         };
-        await sut.RemotelyProcessTaskListAsync(process, tasks);
+        await sut.RemotelyProcessTaskListAsync(process, tasks, false, (_, _) => Task.CompletedTask);
     }
 }

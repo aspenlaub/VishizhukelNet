@@ -42,7 +42,7 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="TashClient" Version="2.0.1148.819" />
+		<PackageReference Include="TashClient" Version="2.0.1155.1173" />
 		<PackageReference Include="Vishizhukel" Version="2.0.1141.1203" />
 	</ItemGroup>
 	<ItemGroup>

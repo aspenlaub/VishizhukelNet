@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>net7.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<AssemblyName>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</AssemblyName>
 		<RootNamespace>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet</RootNamespace>
@@ -42,8 +42,8 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="TashClient" Version="2.0.1204.875" />
-		<PackageReference Include="Vishizhukel" Version="2.0.1204.866" />
+		<PackageReference Include="TashClient" Version="2.0.1206.483" />
+		<PackageReference Include="Vishizhukel" Version="2.0.1206.506" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">

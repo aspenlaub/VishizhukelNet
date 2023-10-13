@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
@@ -9,7 +10,6 @@ using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 
@@ -34,7 +34,7 @@ public abstract class TashVerifyAndSetHandlerBase<TModel, TCollectionViewSourceE
     protected abstract Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<TModel> status);
     protected abstract Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
 
-    protected abstract Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<TModel> status);
+    protected abstract Dictionary<string, ICollectionViewSource<TCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<TModel> status);
     protected abstract Dictionary<string, ISimpleCollectionViewSourceHandler<TCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
 
     protected virtual void OnValueTaskProcessed(ITashTaskHandlingStatus<TModel> status, bool verify, bool set, string actualValue) {
@@ -105,10 +105,10 @@ public abstract class TashVerifyAndSetHandlerBase<TModel, TCollectionViewSourceE
         await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, true, actualValue);
     }
 
-    private async Task<string> GetOrSetCollectionViewSourceAsync(ICollectionViewSource collectionViewSource,
+    private async Task<string> GetOrSetCollectionViewSourceAsync(ICollectionViewSource<TCollectionViewSourceEntity> collectionViewSource,
             ISimpleCollectionViewSourceHandler<TCollectionViewSourceEntity> collectionViewSourceHandler, bool set, string text) {
         if (!set) {
-            return JsonConvert.SerializeObject(collectionViewSource.Items);
+            return JsonSerializer.Serialize(collectionViewSource.Items);
         }
 
         if (collectionViewSourceHandler == null) {
@@ -119,7 +119,7 @@ public abstract class TashVerifyAndSetHandlerBase<TModel, TCollectionViewSourceE
         var items = collectionViewSourceHandler.DeserializeJson(text);
         await collectionViewSourceHandler.CollectionChangedAsync(items);
 
-        return JsonConvert.SerializeObject(collectionViewSource.Items);
+        return JsonSerializer.Serialize(collectionViewSource.Items);
     }
 
     protected async Task<string> GetOrSetTextBoxValueAsync(ITextBox textBox, ISimpleTextHandler textHandler, bool label, bool set, string text) {

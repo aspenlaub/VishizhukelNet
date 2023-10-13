@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
@@ -11,7 +12,6 @@ using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Enums;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Newtonsoft.Json;
 // ReSharper disable UnusedMember.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
@@ -100,7 +100,7 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
             switch (status.TaskBeingProcessed.Type) {
                 case ControllableProcessTaskType.ProcessTaskList:
                     var taskListTask = status.TaskBeingProcessed;
-                    var tasks = JsonConvert.DeserializeObject<List<ControllableProcessTask>>(status.TaskBeingProcessed.Text);
+                    var tasks = JsonSerializer.Deserialize<List<ControllableProcessTask>>(status.TaskBeingProcessed.Text);
                     if (tasks == null) {
                         var deserializationErrorMessage = $"Could not deserialize {status.TaskBeingProcessed.Text}";
                         SimpleLogger.LogErrorWithCallStack($"Communicating 'BadRequest' to remote controlling process ({deserializationErrorMessage}", methodNamesFromStack);

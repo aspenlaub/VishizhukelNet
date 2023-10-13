@@ -29,7 +29,7 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationM
         };
     }
 
-    protected override Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
+    protected override Dictionary<string, ICollectionViewSource<DemoCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new() {
             { nameof(status.Model.Theta), status.Model.Theta }
         };

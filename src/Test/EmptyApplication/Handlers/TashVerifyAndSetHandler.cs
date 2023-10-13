@@ -3,13 +3,12 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces;
 using IApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Interfaces.IApplicationModel;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.EmptyApplication.Handlers;
 
-public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationModel, DemoCollectionViewSourceEntity> {
+public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationModel> {
     // ReSharper disable once NotAccessedField.Local
     private readonly IApplicationHandlers _ApplicationHandlers;
 
@@ -27,11 +26,11 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationM
         return new();
     }
 
-    protected override Dictionary<string, ICollectionViewSource<DemoCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
+    protected override Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new();
     }
 
-    protected override Dictionary<string, ISimpleCollectionViewSourceHandler<DemoCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
+    protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new();
     }
 

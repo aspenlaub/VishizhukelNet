@@ -66,7 +66,7 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
     public override async Task OnLoadedAsync() {
         await base.OnLoadedAsync();
         if (!App.IsIntegrationTest) {
-            var items = new List<DemoCollectionViewSourceEntity> {
+            var items = new List<ICollectionViewSourceEntity> {
                 new DemoCollectionViewSourceEntity {
                     Date = new DateTime(2022, 1, 19),
                     Name = "Some name",

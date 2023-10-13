@@ -3,12 +3,11 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
-public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationModel, DemoCollectionViewSourceEntity> {
+public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationModel> {
     private readonly IApplicationHandlers _DemoApplicationHandlers;
 
     public TashVerifyAndSetHandler(IApplicationHandlers demoApplicationHandlers, ISimpleLogger simpleLogger, ITashSelectorHandler<IApplicationModel> tashSelectorHandler,
@@ -29,13 +28,13 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<IApplicationM
         };
     }
 
-    protected override Dictionary<string, ICollectionViewSource<DemoCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
+    protected override Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new() {
             { nameof(status.Model.Theta), status.Model.Theta }
         };
     }
 
-    protected override Dictionary<string, ISimpleCollectionViewSourceHandler<DemoCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
+    protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<IApplicationModel> status) {
         return new() {
             { nameof(status.Model.Theta), _DemoApplicationHandlers.ThetaHandler }
         };

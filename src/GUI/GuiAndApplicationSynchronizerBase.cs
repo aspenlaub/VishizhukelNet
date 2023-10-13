@@ -29,10 +29,9 @@ using WindowsCollectionViewSource = System.Windows.Data.CollectionViewSource;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 
-public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow, TCollectionViewSourceEntity>
+public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow>
         : IGuiAndApplicationSynchronizer<TModel>
-            where TModel : class, IApplicationModelBase
-            where TCollectionViewSourceEntity : ICollectionViewSourceEntity {
+            where TModel : class, IApplicationModelBase {
     protected readonly TWindow Window;
     protected readonly Dictionary<PropertyInfo, FieldInfo> ModelPropertyToWindowFieldMapping, ModelPropertyToWindowLabelMapping;
     protected readonly Dictionary<PropertyInfo, PropertyInfo> ModelPropertyToWindowPropertyMapping;
@@ -137,7 +136,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow, TCollec
             foreach (var modelPropertyToCollectionViewSourceMapping in ModelPropertyToCollectionViewSourceMapping) {
                 var modelProperty = modelPropertyToCollectionViewSourceMapping.Key;
                 var collectionViewSource = modelPropertyToCollectionViewSourceMapping.Value;
-                UpdateCollectionViewSourceIfNecessary((ICollectionViewSource<TCollectionViewSourceEntity>)modelProperty.GetValue(Model), collectionViewSource);
+                UpdateCollectionViewSourceIfNecessary((ICollectionViewSource)modelProperty.GetValue(Model), collectionViewSource);
             }
 
             await Task.CompletedTask;
@@ -321,7 +320,7 @@ public abstract class GuiAndApplicationSynchronizerBase<TModel, TWindow, TCollec
         window.WindowState = modelWindowState;
     }
 
-    private void UpdateCollectionViewSourceIfNecessary(ICollectionViewSource<TCollectionViewSourceEntity> modelCollectionViewSource, WindowsCollectionViewSource windowCollectionViewSource) {
+    private void UpdateCollectionViewSourceIfNecessary(ICollectionViewSource modelCollectionViewSource, WindowsCollectionViewSource windowCollectionViewSource) {
         if (windowCollectionViewSource == null) { return; }
 
         var sortedOldItems = windowCollectionViewSource.View?.SourceCollection.Cast<object>().Cast<ICollectionViewSourceEntity>().OrderBy(item => item.Guid).ToList();

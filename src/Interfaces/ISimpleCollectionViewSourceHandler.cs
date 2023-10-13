@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-public interface ISimpleCollectionViewSourceHandler<TCollectionViewSourceEntity> where TCollectionViewSourceEntity : ICollectionViewSourceEntity {
-    Task CollectionChangedAsync(IList<TCollectionViewSourceEntity> items);
+public interface ISimpleCollectionViewSourceHandler {
+    Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items);
 
-    IList<TCollectionViewSourceEntity> DeserializeJson(string json);
+    IList<ICollectionViewSourceEntity> DeserializeJson(string json);
 }

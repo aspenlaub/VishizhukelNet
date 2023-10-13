@@ -8,14 +8,15 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
+using ToggleButton = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Controls.ToggleButton;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 
-public abstract class TashVerifyAndSetHandlerBase<TModel, TCollectionViewSourceEntity> : ITashVerifyAndSetHandler<TModel>
-        where TModel : IApplicationModelBase
-        where TCollectionViewSourceEntity : ICollectionViewSourceEntity {
+public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHandler<TModel>
+        where TModel : IApplicationModelBase {
     protected readonly ISimpleLogger SimpleLogger;
     protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
     protected readonly ITashCommunicator<TModel> TashCommunicator;
@@ -34,8 +35,8 @@ public abstract class TashVerifyAndSetHandlerBase<TModel, TCollectionViewSourceE
     protected abstract Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<TModel> status);
     protected abstract Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
 
-    protected abstract Dictionary<string, ICollectionViewSource<TCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<TModel> status);
-    protected abstract Dictionary<string, ISimpleCollectionViewSourceHandler<TCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
+    protected abstract Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<TModel> status);
+    protected abstract Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
 
     protected virtual void OnValueTaskProcessed(ITashTaskHandlingStatus<TModel> status, bool verify, bool set, string actualValue) {
         var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
@@ -105,10 +106,13 @@ public abstract class TashVerifyAndSetHandlerBase<TModel, TCollectionViewSourceE
         await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, true, actualValue);
     }
 
-    private async Task<string> GetOrSetCollectionViewSourceAsync(ICollectionViewSource<TCollectionViewSourceEntity> collectionViewSource,
-            ISimpleCollectionViewSourceHandler<TCollectionViewSourceEntity> collectionViewSourceHandler, bool set, string text) {
+    private async Task<string> GetOrSetCollectionViewSourceAsync(ICollectionViewSource collectionViewSource,
+            ISimpleCollectionViewSourceHandler collectionViewSourceHandler, bool set, string text) {
+        var list = new DynamicList(collectionViewSource.EntityType);
+
         if (!set) {
-            return JsonSerializer.Serialize(collectionViewSource.Items);
+            list.AddRange(collectionViewSource.Items);
+            return JsonSerializer.Serialize(list.ToList());
         }
 
         if (collectionViewSourceHandler == null) {
@@ -119,7 +123,8 @@ public abstract class TashVerifyAndSetHandlerBase<TModel, TCollectionViewSourceE
         var items = collectionViewSourceHandler.DeserializeJson(text);
         await collectionViewSourceHandler.CollectionChangedAsync(items);
 
-        return JsonSerializer.Serialize(collectionViewSource.Items);
+        list.AddRange(collectionViewSource.Items);
+        return JsonSerializer.Serialize(list.ToList());
     }
 
     protected async Task<string> GetOrSetTextBoxValueAsync(ITextBox textBox, ISimpleTextHandler textHandler, bool label, bool set, string text) {

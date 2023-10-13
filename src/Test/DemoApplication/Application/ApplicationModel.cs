@@ -23,7 +23,7 @@ public class ApplicationModel : ApplicationModelBase, IApplicationModel {
     public IRectangle Eta { get; } = new Rectangle {
         Left = 40, Top = 13, Width = 10, Height = 10, Stroke = new SolidColorBrush(Colors.LimeGreen) { Opacity = 0.5 }, StrokeThickness = 2
     };
-    public ICollectionViewSource<DemoCollectionViewSourceEntity> Theta { get; } = new CollectionViewSource<DemoCollectionViewSourceEntity> { EntityType = typeof(DemoCollectionViewSourceEntity) };
+    public ICollectionViewSource Theta { get; } = new CollectionViewSource { EntityType = typeof(DemoCollectionViewSourceEntity) };
     public Button Iota { get; } = new();
     public Button Kappa { get; } = new();
 

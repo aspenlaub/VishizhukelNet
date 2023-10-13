@@ -56,13 +56,13 @@ public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNe
         guiToAppGate.WireButtonAndCommand(Kappa, commands.KappaCommand, buttonNameToCommandMapper);
 
         var handlers = _DemoApp.Handlers;
-        guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, t => _DemoApp.Handlers.AlphaTextHandler.TextChangedAsync(t));
-        guiToAppGate.RegisterAsyncSelectorCallback(Beta, i => handlers.BetaSelectorHandler.SelectedIndexChangedAsync(i));
+        guiToAppGate.RegisterAsyncTextBoxCallback(Alpha, _DemoApp.Handlers.AlphaTextHandler.TextChangedAsync);
+        guiToAppGate.RegisterAsyncSelectorCallback(Beta, handlers.BetaSelectorHandler.SelectedIndexChangedAsync);
 
         guiToAppGate.WireToggleButtonAndHandler(MethodAdd, _DemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
         guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, _DemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
 
-        guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => _DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items.Cast<DemoCollectionViewSourceEntity>().ToList()));
+        guiToAppGate.RegisterAsyncDataGridCallback(Theta, _DemoApp.Handlers.ThetaHandler.CollectionChangedAsync);
 
         if (IsWindowUnderTest) {
             _TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), _DemoApp.TashHandler, guiToAppGate);

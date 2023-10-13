@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-public interface ICollectionViewSource<TCollectionViewSourceEntity> where TCollectionViewSourceEntity : ICollectionViewSourceEntity {
+public interface ICollectionViewSource {
     Type EntityType { get; set; }
-    IList<TCollectionViewSourceEntity> Items { get; set; }
+    IList<ICollectionViewSourceEntity> Items { get; set; }
 }

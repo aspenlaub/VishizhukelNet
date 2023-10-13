@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
-using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
@@ -26,7 +26,7 @@ public class ThetaHandler<TModel> : ISimpleCollectionViewSourceHandler where TMo
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJsonObject(string text) {
-        var list = JsonConvert.DeserializeObject<List<DemoCollectionViewSourceEntity>>(text);
+        var list = JsonSerializer.Deserialize<List<DemoCollectionViewSourceEntity>>(text);
         return list == null ? new List<ICollectionViewSourceEntity>() : list.Cast<ICollectionViewSourceEntity>().ToList();
     }
 }

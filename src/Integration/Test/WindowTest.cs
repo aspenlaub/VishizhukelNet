@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
 using VishizhukelNetDemoApplicationModel = Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application.ApplicationModel;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test;
@@ -41,14 +41,14 @@ public class WindowTest : IntegrationTestBase {
         using var sut = await CreateWindowUnderTestAsync(nameof(VishizhukelNetDemoWindow));
         var process = await sut.FindIdleProcessAsync();
         var emptyList = new List<DemoCollectionViewSourceEntity>();
-        var emptyListJson = JsonConvert.SerializeObject(emptyList);
+        var emptyListJson = JsonSerializer.Serialize(emptyList);
         var nonEmptyList = new List<DemoCollectionViewSourceEntity>
         {
             new() { Date = new DateTime(2021, 7, 30), Name = "Decreased", Balance = 2404.40 },
             new() { Date = new DateTime(2021, 7, 29), Name = "Increased", Balance = 2707.70 },
             new() { Date = new DateTime(2021, 7, 28), Name = "Unchanged", Balance = 2407.70 }
         };
-        var nonEmptyListJson = JsonConvert.SerializeObject(nonEmptyList);
+        var nonEmptyListJson = JsonSerializer.Serialize(nonEmptyList);
         var tasks = new List<ControllableProcessTask>
         {
             sut.CreateVerifyValueTask(process, nameof(VishizhukelNetDemoApplicationModel.Theta), emptyListJson),

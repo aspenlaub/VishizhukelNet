@@ -8,7 +8,8 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Handlers;
 
-public class ThetaHandler<TModel> : ISimpleCollectionViewSourceHandler where TModel : IApplicationModel {
+public class ThetaHandler<TModel> : ISimpleCollectionViewSourceHandler<DemoCollectionViewSourceEntity>
+        where TModel : IApplicationModel {
     private readonly IApplicationModel _Model;
     private readonly IGuiAndAppHandler<TModel> _GuiAndAppHandler;
 
@@ -17,7 +18,7 @@ public class ThetaHandler<TModel> : ISimpleCollectionViewSourceHandler where TMo
         _GuiAndAppHandler = guiAndAppHandler;
     }
 
-    public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
+    public async Task CollectionChangedAsync(IList<DemoCollectionViewSourceEntity> items) {
         _Model.Theta.Items.Clear();
         foreach (var item in items.Where(item => item.GetType() == _Model.Theta.EntityType)) {
             _Model.Theta.Items.Add(item);
@@ -25,8 +26,8 @@ public class ThetaHandler<TModel> : ISimpleCollectionViewSourceHandler where TMo
         await _GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
-    public IList<ICollectionViewSourceEntity> DeserializeJsonObject(string text) {
-        var list = JsonSerializer.Deserialize<List<DemoCollectionViewSourceEntity>>(text);
-        return list == null ? new List<ICollectionViewSourceEntity>() : list.Cast<ICollectionViewSourceEntity>().ToList();
+    public IList<DemoCollectionViewSourceEntity> DeserializeJson(string json) {
+        var list = JsonSerializer.Deserialize<List<DemoCollectionViewSourceEntity>>(json);
+        return list ?? new List<DemoCollectionViewSourceEntity>();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
@@ -7,6 +8,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Interfaces;
 using Autofac;
 using IContainer = Autofac.IContainer;
@@ -60,7 +62,7 @@ public partial class VishizhukelNetDemoWindow : IAsyncDisposable, IVishizhukelNe
         guiToAppGate.WireToggleButtonAndHandler(MethodAdd, _DemoApp.Handlers.MethodAddHandler, toggleButtonNameToHandlerMapper);
         guiToAppGate.WireToggleButtonAndHandler(MethodMultiply, _DemoApp.Handlers.MethodMultiplyHandler, toggleButtonNameToHandlerMapper);
 
-        guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => _DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items));
+        guiToAppGate.RegisterAsyncDataGridCallback(Theta, items => _DemoApp.Handlers.ThetaHandler.CollectionChangedAsync(items.Cast<DemoCollectionViewSourceEntity>().ToList()));
 
         if (IsWindowUnderTest) {
             _TashTimer = new TashTimer<ApplicationModel>(Container.Resolve<ITashAccessor>(), _DemoApp.TashHandler, guiToAppGate);

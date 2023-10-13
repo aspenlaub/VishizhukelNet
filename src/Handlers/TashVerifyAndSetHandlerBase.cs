@@ -13,7 +13,9 @@ using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 
-public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHandler<TModel> where TModel : IApplicationModelBase {
+public abstract class TashVerifyAndSetHandlerBase<TModel, TCollectionViewSourceEntity> : ITashVerifyAndSetHandler<TModel>
+        where TModel : IApplicationModelBase
+        where TCollectionViewSourceEntity : ICollectionViewSourceEntity {
     protected readonly ISimpleLogger SimpleLogger;
     protected readonly ITashSelectorHandler<TModel> TashSelectorHandler;
     protected readonly ITashCommunicator<TModel> TashCommunicator;
@@ -33,7 +35,7 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
     protected abstract Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
 
     protected abstract Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<TModel> status);
-    protected abstract Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
+    protected abstract Dictionary<string, ISimpleCollectionViewSourceHandler<TCollectionViewSourceEntity>> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<TModel> status);
 
     protected virtual void OnValueTaskProcessed(ITashTaskHandlingStatus<TModel> status, bool verify, bool set, string actualValue) {
         var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
@@ -52,7 +54,7 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
         string actualValue;
         var controlName = status.TaskBeingProcessed.ControlName;
         var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
-        if (Selectors.ContainsKey(controlName)) {
+        if (Selectors.TryGetValue(controlName, out var selector)) {
             if (set) {
                 if (combined) {
                     var errorMessage = $"Cannot set items for {controlName}, that has not been implemented";
@@ -68,7 +70,6 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
                 SimpleLogger.LogInformationWithCallStack($"Value for {controlName} set (via SelectComboOrResetTask)", methodNamesFromStack);
             }
 
-            var selector = Selectors[controlName];
             actualValue = combined
                 ? string.Join('^', selector.Selectables.Select(s => s.Name))
                 : label ? selector.LabelText : selector.SelectedItem.Name;
@@ -79,18 +80,18 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
             return;
         } else {
             var textBoxes = TextBoxNamesToTextBoxDictionary(status);
-            if (textBoxes.ContainsKey(controlName)) {
+            if (textBoxes.TryGetValue(controlName, out var textBox)) {
                 var textHandlers = TextBoxNamesToTextHandlerDictionary(status);
-                var textHandler = textHandlers.ContainsKey(controlName) ? textHandlers[controlName] : null;
+                textHandlers.TryGetValue(controlName, out var textHandler);
 
-                actualValue = await GetOrSetTextBoxValueAsync(textBoxes[controlName], textHandler, label, set, status.TaskBeingProcessed.Text);
+                actualValue = await GetOrSetTextBoxValueAsync(textBox, textHandler, label, set, status.TaskBeingProcessed.Text);
             } else {
                 var collectionViewSources = CollectionViewSourceNamesToCollectionViewSourceDictionary(status);
-                if (collectionViewSources.ContainsKey(controlName)) {
+                if (collectionViewSources.TryGetValue(controlName, out var collectionViewSource)) {
                     var collectionViewSourceHandlers = CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(status);
-                    var collectionViewSourceHandler = collectionViewSourceHandlers.ContainsKey(controlName) ? collectionViewSourceHandlers[controlName] : null;
+                    collectionViewSourceHandlers.TryGetValue(controlName, out var collectionViewSourceHandler);
 
-                    actualValue = await GetOrSetCollectionViewSourceAsync(collectionViewSources[controlName], collectionViewSourceHandler, set, status.TaskBeingProcessed.Text);
+                    actualValue = await GetOrSetCollectionViewSourceAsync(collectionViewSource, collectionViewSourceHandler, set, status.TaskBeingProcessed.Text);
                 } else {
                     var errorMessage = $"Unknown text or selector control {controlName}";
                     SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage}", methodNamesFromStack);
@@ -104,7 +105,8 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
         await TashCommunicator.CommunicateAndShowCompletedOrFailedAsync(status, true, actualValue);
     }
 
-    private async Task<string> GetOrSetCollectionViewSourceAsync(ICollectionViewSource collectionViewSource, ISimpleCollectionViewSourceHandler collectionViewSourceHandler, bool set, string text) {
+    private async Task<string> GetOrSetCollectionViewSourceAsync(ICollectionViewSource collectionViewSource,
+            ISimpleCollectionViewSourceHandler<TCollectionViewSourceEntity> collectionViewSourceHandler, bool set, string text) {
         if (!set) {
             return JsonConvert.SerializeObject(collectionViewSource.Items);
         }
@@ -114,7 +116,7 @@ public abstract class TashVerifyAndSetHandlerBase<TModel> : ITashVerifyAndSetHan
         }
 
 
-        var items = collectionViewSourceHandler.DeserializeJsonObject(text);
+        var items = collectionViewSourceHandler.DeserializeJson(text);
         await collectionViewSourceHandler.CollectionChangedAsync(items);
 
         return JsonConvert.SerializeObject(collectionViewSource.Items);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
@@ -67,14 +66,14 @@ public class Application : ApplicationBase<IGuiAndApplicationSynchronizer<Applic
     public override async Task OnLoadedAsync() {
         await base.OnLoadedAsync();
         if (!App.IsIntegrationTest) {
-            var items = new List<IDemoCollectionViewSourceEntity> {
+            var items = new List<DemoCollectionViewSourceEntity> {
                 new DemoCollectionViewSourceEntity {
                     Date = new DateTime(2022, 1, 19),
                     Name = "Some name",
                     Balance = 2470.70
                 }
 
-            }.Cast<ICollectionViewSourceEntity>().ToList();
+            };
             await Handlers.ThetaHandler.CollectionChangedAsync(items);
         }
         await Handlers.BetaSelectorHandler.UpdateSelectableValuesAsync();

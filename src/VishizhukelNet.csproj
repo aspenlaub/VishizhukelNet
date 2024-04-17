@@ -43,11 +43,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.11.1" />
-		<PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.4" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.60.3" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="TashClient" Version="2.0.1729.860" />
+		<PackageReference Include="TashClient" Version="2.0.1729.937" />
 		<PackageReference Include="Vishizhukel" Version="2.0.1729.869" />
 	</ItemGroup>
 	<ItemGroup>

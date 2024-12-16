@@ -46,7 +46,7 @@
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.66.2" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="TashClient" Version="2.0.1965.1050" />
+		<PackageReference Include="TashClient" Version="2.0.1972.679" />
 		<PackageReference Include="Vishizhukel" Version="2.0.1965.1050" />
 	</ItemGroup>
 	<ItemGroup>

@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.8.0" />
     <PackageReference Include="MSTest.TestFramework" Version="3.8.0" />
-    <PackageReference Include="VishnetIntegrationTestTools" Version="2.0.2029.1294" />
+    <PackageReference Include="VishnetIntegrationTestTools" Version="2.0.2030.1188" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Test\VishizhukelNet.Test.csproj" />

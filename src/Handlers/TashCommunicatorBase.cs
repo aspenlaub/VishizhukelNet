@@ -69,7 +69,16 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
     }
 
     public async Task<HttpStatusCode> ConfirmAliveAsync(ITashTaskHandlingStatus<TModel> status, ControllableProcessStatus cpStatus, DateTime time) {
-        return await TashAccessor.ConfirmAliveAsync(status.ProcessId, time, cpStatus);
+        int attempts = 3;
+        while (attempts -- > 0) {
+            try {
+                return await TashAccessor.ConfirmAliveAsync(status.ProcessId, time, cpStatus);
+            // ReSharper disable once EmptyGeneralCatchClause
+            } catch {
+            }
+        }
+
+        return HttpStatusCode.InternalServerError;
     }
 
     public virtual async Task ShowStatusAsync(ITashTaskHandlingStatus<TModel> status) {

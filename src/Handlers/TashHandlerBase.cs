@@ -58,11 +58,20 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
             return status.ControllableProcessTasks.Any(t => t.Status == ControllableProcessTaskStatus.Requested);
         }
 
-        var newTask = await TashAccessor.PickRequestedTask(status.ProcessId);
-        if (newTask == null) { return false; }
+        int attempts = 3;
+        while (attempts-- > 0) {
+            try {
+                var newTask = await TashAccessor.PickRequestedTask(status.ProcessId);
+                if (newTask == null) { return false; }
 
-        status.ControllableProcessTasks.Add(newTask);
-        return true;
+                status.ControllableProcessTasks.Add(newTask);
+                return true;
+                // ReSharper disable once EmptyGeneralCatchClause
+            } catch {
+            }
+        }
+
+        return false;
     }
 
     public async Task ProcessTashAsync(ITashTaskHandlingStatus<TModel> status) {

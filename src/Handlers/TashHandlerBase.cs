@@ -82,7 +82,17 @@ public class TashHandlerBase<TModel> : ITashHandler<TModel> where TModel : class
                 return;
             }
 
-            var statusCode = await TashAccessor.ConfirmStatusAsync(status.TaskBeingProcessed.Id, ControllableProcessTaskStatus.Processing);
+            int attempts = 3;
+            HttpStatusCode statusCode = HttpStatusCode.BadRequest;
+            while (attempts-- > 0) {
+                try {
+                    statusCode = await TashAccessor.ConfirmStatusAsync(status.TaskBeingProcessed.Id, ControllableProcessTaskStatus.Processing);
+                    break;
+                // ReSharper disable once EmptyGeneralCatchClause
+                } catch {
+                }
+            }
+
             if (statusCode != HttpStatusCode.NoContent) {
                 return;
             }

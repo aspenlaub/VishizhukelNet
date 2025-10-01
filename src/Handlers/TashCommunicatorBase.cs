@@ -64,8 +64,16 @@ public class TashCommunicatorBase<TModel> : ITashCommunicator<TModel> where TMod
     }
 
     public async Task ConfirmStatusOfTaskBeingProcessedAsync(ITashTaskHandlingStatus<TModel> status) {
-        await TashAccessor.ConfirmStatusAsync(status.TaskBeingProcessed.Id, status.TaskBeingProcessed.Status,
-            status.TaskBeingProcessed.Text, status.TaskBeingProcessed.ErrorMessage);
+        int attempts = 10;
+        while (attempts-- > 0) {
+            try {
+                await TashAccessor.ConfirmStatusAsync(status.TaskBeingProcessed.Id, status.TaskBeingProcessed.Status,
+                    status.TaskBeingProcessed.Text, status.TaskBeingProcessed.ErrorMessage);
+                return;
+            // ReSharper disable once EmptyGeneralCatchClause
+            } catch {
+            }
+        }
     }
 
     public async Task<HttpStatusCode> ConfirmAliveAsync(ITashTaskHandlingStatus<TModel> status, ControllableProcessStatus cpStatus, DateTime time) {

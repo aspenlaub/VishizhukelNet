@@ -42,12 +42,12 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.17.0" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.79.0" />
+		<PackageReference Include="Azure.Identity" Version="1.17.1" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.79.2" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="TashClient" Version="2.0.2288.774" />
-		<PackageReference Include="Vishizhukel" Version="2.0.2288.775" />
+		<PackageReference Include="TashClient" Version="2.0.2310.1262" />
+		<PackageReference Include="Vishizhukel" Version="2.0.2310.1267" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">

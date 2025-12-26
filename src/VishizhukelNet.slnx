@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Integration/Test/VishizhukelNet.Integration.Test.csproj" />
+  <Project Path="Test/VishizhukelNet.Test.csproj" />
+  <Project Path="VishizhukelNet.csproj" />
+</Solution>

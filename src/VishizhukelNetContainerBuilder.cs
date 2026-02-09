@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Components;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Vishizhukel;
@@ -12,19 +11,19 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet;
 
 public static class VishizhukelNetContainerBuilder {
-    public static async Task<IServiceCollection> UseVishizhukelNetAndPeghAsync(this IServiceCollection services, string applicationName, ICsArgumentPrompter csArgumentPrompter) {
-        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(services, applicationName, csArgumentPrompter, false);
+    public static async Task<IServiceCollection> UseVishizhukelNetAndPeghAsync(this IServiceCollection services, string applicationName) {
+        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(services, applicationName, false);
     }
 
-    public static async Task<IServiceCollection> UseVishizhukelNetDvinAndPeghAsync(this IServiceCollection services, string applicationName, ICsArgumentPrompter csArgumentPrompter) {
-        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(services, applicationName, csArgumentPrompter, true);
+    public static async Task<IServiceCollection> UseVishizhukelNetDvinAndPeghAsync(this IServiceCollection services, string applicationName) {
+        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(services, applicationName, true);
     }
 
-    private static async Task<IServiceCollection> UseVishizhukelNetAndPeghOptionallyDvinAsync(IServiceCollection services, string applicationName, ICsArgumentPrompter csArgumentPrompter, bool useDvin) {
+    private static async Task<IServiceCollection> UseVishizhukelNetAndPeghOptionallyDvinAsync(IServiceCollection services, string applicationName, bool useDvin) {
         if (useDvin) {
-            await services.UseVishizhukelDvinAndPeghAsync(applicationName, csArgumentPrompter);
+            await services.UseVishizhukelDvinAndPeghAsync(applicationName);
         } else {
-            await services.UseVishizhukelAndPeghAsync(applicationName, csArgumentPrompter);
+            await services.UseVishizhukelAndPeghAsync(applicationName);
         }
         services.AddTransient<IButtonNameToCommandMapper, ButtonNameToCommandMapper>();
         services.AddTransient<IToggleButtonNameToHandlerMapper, ToggleButtonNameToHandlerMapper>();
@@ -32,19 +31,19 @@ public static class VishizhukelNetContainerBuilder {
         return services;
     }
 
-    public static async Task<ContainerBuilder> UseVishizhukelNetAndPeghAsync(this ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter) {
-        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, applicationName, csArgumentPrompter, false);
+    public static async Task<ContainerBuilder> UseVishizhukelNetAndPeghAsync(this ContainerBuilder builder, string applicationName) {
+        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, applicationName, false);
     }
 
-    public static async Task<ContainerBuilder> UseVishizhukelNetDvinAndPeghAsync(this ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter) {
-        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, applicationName, csArgumentPrompter, true);
+    public static async Task<ContainerBuilder> UseVishizhukelNetDvinAndPeghAsync(this ContainerBuilder builder, string applicationName) {
+        return await UseVishizhukelNetAndPeghOptionallyDvinAsync(builder, applicationName, true);
     }
 
-    private static async Task<ContainerBuilder> UseVishizhukelNetAndPeghOptionallyDvinAsync(ContainerBuilder builder, string applicationName, ICsArgumentPrompter csArgumentPrompter, bool useDvin) {
+    private static async Task<ContainerBuilder> UseVishizhukelNetAndPeghOptionallyDvinAsync(ContainerBuilder builder, string applicationName, bool useDvin) {
         if (useDvin) {
-            await builder.UseVishizhukelDvinAndPeghAsync(applicationName, csArgumentPrompter);
+            await builder.UseVishizhukelDvinAndPeghAsync(applicationName);
         } else {
-            await builder.UseVishizhukelAndPeghAsync(applicationName, csArgumentPrompter);
+            await builder.UseVishizhukelAndPeghAsync(applicationName);
         }
 
         builder.RegisterType<ButtonNameToCommandMapper>().As<IButtonNameToCommandMapper>().SingleInstance();

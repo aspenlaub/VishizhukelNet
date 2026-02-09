@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication.GUI;
@@ -12,7 +11,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Test.DemoApplication;
 public static class ApplicationContainerBuilder {
     public static async Task<ContainerBuilder> UseDemoApplicationAsync(this ContainerBuilder builder,
             VishizhukelNetDemoWindow vishizhukelNetDemoWindow) {
-        await builder.UseVishizhukelNetDvinAndPeghAsync("VishizhukelNet", new DummyCsArgumentPrompter());
+        await builder.UseVishizhukelNetDvinAndPeghAsync("VishizhukelNet");
         if (vishizhukelNetDemoWindow == null) {
             builder.RegisterType<FakeGuiAndApplicationSynchronizer>().As<IGuiAndApplicationSynchronizer<ApplicationModel>>().SingleInstance();
         } else {

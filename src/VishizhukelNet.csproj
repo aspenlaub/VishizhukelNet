@@ -44,8 +44,8 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.17.1" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.82.1" />
-		<PackageReference Include="TashClient" Version="2.0.2388.2" />
-		<PackageReference Include="Vishizhukel" Version="2.0.2388.8" />
+		<PackageReference Include="TashClient" Version="2.0.2393.1173" />
+		<PackageReference Include="Vishizhukel" Version="2.0.2393.1180" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">

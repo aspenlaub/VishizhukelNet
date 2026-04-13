@@ -42,10 +42,10 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.19.0" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.83.1" />
-		<PackageReference Include="TashClient" Version="2.0.2424.503" />
-		<PackageReference Include="Vishizhukel" Version="2.0.2424.511" />
+		<PackageReference Include="Azure.Identity" Version="1.21.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.83.3" />
+		<PackageReference Include="TashClient" Version="2.0.2455.1123" />
+		<PackageReference Include="Vishizhukel" Version="2.0.2455.1127" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">

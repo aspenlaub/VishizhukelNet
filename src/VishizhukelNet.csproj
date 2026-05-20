@@ -43,7 +43,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.21.0" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.84.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.84.1" />
 		<PackageReference Include="TashClient" Version="2.0.2490.317" />
 		<PackageReference Include="Vishizhukel" Version="2.0.2490.360" />
 	</ItemGroup>

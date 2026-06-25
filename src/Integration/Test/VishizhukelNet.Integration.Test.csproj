@@ -12,6 +12,7 @@
     <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test</AssemblyTitle>
     <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test</AssemblyProduct>
     <RootNamespace>Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Integration.Test</RootNamespace>
+    <MSBuildEnableWorkloadResolver>false</MSBuildEnableWorkloadResolver>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
